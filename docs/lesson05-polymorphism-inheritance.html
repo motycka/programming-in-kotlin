@@ -1041,84 +1041,182 @@
 				</div>
 			</section>
 		</section>
-<!--		<section>-->
-<!--			<section data-background-gradient="var(&#45;&#45;kotlin-gradient)">-->
-<!--				<h2>Generics</h2>-->
-<!--			</section>-->
-<!--			<section>-->
-<!--				<div class="summary">-->
-<!--					Generics allow us to create classes, interfaces, and methods that take types as parameters.-->
-<!--				</div>-->
-<!--				<div class="content">-->
-<!--					<p>-->
-<!--						They are a way to make our code more reusable by allowing us to use the same code with different types.-->
-<!--					</p>-->
-<!--					<p>-->
-<!--						In this example, we define a LinkedList, and add an element to it.-->
-<!--						The compiler will not complain about this, at this point, it knows we are adding a String to the list.-->
-<!--					</p>-->
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Generics</h2>
+			</section>
+			<section>
+				<h3>Generics</h3>
+				<div class="summary">
+					Generics allow us to create classes, interfaces, and methods that take types as parameters.
+				</div>
+				<div class="content">
+					<p>
+						They are a way to make our code more reusable by allowing us to use the same code with different types.
+					</p>
+					<p>
+						Generics are used to create classes, interfaces, and methods that operate on a type parameter.
+					</p>
+					<p>
+						We mave have already seen generics in action with the <code class="inline">List</code> interface.
+						For example, all of these methods use generics:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val list = mutableListOf&lt;String&gt;()
 
-<!--					However, when we try to get the element from the list, the compiler will complain, because it doesn't know what type of element is in the list.-->
+							list.add("Hello")
+							list.add("World")
 
-<!--					To fix this, we can tell the compiler what type of elements are in the list.-->
+							list.forEach {
+								println(it)
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Generics</h3>
+				<div class="summary">
+					How to define a generic class
+				</div>
+				<div class="content">
+					<p>
+						To define a generic class, need to create a type parameter in the class definition.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							class MyClass&lt;T&gt;(private val id: T) {
 
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--							val list = LinkedList<String>()-->
-<!--							list.add("Hello World")-->
+								fun getId(): T {
+									return id
+								}
 
-<!--							val str = list[0] // this is OK-->
-<!--							println(str)-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--				</div>-->
+							}
+						</code>
+					</pre>
+					<p>
+						Classes may have multiple type parameters.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							class MyClassEnhanced&lt;T1, T2&gt; {
 
+								fun equals(value1: T1, value2: T2 ): Boolean {
+									return value1 == value2
+								}
 
+							}
+						</code>
+					</pre>
+					<p>
+						Usage:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val myClass1 = MyClass&lt;String&gt;("ABC")
+							println(myClass1.getId())
 
-<!--			</section>-->
-<!--			<section>-->
-<!--				<h3>Exercise</h3>-->
-<!--				<div class="summary">-->
-<!--					TODO-->
-<!--				</div>-->
-<!--				<div class="content">-->
-<!--					Crete a generic class Box that can hold any type of item. The class should have two methods:-->
-<!--					- putItem(item: T) that puts an item into the box-->
-<!--					- getItem(): T? that returns the item from the box-->
-<!--					- store the item as a private property in the class-->
+							val myClass2 = MyClass&lt;Int&gt;(123)
+							println(myClass2.getId())
 
-<!--					Create instance of the Box class with different types and test the methods.-->
-
-
-
-
-
-<!--					Crete a generic function insertIntoBox that takes three parameters:-->
-<!--					- item1 of type T1-->
-<!--					- item2 of type T2-->
-<!--					- func of type (T1, T2) -> R-->
-
-<!--					The function should return the result of calling the func with item1 and item2 as arguments.-->
-
-<!--					Call the function with two different types of items and a lambda that combines the items into a string.-->
-
-
-
-
-
-<!--					Create a generic interface Drawer that has three type parameters:-->
-<!--					- T1-->
-<!--					- T2-->
-<!--					- R-->
-
-<!--					The interface should have a single method insert that takes two parameters of type T1 and T2 and returns a value of type R.-->
-
-<!--					Create a class SmallDrawer that implements the Drawer interface with different types.-->
-
-<!--					Create an instance of the SmallDrawer class and test the insert method.-->
-<!--				</div>-->
-<!--			</section>-->
-<!--		</section>-->
+							val myClassEnhanced = MyClassEnhanced&lt;Int, Double&gt;()
+    						println(myClassEnhanced.equals(123, 123.0))
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Generics</h3>
+				<div class="summary">
+					How to define a generic function
+				</div>
+				<div class="content">
+					<p>
+						Similarly, you define generic functions by adding a type parameter to the function definition.
+					</p>
+					<p>
+						Functions can also have multiple type parameters and the type parameters can have constraints (types).
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun &lt;T1: Number, T2: Number&gt; myFunction(value1: T1, value2: T2 ): Double {
+								return value1.toDouble() + value2.toDouble()
+							}
+						</code>
+					</pre>
+					<p>
+						You can also define generic return types.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							interface MyInterface&lt;T1, T2, R&gt; {
+								fun myFunction(a: T1, b: T2): R
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise: Generic #1</h3>
+				<div class="content exercise-formatting">
+					<p>
+						Crete a generic class Box that can hold any type of item. The class should have two methods:
+					</p>
+					<ul>
+						<li><code class="inline">putItem(item: T)</code> that puts an item into the box</li>
+						<li><code class="inline">getItem(): T?</code> that returns the item from the box</li>
+						<li>Store the <strong>item</strong> as a private property in the class</li>
+					</ul>
+					<p>
+						Create an instance of the Box class with different types and test the methods.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise: Generics #2</h3>
+				<div class="content exercise-formatting">
+					<p>
+						Crete a generic function insertIntoBox that takes three parameters:
+					</p>
+					<ul>
+						<li>item1 of type <code class="inline">T1</code></li>
+						<li>item2 of type <code class="inline">T2</code></li>
+						<li>func of type <code class="inline">(T1, T2) -> R</code></li>
+					</ul>
+					<p>
+						The function should return the result of calling the func with item1 and item2 as arguments.
+					</p>
+					<p>
+						Call the function with two different types of items and a lambda that combines the items into a string.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise: Generics #3</h3>
+				<div class="content exercise-formatting">
+					<p>
+						Create a generic interface <strong>MyComparator</strong> that has three type parameters:
+					</p>
+					<ul>
+						<li><code class="inline">T1</code></li>
+						<li><code class="inline">T2</code></li>
+						<li><code class="inline">R</code></li>
+					</ul>
+					<p>
+						The interface should have a single method <code class="inline">returnGreater</code>
+						that takes two parameters of type <code class="inline">T1</code>
+						and <code class="inline">T2</code> greater of the two as  type <code class="inline">R</code>.
+					</p>
+					<p>
+						Create a class <strong>SmallDrawer</strong> that implements the Drawer interface with different types.
+					</p>
+					<p>
+						Create an instance of the <strong>SmallDrawer</strong> class and test the insert method.
+					</p>
+				</div>
+			</section>
+		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Exceptions</h2>
