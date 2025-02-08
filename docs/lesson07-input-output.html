@@ -8,7 +8,7 @@
 
 	<link rel="stylesheet" href="dist/reset.css">
 	<link rel="stylesheet" href="dist/reveal.css">
-	<link rel="stylesheet" href="dist/theme/motyka.css">
+	<link rel="stylesheet" href="dist/theme/kotlin.css">
 
 	<!-- Theme used for syntax highlighted code -->
 	<link rel="stylesheet" href="plugin/highlight/vs.css">
@@ -18,9 +18,8 @@
 	<div class="slides">
 		<section data-background-gradient="var(--kotlin-gradient)">
 			<i>Week 2 | Lesson 7</i>
-			<h1>Standard Java Library: Files</h1>
-			<em>java.io.File</em><br />
-			<em>java.nio.Path</em><br />
+			<h1>Kotlin Standard Library</h1>
+			<em>kotlin.io</em><br />
 			<em>InputStream and OutputStream</em>
 		</section>
 		<section>
@@ -30,35 +29,47 @@
 			</section>
 			<section>
 				<h3>Command line arguments</h3>
-				<p>
-					We have been using main method with <code>String[] args</code> parameter,
-					but we have not explained what they are and how they are used.
-				</p>
-				<hr />
-				<p>
-					When you run a Java program from the command line, you can pass arguments to the program.
-					These arguments are treated as strings and are stored in the <code>String[] args</code> array.
-				</p>
-				<p>
-					We can also read input from console. Let's demonstrate both with very simple example.
-				</p>
-				<hr />
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class CommandLineExample {
+				<div class="summary">
+					Command line arguments are passed to the program when it is executed from the command line.
+				</div>
+				<div class="content">
+					<p>
+						We have been using main method with <code class="inline">args: Array&lt;String&gt;</code> parameter,
+						but we have not explained what they are and how they are used.
+					</p>
+					<hr />
+					<p>
+						When you run a Kotlin program from the command line, you can pass arguments to the program.
+						These arguments are treated as strings and are stored in the <code class="inline">args: Array&lt;String&gt;</code> array.
+					</p>
+					<p>
+						We can also read input from console using <code class="inline">readLine()</code> function.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main(args: Array&lt;String&gt;) {
+								println("Received ${args.size} arguments:")
 
-							public static void main(String[] args) {
-								for (String arg : args) {
-									System.out.println(arg);
+								for ((index, arg) in args.withIndex()) {
+									println(" $index = $arg")
 								}
 
-								System.out.println("What is your name?");
-								String name = System.console().readLine();
-								System.out.println("Hello, " + name + "!");
+								println("\nEnter your name:")
+								val name = readLine()
+								println("\nHello, $name!")
 							}
-						}
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="summary">
+					TODO
+				</div>
+				<div class="content">
+					TODO
+				</div>
 			</section>
 		</section>
 		<section>
@@ -68,82 +79,76 @@
 			</section>
 			<section>
 				<h3>Paths and resources</h3>
-				<em>
-					Before working with files, we need to understand how to access them.
-				</em>
-				<hr />
-				<p>
-					To access a file, we need to obtain its path reference as <strong>URI</strong> (Uniform Resource Identifier),<br />
-					which is a string of characters used to identify a resource.
-					<br />
-					<sub>
-						You can also use URL, which is a specific type of URI that identifies a resource on network location.
-					</sub>
-				</p>
-				<hr />
-				<p>
-					There are two types of paths:
-				</p>
-				<ul >
-					<li>
-						<strong>Absolute path</strong> is a full path to the file or directory.<br />
-						<p style="font-size: 80%">
-							While accessing a file by its <strong>absolute</strong> path is easier, it is not very practical,
-							because it will differ from one system (computer) to another.
-							For this reason, using <strong>relative</strong> paths is more common (and reliable).
-						</p>
+				<div class="summary">
+					Understanding how to access files and resources in Kotlin applications.
+				</div>
+				<div class="content">
+					<p>
+						To access a file, we need to obtain its path reference as <strong>URI</strong> (Uniform Resource Identifier),<br />
+						which is a string of characters used to identify a resource.
+						<br />
+						<sub>
+							You can also use URL, which is a specific type of URI that identifies a resource on network location.
+						</sub>
+					</p>
+					<p>
+						There are two types of paths:
+					</p>
+					<ul>
+						<li>
+							<h4>Absolute path</h4> is a full path to the file or directory<br />
+							<p>
+								While accessing a file by its <strong>absolute</strong> path is easier, it is not very practical,
+								because it will differ from one system (computer) to another.
+								For this reason, using <strong>relative</strong> paths is more common (and reliable).
+							</p>
 
-					</li>
-					<li>
-						<strong>Relative path</strong> is relative to the current working directory.<br />
-						<p style="font-size: 80%">
-							This might seem obvious when writing the code, but keep in mind that <strong>in Java program context,
-							the current working directory is not always the same as the directory in which the Java application is located</strong>.
-						</p>
-					</li>
-				</ul>
+						</li>
+						<li>
+							<h4>Relative path</h4> is relative to the current working directory<br />
+							<p>
+								This might seem obvious when writing the code, but keep in mind that <strong>in Java program context,
+								the current working directory is not always the same as the directory in which the Java application is located</strong>.
+							</p>
+						</li>
+					</ul>
+				</div>
 			</section>
 			<section>
 				<h3>Working with resources</h3>
-				<p>
-					In Java applications, files that are distibuted with the source code are conventionally located in
-					the <code class="inline">src/main/resources</code> directory,
-					<br />
-					or in the <code class="inline">src/test/resources</code> directory for test resources.
-				</p>
-				<hr />
-				<p>
-					Files in these directories are included in the application's classpath and can be accessed using
-					<strong>ClassLoader</strong> or <strong>Class</strong> methods.
-				</p>
-				<pre>ClassLoaderExample.java
-					<code data-trim data-noescape data-line-numbers=|3-12|14-18| class="hljs kotlin">
-						public class ClassLoaderExample {
+				<div class="summary">
+					Accessing files that are distributed with the source code.
+				</div>
+				<div class="content">
+					<p>
+						In Kotlin applications, files that are distributed with the source code are conventionally located in
+						the <code class="inline">src/main/resources</code> directory,
+						or in the <code class="inline">src/test/resources</code> directory for test resources.
+					</p>
+					<p>
+						Files in these directories are included in the application's classpath and can be accessed using
+						<strong>ClassLoader</strong> or <strong>Class</strong> methods.
+					</p>
+				</div>
 
-							public void getClassLoader() {
-								// get class loader
-								ClassLoader classLoader = this.getClass().getClassLoader();
-								// get resource from class loader
-								URL url = classLoader.getResource("timezone-cities.txt");
-								System.out.println(url);
-								// get class resource - same for static and non-static context
-								URL url2 = ClassLoaderExample.class.getResource("timezone-cities.txt");
-								System.out.println(url2);
-							}
-
-							public static void getStaticClassLoader() {
-								// In static context, this.getClass() is equivalent to ClassLoaderExample.class
-								ClassLoader staticClassLoader = ClassLoaderExample.class.getClassLoader();
-								// the rest is same as in non-static context ...
-							}
-
-						}
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						// TODO
 					</code>
 				</pre>
 				<!--				<p>-->
 				<!--					The URL will look similar to this: <br />-->
 				<!--					<code>file:/Users/monikaprotivova/IdeaProjects/HarbourSpace/programming-in-java/m1-java-basics/build/resources/main/timezone-cities.txt</code>-->
 				<!--				</p>-->
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="summary">
+					TODO
+				</div>
+				<div class="content">
+					TODO
+				</div>
 			</section>
 		</section>
 		<section>

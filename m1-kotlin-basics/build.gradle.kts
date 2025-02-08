@@ -24,6 +24,10 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
     runtimeOnly("com.h2database:h2")
 
+    implementation("org.slf4j:slf4j-api:2.0.7")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
+    implementation("io.github.oshai:kotlin-logging:7.0.3")
+
 //    testImplementation(kotlin("test"))
 //    testImplementation("org.springframework.boot:spring-boot-test")
 //    testImplementation("org.springframework.boot:spring-boot-starter-test")

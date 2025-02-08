@@ -508,12 +508,12 @@
 							}
 
 							internal fun match(character1: Character, character2: Character) {
-								var round = 1
-								while (character1.health > 0 && character2.health > 0 && round <= 10) {
+								var round = 0
+								while (character1.health > 0 && character2.health > 0 && round < 10) {
+									round++
 									println("\nROUND $round:")
 									character1.attack(character2)
 									character2.attack(character1)
-									round++
 								}
 								when {
 									character1.health <= 0 && character2.health > 0 -> println("\n${character2.name} is the victor in round $round!")
