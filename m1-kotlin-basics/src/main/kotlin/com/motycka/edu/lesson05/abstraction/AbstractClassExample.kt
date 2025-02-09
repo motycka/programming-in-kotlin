@@ -17,7 +17,7 @@ fun main() {
      )
 }
 
-internal fun match(character1: Character, character2: cCharacter) {
+internal fun match(character1: Character, character2: Character) {
     var round = 0
     while (character1.health > 0 && character2.health > 0 && round < 10) {
         round++

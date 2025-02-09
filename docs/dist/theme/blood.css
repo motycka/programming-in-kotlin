@@ -454,6 +454,14 @@ section[data-background-gradient="var(--kotlin-gradient)"] * {
   background: yellow;
 }
 
+.reveal ol, .reveal ul {
+  margin-left: 40px;
+}
+
+.reveal li {
+  padding: 4px;
+}
+
 .reveal p {
   font-weight: 300;
   text-shadow: 1px 1px #222;

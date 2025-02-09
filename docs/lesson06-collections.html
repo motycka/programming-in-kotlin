@@ -17,9 +17,230 @@
 <div class="reveal">
 	<div class="slides">
 		<section data-background-gradient="var(--kotlin-gradient)">
-			<i>Week 1 | Lesson 6</i>
+			<i>Week 2 | Lesson 6</i>
 			<h1>Kotlin Standard Library</h1>
 			<em>Collections</em>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Additional Data Types</h2>
+				<em>Ranges and Progressions</em><br />
+				<em>Pairs and Triples</em><br />
+			</section>
+			<section>
+				<h3>Ranges</h3>
+				<div class="summary">
+					Ranges are used to represent sequences of values.
+				</div>
+				<div class="content">
+					<p>
+						Range represents an ordered set of values with a defined start and end.
+						By default, it increments by 1 at each step.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val intRange: IntRange = 1..10
+							val longRange: LongRange = 1L..100L
+							val charRange: CharRange = 'a'..'z'
+						</code>
+					</pre>
+					<p>
+						Ranges can be used in <code class="inline">if</code>, <code class="inline">when</code> statements, and other control structures.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val intNumber = 9
+
+							when (intNumber) {
+								in 0..10 -> println("low")
+								in 11..20 -> println("medium")
+								in 21..30 -> println("high")
+								else -> println("out of range")
+							}
+						</code>
+					</pre>
+					<p>
+						Arithmetic operations can be performed on ranges, such as <code class="inline">sum()</code>, <code class="inline">average()</code>, <code class="inline">count()</code>, and <code class="inline">contains()</code>.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val sum = intRange.sum()
+							val average = intRange.average()
+							val count = intRange.count()
+							val max = intRange.maxOrNull()
+							val min = intRange.minOrNull()
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Progressions</h3>
+				<div class="summary">
+					Progressions are ordered sequences of values with a common difference.
+				</div>
+				<div class="content">
+					<p>
+						The ranges of integral types, such as <code class="inline">Int</code>,
+						<code class="inline">Long</code>, and <code class="inline">Char</code>,
+						can be treated as arithmetic progressions, defined by
+						<code class="inline">IntProgression</code>,
+						<code class="inline">LongProgression</code> and
+						<code class="inline">CharProgression</code> types.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val intProgression: IntProgression = 1..10 step 2
+						</code>
+					</pre>
+					<p>
+						Progressions have three essential properties - <strong>the first element</strong>, <strong>the last element</strong>, and <strong>a non-zero step</strong>.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							intProgression.first
+							intProgression.last
+							intProgression.step
+						</code>
+					</pre>
+					<p>
+						Progressions can be used in <code class="inline">for</code> loops, and other control structures.
+					</p>
+					<div class="row">
+						<div class="column">
+							You can specify a step value:
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									for (index in 0..100 step 10) { /* ... */ }
+								</code>
+							</pre>
+						</div>
+						<div class="column">
+							Or use default step value of 1:
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									for (index in 0..100) { /* ... */ }
+								</code>
+							</pre>
+						</div>
+					</div>
+					<p>
+						Aritmetic operations can be performed on progressions:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val sum = intProgression.sum()
+							val average = intProgression.average()
+							val count = intProgression.count()
+							val max = intProgression.maxOrNull()
+							val min = intProgression.minOrNull()
+						</code>
+					</pre>
+
+
+				</div>
+			</section>
+			<section>
+				<h3>Pairs and Triples</h3>
+				<div class="summary">
+					Kotlin SDK provides two classes to represent pairs and triples of values.
+				</div>
+				<div class="content">
+					<p>
+						While you can implement your own classes to represent pairs and triples of values, it
+						is convenient to use the standard library classes <code class="inline">Pair</code> and <code class="inline">Triple</code>
+						as they already provide useful functionality.
+					</p>
+					<p>
+						Pairs and triples are useful when you need to return two or three values from a function
+						and are quite commonly used when working with collections.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Pair</h3>
+				<div class="summary">
+					<code class="inline">Pair</code> is a class that holds two values of same or different types.
+				</div>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val duel: Pair&lt;String, String&gt; = Pair("Luke Skywalker", "Darth Vader")
+						</code>
+					</pre>
+					<p>
+						As usual, type can be omitted if it can be inferred from the values.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val firstInEpisode = Pair("Luke Skywalker", 4)
+						</code>
+					</pre>
+					<p>
+						You can access values of a pair by using the <code class="inline">first</code> and <code class="inline">second</code> properties.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val good = duel.first
+							val evil = duel.second
+						</code>
+					</pre>
+					<p>
+						Or you can use destructuring declarations to extract values from a pair.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val (good, evil) = duel
+						</code>
+					</pre>
+					<p>
+						There is alternative (and preferred) syntax for creating pairs using the <code class="inline">to</code> function.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val duel = "Luke Skywalker" to "Darth Vader"
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Triple</h3>
+				<div class="summary">
+					<code class="inline">Triple</code> is a class that holds three values of same or different types.
+				</div>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val firstDuelInEpisode = Triple("Luke Skywalker", "Darth Vader", 4)
+						</code>
+					</pre>
+					<p>
+						You can access values of a pair by using the <code class="inline">first</code>, <code class="inline">second</code> and <code class="inline">third</code> properties.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val good = duel.first
+							val evil = duel.second
+						</code>
+					</pre>
+					<p>
+						Or you can use destructuring declarations to extract values from a pair.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val (good, evil, firstDuelInEpisode) = firstDuelInEpisode
+						</code>
+					</pre>
+					<p>
+						There is no alternative syntax for creating triples using the <code class="inline">to</code> function.
+						In this example, it would result in <code class="inline">Pair&lt;Pair&lt;String, String&gt;, Int&gt;</code>.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val firstDuelInEpisode: Pair&lt;Pair&lt;String, String&gt;, Int&gt; = "Luke Skywalker" to "Darth Vader" to 4
+						</code>
+					</pre>
+				</div>
+			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
@@ -245,19 +466,28 @@
 					There are 3 main types of collections in Kotlin: lists, sets, and maps.
 				</div>
 				<div class="content">
+					<h4>Lists</h4>
 					<p>
-						<h4>Lists</h4>
-						Lists are <strong>ordered</strong> collections of elements that <strong>can contain duplicates</strong> and individual elements can be accessed by their index.
+					Lists are <strong>ordered</strong> collections of elements that <strong>can contain duplicates</strong> and individual elements can be accessed by their index.
+					</p>
+					<h4>Sets</h4>
+					<p>
+					Sets are <strong>unordered</strong> collections of unique elements, meaning order is not guaranteed, and they <strong>don't allow duplicate elements</strong>.
 					</p>
 					<p>
-						<h4>Sets</h4>
-						Sets are <strong>unordered</strong> collections of unique elements, meaning order is not guaranteed, and they <strong>don't allow duplicate elements</strong>.
+						You can work with a set just like you would with a list, but there are some differences:
 					</p>
+					<ul>
+						<li>You cannot access elements by index, because sets are unordered.</li>
+						<li>Adding an element that already exists in the set will not add a duplicate.</li>
+						<li>Removing an element that does not exist in the set will not throw an exception.</li>
+					</ul>
+					<br />
+					<br />
+					<h4>Maps</h4>
 					<p>
-						<h4>Maps</h4>
 						Maps are collections of <strong>key-value pairs</strong>, where <strong>keys are unique</strong> and are used to access values. Values can be duplicates.
 					</p>
-					<br />
 					<p>
 						<em>
 							Kotlin provides standard library functions for working with collections, which we will explore in more detail.
@@ -408,26 +638,26 @@
 						</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td style="font-weight: bold">Null Safety</td>
-								<td>Collections can contain null values unless explicitly handled.</td>
-								<td>Collections are null-safe by default. You can explicitly declare nullable collections if needed.</td>
-							</tr>
-							<tr>
-								<td style="font-weight: bold">Read-Only vs Mutable</td>
-								<td>Collections are mutable by default. Read-only views can be created using utility methods.</td>
-								<td>Distinguishes between read-only (List, Set, Map) and mutable (MutableList, MutableSet, MutableMap) collections.</td>
-							</tr>
-							<tr>
-								<td style="font-weight: bold">Higher-Order Functions</td>
-								<td>Introduced lambda expressions and streams in Java 8, but the syntax is more verbose compared to Kotlin.</td>
-								<td>Supports higher-order functions and lambda expressions, making it easier to perform operations like filtering, mapping, and reducing.</td>
-							</tr>
-							<tr>
-								<td style="font-weight: bold">Default Implementations</td>
-								<td>Requires more boilerplate code for common operations.</td>
-								<td>Provides default implementations for many collection operations, making the code more concise.</td>
-							</tr>
+						<tr>
+							<td style="font-weight: bold">Null Safety</td>
+							<td>Collections can contain null values unless explicitly handled.</td>
+							<td>Collections are null-safe by default. You can explicitly declare nullable collections if needed.</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold">Read-Only vs Mutable</td>
+							<td>Collections are mutable by default. Read-only views can be created using utility methods.</td>
+							<td>Distinguishes between read-only (List, Set, Map) and mutable (MutableList, MutableSet, MutableMap) collections.</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold">Higher-Order Functions</td>
+							<td>Introduced lambda expressions and streams in Java 8, but the syntax is more verbose compared to Kotlin.</td>
+							<td>Supports higher-order functions and lambda expressions, making it easier to perform operations like filtering, mapping, and reducing.</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold">Default Implementations</td>
+							<td>Requires more boilerplate code for common operations.</td>
+							<td>Provides default implementations for many collection operations, making the code more concise.</td>
+						</tr>
 						</tbody>
 					</table>
 					<blockquote>
@@ -439,8 +669,50 @@
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Operations</h2>
+			</section>
+			<section>
+				<h3>Operations</h3>
+				<div class="summary">
+					The Kotlin standard library provides a rich set of functions for working with collections.
+				</div>
+				<div class="content">
+					<p>
+						Collection operations are declared in the standard library in two ways:
+					</p>
+					<ol>
+						<li>
+							<strong class="highlight">Member functions of collection interfaces</strong>
+							<em>defining operations that are essential for the collection type.</em>
+						</li>
+						<li>
+							<strong class="highlight">Extension functions</strong>
+							<em>providing additional functionality.</em>
+						</li>
+					</ol>
+					<p>
+						This is important to know in case you want to implement you own collection type as you will need
+						to implement all functions in the given interface(s).
+					</p>
+					<p>
+						Some of the common operations on collections include:
+					</p>
+					<ul>
+						<li>Transformations</li>
+						<li>Filtering</li>
+						<li>plus and minus operators</li>
+						<li>Grouping</li>
+						<li>Retrieving collection parts</li>
+						<li>Retrieving single elements</li>
+						<li>Ordering</li>
+						<li>Aggregate operations</li>
+					</ul>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Adding, Removing and Retrieving Elements</h2>
-				<div style="background-color: yellow">TODO</div>
 			</section>
 			<section>
 				<h3>Adding Elements</h3>
@@ -548,16 +820,65 @@
 			</section>
 			<section>
 				<h3>Retrieving Elements</h3>
-				<div style="background-color: yellow">TODO</div>
-				<div class="summary">
-
-				</div>
 				<div class="content">
 					<p>
-
+						Retrieving elements from a collection is straightforward and similar to arrays.
 					</p>
+					<p>
+						Here are few examples:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val list = listOf("Java", "Kotlin", "JavaScript", "TypeScript", "Python")
+
+							// get element at index 2
+							val element = list[2]
+
+							// get first element
+							val first = list.first()
+
+							// get last element
+							val last = list.last()
+
+							// get element at index 2 or return "C++" if index is out of bounds
+							val elementAtOrElse = list.getOrElse(2) { "C++" }
+
+							// get element at index 10 or return null if index is out of bounds
+							val elementAtOrNull = list.getOrNull(10)
+
+							// you can also use the random() function to get a random element from the collection
+							val randomElement = list.random()
+						</code>
+					</pre>
 				</div>
 			</section>
+			<section>
+				<div>
+					<h3>Retrieving collection parts</h3>
+					<div class="content">
+						<p>
+							You are not limited to retrieving single elements from a collection. You can also retrieve parts of a collection, or slices.
+						</p>
+						<p>
+							These are some of the functions available in the Kotlin SDK:
+						</p>
+						<ul>
+							<li><code class="inline">slice</code> - returns a list of elements at the specified indices.</li>
+							<li><code class="inline">take</code> - returns a list of the first n elements.</li>
+							<li><code class="inline">takeLast</code> - returns a list of the last n elements.</li>
+							<li><code class="inline">takeWhile</code> - returns a list of elements that match the predicate.</li>
+							<li><code class="inline">drop</code> - returns a list of elements after the first n elements.</li>
+							<li><code class="inline">dropLast</code> - returns a list of elements before the last n elements.</li>
+							<li><code class="inline">dropWhile</code> - returns a list of elements after the first element that does not match the predicate.</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+<!--			<section>-->
+<!--				<h3>Exercise</h3>-->
+<!--				<div class="content">-->
+<!--				</div>-->
+<!--			</section>-->
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
@@ -707,65 +1028,635 @@
 					</pre>
 				</div>
 			</section>
+<!--			<section>-->
+<!--				<h3>Exercise</h3>-->
+<!--				<div class="content">-->
+<!--				</div>-->
+<!--			</section>-->
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Operations</h2>
+				<h2>Collection Transformations</h2>
 			</section>
 			<section>
-				<h3>Operations</h3>
-				<div class="summary"></div>
-				<div class="content"></div>
+				<h3>Collection Transformations</h3>
+				<div class="summary">
+					There are many operations that can be performed on collections to transform them in some way which are
+					part of the Kotlin SDK.
+				</div>
+				<div class="content">
+					<p>
+						Some common transformation operations performed on collections include:
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">map</strong>
+							using functions like
+							<code class="inline">map</code>,
+							<code class="inline">flatMap</code>,
+							<code class="inline">mapNotNull</code>,
+							<code class="inline">mapIndexed</code>,
+							<code class="inline">mapIndexedNotNull</code>.
+						</li>
+						<li>
+							<strong class="highlight">filter</strong>
+							using functions like
+							<code class="inline">filter</code>,
+							<code class="inline">filterNot</code>,
+							<code class="inline">filterIndexed</code>,
+							<code class="inline">filterNotNull</code>,
+							<code class="inline">distinct</code>,
+							<code class="inline">distinctBy</code>.
+						</li>
+						<li>
+							<strong class="highlight">sort</strong>
+							using functions like
+							<code class="inline">sorted</code>,
+							<code class="inline">sortedBy</code>,
+							<code class="inline">sortedWith</code>,
+							<code class="inline">sortedDescending</code>,
+							<code class="inline">sortedByDescending</code>,
+							<code class="inline">reversed</code>,
+							<code class="inline">shuffled</code>.
+						</li>
+						<li>
+							<strong class="highlight">group</strong>
+							using functions like
+							<code class="inline">groupBy</code>,
+							<code class="inline">partition</code>,
+							<code class="inline">associate</code>,
+							<code class="inline">associateBy</code>,
+							<code class="inline">associateWith</code>.
+						</li>
+						<li>
+							<strong class="highlight">plus, minus</strong>
+							to add or remove elements from a collection.
+						</li>
+						<li>
+							<strong class="highlight">other transformation</strong>
+							functions like
+							<code class="inline">reduce</code>,
+							<code class="inline">zip</code>,
+							<code class="inline">zipWithNext</code>,
+							<code class="inline">unzip</code>,
+							<code class="inline">flatten</code>,
+							<code class="inline">fold</code>.
+						</li>
+					</ul>
+					<p>
+						All of these transformations return a new collection with the transformation applied,
+						they do not modify the original collection.
+					</p>
+				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Filtering</h2>
+				<h2>Mapping Functions</h2>
+			</section>
+			<section>
+				<h3>mapping functions</h3>
+				<div class="summary">
+					<code class="inline">map</code> is a transformation operation that applies a function to each element in the collection
+					and returns a new collection with the results.
+				</div>
+				<div class="content">
+					<p>
+						The returned collection can be of any type, not necessarily the same as the original collection.
+					</p>
+					<p>
+						There are several map functions available in the Kotlin standard library:
+					</p>
+					<ul>
+						<li>
+							<code class="inline">map</code>
+							- applies a function to each element and returns a list of the results.
+						</li>
+						<li>
+							<code class="inline">mapNotNull</code>
+							- applies a function to each element and returns a list of non-null results.
+						</li>
+						<li>
+							<code class="inline">mapIndexed</code>
+							- applies a function to each element and its index and returns a list of the results.
+						</li>
+						<li>
+							<code class="inline">mapIndexedNotNull</code>
+							- applies a function to each element and its index and returns a list of non-null results.
+						</li>
+						<li>
+							<code class="inline">flatMap</code>
+							- applies a function to each element and returns a list of the results, which are then flattened into a single list.
+						</li>
+						<li>
+							<code class="inline">mapTo, mapIndexedTo, mapNotNullTo, etc ... </code>
+							- applies a function to each element and adds the results to the given destination.
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise #1</h3>
+				<div class="content">
+					<p>
+						Assume you have two lists containig character names. Each list contains characters form different fractions.
+						<br />
+						For example:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val jediNames = listOf("Luke Skywalker", "Yoda", "Obi-Wan Kenobi", "Mace Windu", "Qui-Gon Jinn")
+							val sithNames = listOf("Darth Vader", "Emperor Palpatine", "Darth Maul", "Kylo Ren", "Count Dooku")
+							val rebelNames = listOf("Leia Organa", "Han Solo", "Chewbacca", "C3PO", "R2D2")
+							val imperialNames = listOf("Stormtrooper", "Imperial Officer", "Imperial Guard", "Death Trooper", "TIE Fighter Pilot")
+						</code>
+					</pre>
+					<p>
+						Create the following classes:
+					</p>
+					<ol>
+						<li>
+							<code class="inline">StarWarsCharacter</code> with properties <code class="inline">name: String</code> and <code class="inline">fraction: Fraction</code>.
+						</li>
+						<li>
+							<code class="inline">Fraction</code> enum with values
+							<code class="inline">JEDI</code>,
+							<code class="inline">SITH</code>,
+							<code class="inline">REBEL</code>,
+							<code class="inline">IMPERIAL</code>,
+							etc ...
+						</li>
+					</ol>
+					<p>
+						Write code to convert each character name to a <code class="inline">StarWarsCharacter</code> object.
+					</p>
+					<ul>
+						<li>
+							<sub>
+								<strong>Hint:</strong> Try to create the conversion as extension function on <code class="inline">String</code>,
+								accepting a <code class="inline">Fraction</code> as an argument.
+							</sub>
+						</li>
+					</ul>
+					<p>
+						Finally convert both lists to a list of <code class="inline">StarWarsCharacter</code> objects.
+					</p>
+					<blockquote>
+						Feel free to chose a different theme if you don't like StarWars.
+					</blockquote>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise #2</h3>
+				<div class="content">
+					<p>
+						Create a function that will accept the two lists of <strong>StarWarsCharacter</strong> objects,
+						and will pair each character from the first list with a character from the second list.
+					</p>
+					<ul>
+						<li>To do so, use the <code class="inline">mapIndexed</code> function.</li>
+						<li>The return type should be <code class="inline">List&lt;Pair&ltlStarWarsCharacter, StarWarsCharacter&gt;&gt;</code></li>
+						<li>Make sure to handle the case where characters cannot be paired.</li>
+					</ul>
+					<p>
+						Call the function and save it's return value to a variable. You should now have something like:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							listOf(
+								StarWarsCharacter("Luke Skywalker", Fraction.JEDI) to StarWarsCharacter("Darth Vader", Fraction.SITH),
+								StarWarsCharacter("Yoda", Fraction.JEDI) to StarWarsCharacter("Emperor Palpatine", Fraction.SITH),
+							)
+						</code>
+					</pre>
+					<p>
+						Create a simulated <code>round</code> function to simulate a fight between the characters.
+						You can just pick a random winner.
+						Return match result as a <code class="inline">List&lt;Pair&lt;StarWarsCharacter, Int&gt;&gt;</code>.
+					</p>
+					<p>Example:</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							listOf(
+								StarWarsCharacter("Luke Skywalker", Fraction.JEDI) to 0,
+								StarWarsCharacter("Darth Vader", Fraction.SITH) to 1,
+								// ...
+							)
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise #4</h3>
+				<div class="content">
+					<p>
+						Call the <code>map</code> function on the list of pairs from the previous exercise,
+						use the <code class="inline">round</code> and save the result to a variable.
+					</p>
+					<p>
+						Update the code so that each character pair performs 3 matches. This will give you
+						<br />
+						<code class="inline">List&lt;List&lt;Pair&lt;Int, List&lt;Pair&lt;StarWarsCharacter, Int&gt;&gt;&gt;&gt;&gt;</code>
+						<br />
+						where the data structure reflects
+						<br />
+						<code class="inline">listOf(roundNumber to listOf(character to score))</code>.
+					</p>
+					<p>
+						The result should look like this:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val exampleResult: List&lt;List&lt;Pair&lt;Int, List&lt;Pair&lt;StarWarsCharacter, Int&gt;&gt;&gt;&gt;&gt; = listOf(
+								listOf(
+									1 to listOf(
+										StarWarsCharacter("Luke Skywalker", Fraction.JEDI) to 0,
+										StarWarsCharacter("Darth Vader", Fraction.SITH) to 1,
+									),
+									2 to listOf(
+										StarWarsCharacter("Luke Skywalker", Fraction.JEDI) to 1,
+										StarWarsCharacter("Darth Vader", Fraction.SITH) to 0
+									),
+									// 3 to listOf(...)
+								),
+								listOf(
+									1 to listOf(
+										StarWarsCharacter("Yoda", Fraction.JEDI) to 0,
+										StarWarsCharacter("Emperor Palpatine", Fraction.SITH) to 1
+									),
+									2 to listOf(
+										StarWarsCharacter("Yoda", Fraction.JEDI) to 0,
+										StarWarsCharacter("Emperor Palpatine", Fraction.SITH) to 1
+									),
+									// 3 to listOf(...)
+								),
+								// listOf(...)
+							)
+						</code>
+					</pre>
+					<p>
+						Extract the code into a function. We might use it later. Again, it might be nice to create it
+						as extension function.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise #5</h3>
+				<div class="content">
+					<p>
+						Create another function which will perform a match called <code class="inline">matchWithFlatResults</code>.
+						This function will perform the same thing as <code class="inline">match</code> except it will
+						return a flat list of results.
+						<br />
+						<code class="inline">List&lt;Pair&lt;StarWarsCharacter, Int&gt;&gt;</code>
+						<br />
+						where the data structure reflects
+						<br />
+						<code class="inline">listOf(character to score)</code>.
+					</p>
+					<p>
+						The result should look like this:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val exampleResult: List&lt;Pair&lt;StarWarsCharacter, Int&gt;&gt; = listOf(
+								StarWarsCharacter("Luke Skywalker", Fraction.JEDI) to 0,
+								StarWarsCharacter("Darth Vader", Fraction.SITH) to 1,
+								StarWarsCharacter("Luke Skywalker", Fraction.JEDI) to 1,
+								StarWarsCharacter("Darth Vader", Fraction.SITH) to 0
+								StarWarsCharacter("Yoda", Fraction.JEDI) to 0,
+								StarWarsCharacter("Emperor Palpatine", Fraction.SITH) to 1
+								StarWarsCharacter("Yoda", Fraction.JEDI) to 0,
+								StarWarsCharacter("Emperor Palpatine", Fraction.SITH) to 1
+								// ...
+							)
+						</code>
+					</pre>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Filtering Functions</h2>
 			</section>
 			<section>
 				<h3>Filtering</h3>
 				<div class="summary">
-
+					Kotlin SDK again provides us with a rich set of functions for filtering collections.
+					Like map, filter returns a new collection with the elements that satisfy a predicate.
 				</div>
 				<div class="content">
-
+					<p>
+						Generally, the returned collection is the same type as the original collection.
+					</p>
+					<p>
+						Some of the filter functions available in the Kotlin standard library include:
+					</p>
+					<ul>
+						<li>
+							<code class="inline">filter</code>
+							- filters elements based on a predicate and returns a list of elements that satisfy the predicate.
+						</li>
+						<li>
+							<code class="inline">filterNot</code>
+							- filters elements based on a predicate and returns a list of elements that do not satisfy the predicate.
+						</li>
+						<li>
+							<code class="inline">filterNotNull</code>
+							- filters out null elements and returns a list of non-null elements.
+						</li>
+						<li>
+							<code class="inline">filterIndex</code>
+							- filters elements based on a predicate with index and returns a list of elements that satisfy the predicate.
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="content">
+					<p>
+						Using code from the previous exercise, create a list of characters for each fraction.
+					</p>
+					<p>
+						Example:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val characters = listOf(
+								StarWarsCharacter("Luke Skywalker", Fraction.JEDI),
+								StarWarsCharacter("Yoda", Fraction.JEDI),
+								StarWarsCharacter("Obi-Wan Kenobi", Fraction.JEDI),
+								StarWarsCharacter("Mace Windu", Fraction.JEDI),
+								StarWarsCharacter("Qui-Gon Jinn", Fraction.JEDI),
+								StarWarsCharacter("Darth Vader", Fraction.SITH),
+								StarWarsCharacter("Emperor Palpatine", Fraction.SITH),
+								StarWarsCharacter("Darth Maul", Fraction.SITH),
+								StarWarsCharacter("Kylo Ren", Fraction.SITH),
+								StarWarsCharacter("Count Dooku", Fraction.SITH),
+								StarWarsCharacter("Leia Organa", Fraction.REBEL),
+								StarWarsCharacter("Han Solo", Fraction.REBEL),
+								StarWarsCharacter("Chewbacca", Fraction.REBEL),
+								StarWarsCharacter("C3PO", Fraction.REBEL),
+								StarWarsCharacter("R2D2", Fraction.REBEL),
+								StarWarsCharacter("Stormtrooper", Fraction.IMPERIAL),
+								StarWarsCharacter("Imperial Officer", Fraction.IMPERIAL),
+								StarWarsCharacter("Imperial Guard", Fraction.IMPERIAL),
+								StarWarsCharacter("Death Trooper", Fraction.IMPERIAL),
+								StarWarsCharacter("TIE Fighter Pilot", Fraction.IMPERIAL)
+							)
+						</code>
+					</pre>
+					<p>
+						Filter the collection to get only the characters:
+					</p>
+					<ol>
+						<li>All characters belonging to <code class="inline">JEDI</code> or <code class="inline">REBEL</code> fraction</li>
+						<li>All characters NOT belonging to <code class="inline">JEDI</code> or <code class="inline">REBEL</code> fraction</li>
+					</ol>
 				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Transformations</h2>
+				<h2>Grouping and Sorting Functions</h2>
 			</section>
 			<section>
-				<h3>Transformations</h3>
+				<h3>Grouping</h3>
 				<div class="summary">
-
+					Given a collection, you can group elements based on a key.
 				</div>
 				<div class="content">
+					<p>
+						The result of grouping operations is a map where the key is the result of the selector function and the value is a list of elements.
+					</p>
+					<p>
+						Some of the grouping functions available in the Kotlin SDK include:
+					</p>
+					<ul>
+						<li>
+							<code class="inline">groupBy</code>
+							- groups elements by the result of the given selector function.
+						</li>
+						<li>
+							<code class="inline">partition</code>
+							- splits the collection into a pair of lists based on a predicate.
+						</li>
+						<li>
+							<code class="inline">associate</code>
+							- creates a map from the elements of the collection.
+						</li>
+						<li>
+							<code class="inline">associateBy</code>
+							- creates a map from the elements of the collection using the provided key selector function.
+						</li>
+						<li>
+							<code class="inline">associateWith</code>
+							- creates a map from the elements of the collection using the provided value selector function.
+						</li>
+					</ul>
+					<div class="row">
+						<div class="column">
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									val priceList = listOf(
+										"Mango" to 20,
+										"Apple" to 25,
+										"Banana" to 10,
+										"Coconut" to 15,
+										"Pineapple" to 30,
+										"Orange" to 5,
+										"Grapes" to 40
+									)
 
+									val priceCategory = priceList.groupBy { (_, price) ->
+										when (price) {
+											in 0..10 -> "Cheap"
+											in 11..20 -> "Affordable"
+											in 21..30 -> "Expensive"
+											else -> "Very Expensive"
+										}
+									}
+								</code>
+							</pre>
+						</div>
+						<div class="column">
+							<p>
+								Result of this will be:
+							</p>
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									Affordable=[(Mango, 20), (Coconut, 15)]
+									Expensive=[(Apple, 25), (Pineapple, 30)]
+									Cheap=[(Banana, 10), (Orange, 5)]
+									Very Expensive=[(Grapes, 40)]
+								</code>
+							</pre>
+						</div>
+					</div>
 				</div>
 			</section>
-		</section>
-		<section>
-			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Ranges and Progressions</h2>
-			</section>
 			<section>
-				<h3>Ranges and Progressions</h3>
+				<h3>Sorting</h3>
 				<div class="summary">
-
+					Collections can be sorted in various ways using the Kotlin SDK.
 				</div>
 				<div class="content">
+					<ul>
+						<li>
+							<code class="inline">sorted</code>
+							- sorts elements in natural order.
+						</li>
+						<li>
+							<code class="inline">sortedBy</code>
+							- sorts elements by the result of the given selector function.
+						</li>
+						<li>
+							<code class="inline">sortedWith</code>
+							- sorts elements using the given comparator.
+						</li>
+						<li>
+							<code class="inline">sortedDescending</code>
+							- sorts elements in reverse natural order.
+						</li>
+						<li>
+							<code class="inline">sortedByDescending</code>
+							- sorts elements by the result of the given selector function in reverse order.
+						</li>
+						<li>
+							<code class="inline">reversed</code>
+							- reverses the order of elements in the collection.
+						</li>
+						<li>
+							<code class="inline">shuffled</code>
+							- shuffles the elements in the collection.
+						</li>
+					</ul>
+					<p>
+						Examples:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+								val priceList = listOf(
+									"Mango" to 20,
+									"Apple" to 25,
+									"Banana" to 10,
+									"Coconut" to 15,
+									"Pineapple" to 30,
+									"Orange" to 5,
+									"Grapes" to 40
+								)
 
+								priceList.sortedBy { (_, price) -> price }
+
+								priceList.sortedByDescending { (_, price) -> price }
+
+								priceList.sortedWith(
+									compareBy(
+										{ it.first },
+										{ it.second }
+									)
+								)
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="content">
+					<p>
+						Given code from previous lessons, create light and dark side fractions collections and perform a matchWithFlatResults.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val lightSide = starWarsCharacters.filter { it.fraction in setOf(Fraction.JEDI, Fraction.REBEL) }
+							val darkSide = starWarsCharacters.filterNot { it.fraction in setOf(Fraction.JEDI, Fraction.REBEL) }
+
+							val results = createPairs(
+								fraction1 = lightSide,
+								fraction2 = darkSide
+							).matchWithFlatResults()
+						</code>
+					</pre>
+					<p>
+						User <code class="inline">groupBy</code> and <code class="inline">sortedBy</code>
+						functions to group and sort the results by the character and create a scoreboard from highest to lowest score.
+					</p>
+					<p>
+						Of course, you may use other functions you know as well.
+					</p>
 				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Sequences</h2>
+				<h2>Other Transformation Functions</h2>
 			</section>
 			<section>
-				<h3>Sequences</h3>
+				<h3>Other Transformation Functions</h3>
+				<!--				<div class="summary">-->
+				<!--					TODO-->
+				<!--				</div>-->
+				<div class="content">
+					<p>
+						There are even more useful transformation functions available in the Kotlin SKD. Some worth mentioning are:
+					</p>
+					<ul>
+						<li>
+							<code class="inline">reduce</code>
+							- combines elements of a collection into a single value.
+						</li>
+						<li>
+							<code class="inline">zip</code>
+							- combines two collections into a single collection of pairs.
+						</li>
+						<li>
+							<code class="inline">zipWithNext</code>
+							- combines each element with the next element in the collection.
+						</li>
+						<li>
+							<code class="inline">unzip</code>
+							- splits a collection of pairs into two collections.
+						</li>
+						<li>
+							<code class="inline">flatten</code>
+							- flattens a collection of collections into a single collection.
+						</li>
+						<li><code class="inline">fold</code>
+							- combines elements of a collection into a single value starting with an initial value.
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="content">
+					<ol>
+						<li>
+							Remember how we used <code class="inline">mapIndexed</code> to create a list of pairs of characters?
+							Try using <code class="inline">zip</code> instead.
+						</li>
+						<li>
+							Try <code class="inline">unzip</code> the list of pairs into two separate lists.
+							And why not try <code class="inline">zipWithNext</code>? Just for fun.
+						</li>
+						<li>
+							Try to use <code class="inline">groupBy</code>, <code class="inline">map</code> and <code class="inline">reduce</code>
+							to create the scoreboard by character.
+						</li>
+						<li>
+							Try use <code class="inline">fold</code> to create the scoreboard by fraction.
+						</li>
+					</ol>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Sequence</h2>
+			</section>
+			<section>
+				<h3>Sequence</h3>
 				<div class="summary">
 					Kotlin standard library provides a <span class="highlight">Sequence</span> additional to collections.
 				</div>
@@ -785,7 +1676,18 @@
 						On the other hand, sequences may be less efficient for small collections or simple operations.
 					</p>
 					<p>
-						Sequences offer the smilar functions as collections, such as <code class="inline">forEach</code>, <code class="inline">map</code>, <code class="inline">filter</code>, etc.
+						Sequences offer the similar functions as collections, such as <code class="inline">forEach</code>, <code class="inline">map</code>, <code class="inline">filter</code>, etc.
+					</p>
+					<p>
+						The main difference is that when working with sequences, we distinguish between <span class="highlight">intermediate and terminal operations</span>,
+						where intermediate operations return a new sequence and terminal operations return a result.
+					</p>
+					<p>
+						What that means is that <span class="highlight">when you call a terminal operation, all intermediate operations are executed and the collection is so called "consumed"</span>.
+					</p>
+					<p>
+						Keep this in mind because if you call a terminal operation prematurely, you may either end up with unexpected results,
+						or at least with a performance hit.
 					</p>
 				</div>
 			</section>
@@ -825,7 +1727,11 @@
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Practice</h2>
+				<h2>Exercise</h2>
+				<em>↓</em>
+			</section>
+			<section>
+
 			</section>
 		</section>
 	</div>

@@ -448,6 +448,14 @@ section[data-background-gradient="var(--kotlin-gradient)"] * {
   background: yellow;
 }
 
+.reveal ol, .reveal ul {
+  margin-left: 40px;
+}
+
+.reveal li {
+  padding: 4px;
+}
+
 :root {
   --kotlin-color-1: rgb(177, 37, 234);
   --kotlin-color-2: rgb(226, 68, 98);

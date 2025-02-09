@@ -1,37 +1,5 @@
 package com.motycka.edu.lesson05.interfaces
 
-/*
-Update the Character, Warrior and Sorcerer classes from the previous exercise, instead of open class make in abstract class.
-
-Create new interfaces Defender with the following methods and properties:
-- val name: String
-- var stamina: Int
-- val defensePower: Int
-- fun defend(attackPower: Int): Int
-
-Have the Warrior class implement the Defender interface:
-- Implement the defend function to reduce the attackPower by the defensePower and decrease the stamina by 1
-- If the warrior has stamina <= 0, print "$name is too tired to defend" and return the attackPower
-- If the warrior has stamina > 0, print "$name raises shield and defends against $defensePower damage" and return attackPower - defensePower
-- Override the receiveAttack function to call the defend function and then call the super.receiveAttack function with the result
-    override fun receiveAttack(attackPower: Int) {
-        super.receiveAttack(defend(health - attackPower))
-    }
-
-Create new interfaces Healer with the following methods and properties:
-- var mana: Int
-- val healingPower: Int
-- fun heal()
-
-Have the Sorcerer class implement the Healer interface:
-- Implement the heal function to increase the health by the healingPower and decrease the mana by 1
-- If the sorcerer has mana <= 0, print "$name is out of mana" and do not heal
-- If the sorcerer has mana > 0, print "$name heals self to $health health" and increase the health by healingPower
-- Update the attack function to call heal function before attacking
-
-
-Update the test code to use the new classes and properties and run the match function.
- */
 fun main() {
     match(
         character1 = Warrior(
@@ -51,7 +19,7 @@ fun main() {
     )
 }
 
-internal fun match(character1: Character, character2: Character) {
+internal fun match(character1: Character, character2: Character): Character? {
     var round = 0
     while (character1.health > 0 && character2.health > 0 && round < 10) {
         round++
@@ -60,10 +28,19 @@ internal fun match(character1: Character, character2: Character) {
         character2.attack(character1)
     }
 
-    when {
-        character1.health <= 0 && character2.health > 0 -> println("\n${character2.name} is the victor in round $round!")
-        character2.health <= 0 && character1.health > 0 -> println("\n${character2.name} is the victor in round $round!")
-        else -> println("\nIt's a draw!")
+    return when {
+        character1.health <= 0 && character2.health > 0 -> {
+            println("\n${character2.name} is the victor in round $round!")
+            character2
+        }
+        character2.health <= 0 && character1.health > 0 -> {
+            println("\n${character1.name} is the victor in round $round!")
+            character1
+        }
+        else -> {
+            println("\nIt's a draw!")
+            null
+        }
     }
 }
 
@@ -163,7 +140,7 @@ internal class Sorcerer(
             mana <= 0 -> println("$name out of mana")
             else -> {
                 println("$name casts a spell at ${target.name}")
-                target.health -= attackPower
+                target.receiveAttack(attackPower)
                 mana--
             }
         }
