@@ -28,9 +28,13 @@ fun main() {
     val lightSide = starWarsCharacters.filter { character ->
         character.fraction in setOf(Fraction.JEDI, Fraction.REBEL)
     }
+    println("\nLight Side:")
+    lightSide.forEach(::println)
 
     val darkSide = starWarsCharacters.filterNot { character ->
         character.fraction in setOf(Fraction.JEDI, Fraction.REBEL)
     }
+    println("\nDark Side:")
+    darkSide.forEach(::println)
 
 }
