@@ -110,7 +110,6 @@ internal class Warrior(
     override fun defend(attackPower: Int): Int {
         return if (stamina > 0) {
             println("$name raises shield and defends against $defensePower damage")
-            stamina--
             attackPower - defensePower
         } else {
             println("$name is too tired to defend")
@@ -157,7 +156,6 @@ internal class Sorcerer(
                     health += healingPower
                 }
                 println("$name heals self to $health health")
-                mana--
             }
         }
     }

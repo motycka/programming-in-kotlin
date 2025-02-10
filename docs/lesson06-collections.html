@@ -1029,11 +1029,6 @@
 					</pre>
 				</div>
 			</section>
-<!--			<section>-->
-<!--				<h3>Exercise</h3>-->
-<!--				<div class="content">-->
-<!--				</div>-->
-<!--			</section>-->
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
@@ -1697,25 +1692,25 @@
 			<section>
 				<h3>Creating Sequences</h3>
 				<div class="content">
-					<strong>From elements</strong><br />
+					From elements:<br />
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
 							val sequence = sequenceOf(1, 2, 3, 4, 5)
 						</code>
 					</pre>
-					<strong>From an Iterable</strong><br />
+					From an Iterable:<br />
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
 							val sequence = listOf(1, 2, 3, 4, 5).asSequence()
 						</code>
 					</pre>
-					<strong>From a function</strong><br />
+					From a function:<br />
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
 							val sequence = generateSequence(1) { it + 1 }
 						</code>
 					</pre>
-					<strong>From chunks</strong><br />
+					From chunks:<br />
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
 							val sequence = sequence {
@@ -1730,11 +1725,104 @@
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Exercise</h2>
+				<h2>Practice</h2>
 				<em>↓</em>
 			</section>
 			<section>
-
+				<h3>Practice: part 1</h3>
+				<div class="summary">
+					Going back to lesson 5, extend the fantasy game model as follows.
+				</div>
+				<div class="content">
+					<p>
+						<strong>I will check your solutions tomorrow!</strong>
+					</p>
+					<ol>
+						<li>
+							Create new class <strong>Match</strong> with properties:
+							<ul>
+								<li><code class="inline">rounds: Int</code></li>
+								<li><code class="inline">challenger: Character</code></li>
+								<li><code class="inline">opponent: Character</code></li>
+							</ul>
+						</li>
+						<li>
+							And a function <code class="inline">fight</code> to the <strong>Match</strong> class
+							that will simulate the match and return the winner as <code class="inline">Character?</code>.
+							<br />
+							You can use code from your previous solution,
+							and use the <code class="inline">rounds</code> variable set number of rounds.
+						</li>
+						<li>
+							Update your <strong>main</strong> function to create a <strong>Match</strong> object and execute the fight.
+						</li>
+					</ol>
+				</div>
+				<br />
+				<br />
+				<br />
+				<em>Continue to part 2 ↓</em>
+			</section>
+			<section>
+				<h3>Practice: part 2</h3>
+				<div class="content">
+					<ol>
+						<li>
+							Create a new interface <code class="inline">Recoverable</code> with with two functions:
+							<ul>
+								<li><code class="inline">beforeRounds</code></li>
+								<li><code class="inline">afterRound</code></li>
+							</ul>
+						</li>
+						<li>
+							Extend <strong>Character</strong> with the <code class="inline">Recoverable</code> interface.
+						</li>
+						<li>
+							Update <strong>Warrior</strong> and <strong>Sorcerer</strong> classes to implement the <code class="inline">Recoverable</code> interface.
+							<ul>
+								<li>
+									<code class="inline">beforeRounds</code> should increase the <code class="inline">stamina</code> and <code class="inline">mana</code> by 1.
+								</li>
+								<li>
+									<code class="inline">afterRound</code> - should do nothing for now.
+								</li>
+							</ul>
+						</li>
+						<li>
+							Update <strong>Match</strong> <code class="inline">fight</code> function to call <code class="inline">beforeRounds</code> and <code class="inline">afterRound</code> functions.
+						</li>
+					</ol>
+				</div>
+				<br />
+				<br />
+				<br />
+				<em>Continue to part 3 ↓</em>
+			</section>
+			<section>
+				<h3>Practice: part 3</h3>
+				<div class="content">
+					<ol>
+						<li>
+							Create a new enum class <code class="inline">CharacterLevel</code> with 10 levels.
+							The enum should have points property which will represent the level points which you can distribute to the character attributes.
+							Chose the number of points you want to distribute.
+						</li>
+						<li>
+							Update the <strong>Character</strong> class to have a new abstract property <code class="inline">level</code> of type <code class="inline">CharacterLevel</code>.
+						</li>
+						<li>
+							Add <strong>level</strong> to the <strong>Warrior</strong> and <strong>Sorcerer</strong> classes.
+						</li>
+						<li>
+							Add a constructor validation to each character class to check if the level points are distributed correctly
+							(not exceeding maximum level points).
+						</li>
+					</ol>
+				</div>
+				<br />
+				<br />
+				<br />
+				<em>Feel free to refactor your code with all the new knowledge.</em>
 			</section>
 		</section>
 	</div>
