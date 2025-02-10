@@ -80,9 +80,3 @@ internal class Sorcerer(
     health = health,
     attackPower = attackPower,
 )
-
-internal class Archer(name: String): Character(
-    name = name,
-    health = 100,
-    attackPower = 10
-)
