@@ -39,9 +39,9 @@ fun main() {
         fraction2 = imperialNames.toFractionCharacters(Fraction.IMPERIAL) + sithNames.toFractionCharacters(Fraction.SITH)
     )
 
-    val result = pairs.match().onEach(::println)
+    pairs.match().onEach(::println)
 
-    val flatResult = pairs.matchWithFlatResults().onEach(::println)
+    pairs.matchWithFlatResults().onEach(::println)
 }
 
 fun List<String>.toFractionCharacters(
