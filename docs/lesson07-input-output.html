@@ -64,11 +64,16 @@
 			</section>
 			<section>
 				<h3>Exercise</h3>
-				<div class="summary">
-					TODO
-				</div>
 				<div class="content">
-					TODO
+					<p>
+						Update your main method for one of the previous exercises to accept number of rounds as a command line argument.
+					</p>
+					<p>
+						If the number of rounds is not provided, ask the user to enter it.
+					</p>
+					<p>
+						Make sure you handle invalid inputs!
+					</p>
 				</div>
 			</section>
 		</section>
@@ -129,618 +134,579 @@
 						Files in these directories are included in the application's classpath and can be accessed using
 						<strong>ClassLoader</strong> or <strong>Class</strong> methods.
 					</p>
-				</div>
+					<ul style="font-size: 70%">
+						<li>In this example, we are using <code class="inline">object {}.javaClass::getResource</code> to obtain a resource.</li>
+						<li>We are calling <code class="inline">getURI</code> on the resource to get its full path.</li>
+						<li>
+							Since the resource may not exist, we are obtaining the URI using null safe operator <code class="inline">?</code> and checking if the
+							returned value is not null with the <code class="inline">requireNotNull</code> function.
+						</li>
+						<li>
+							We use <code class="inline">File</code> class to work with the actual file.
+						</li>
+						<li>
+							It is always a good idea to do all this in a <code class="inline">try-catch-finally</code> block to make sure
+							we handle all IO errors and free system resources should they be raised.
+						</li>
+					</ul>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val fileName = "characters.csv"
 
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						// TODO
-					</code>
-				</pre>
-				<!--				<p>-->
-				<!--					The URL will look similar to this: <br />-->
-				<!--					<code>file:/Users/monikaprotivova/IdeaProjects/HarbourSpace/programming-in-java/m1-java-basics/build/resources/main/timezone-cities.txt</code>-->
-				<!--				</p>-->
-			</section>
-			<section>
-				<h3>Exercise</h3>
-				<div class="summary">
-					TODO
-				</div>
-				<div class="content">
-					TODO
+							val resource = object {}.javaClass.getResource("characters.csv")
+
+							val uri = requireNotNull(resource?.toURI()) {
+								"$fileName file not found"
+							}
+
+							try {
+								val file = File(uri)
+								// work with resources
+							} catch (e: IOException) {
+								// handle ecxeptions
+							} finally {
+								// close resources
+							}
+						</code>
+					</pre>
 				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Working with Files</h2>
-				<em>java.io</em><br />
+				<em>kotlin.io & java.io</em><br />
 			</section>
 			<section>
-				<h3>java.io.File</h3>
-				<p>
-					<strong>java.io.File</strong> is a Java library that provides a way to work with files and directories.
-				</p>
-				<p>
-					TODO why we need to know ...
-				</p>
-				<pre>FileExample.java
-					<code data-trim data-noescape data-line-numbers=|7|9-10|14|17|19-20|23-25| class="hljs kotlin">
-						public class FileExample {
-
-							public static void main(String[] args) {
-								try { // toURI() may throw URISyntaxException
-
-									// get resource URL
-									URL url = FileExample.class.getClassLoader().getResource("timezone-cities.txt");
-
-									if (url == null) {
-										System.out.println("File not found!");
-
-									} else {
-										// convert URL to URI
-										URI uri = url.toURI();
-
-										// create file from URI
-										File file = new File(uri);
-
-										System.out.println("File exists: " + file.exists());
-										System.out.println("File path: " + file.getAbsolutePath());
-									}
-
-								} catch (URISyntaxException e) {
-									throw new RuntimeException(e);
-								}
-							}
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h4>java.io.File</h4>
-				<hr />
-				<p>
-					If you want to work with absolute path, you would use ...
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							File file = new File("/path/to/file.txt");
-					</code>
-				</pre>
-				<hr />
-				<p>
-					Some other methods you might find useful:
-				</p>
-				<ul>
-					<li>exists()</li>
-					<li>getName(), getPath(), getAbsolutePath(), ...</li>
-					<li>isFile(), isDirectory()</li>
-					<li>canRead(), canWrite(), canExecute()</li>
-					<li>delete(), deleteOnExit()</li>
-				</ul>
-				<!--				<pre>FileExample.java-->
-				<!--					<code data-trim data-noescape data-line-numbers=|7|9-10|14|17|19-20|23-25| class="hljs kotlin">-->
-				<!--						System.out.println("Is file: " + file.isFile());-->
-				<!--						System.out.println("Is directory: " + file.isDirectory());-->
-				<!--						System.out.println("Can read: " + file.canRead());-->
-				<!--						System.out.println("Can write: " + file.canWrite());-->
-				<!--						System.out.println("Can execute: " + file.canExecute());-->
-				<!--					</code>-->
-				<!--				</pre>-->
-			</section>
-			<section>
-				<h4>java.io.File</h4>
-				<p>
-					You are not limited just to reading existing files.<br />
-					You can also create, delete, rename, and list files and directories.
-				</p>
-				<pre>NewFileExample.java
-					<code data-trim data-noescape data-line-numbers="|31-42|17-29|3-15|" class="hljs kotlin">
-						public class NewFileExample {
-
-							public static void main(String[] args) {
-								try {
-									File directory = createDirectoryIfNotExists("data"); // relative path
-									File file = createFileIfNotExists("new-file.txt");
-
-									file.renameTo(new File("renamed-file.txt"));
-									file.delete();
-									directory.delete();
-
-								} catch (IOException | IllegalStateException e) {
-									throw new RuntimeException(e); // handle exceptions that could have been thrown
-								}
-							}
-
-							private static File createFileIfNotExists(String path) throws IOException {
-								File file = new File(path);
-
-								if (file.exists()) {
-									System.out.println("File already exists: " + file.getAbsolutePath());
-								} else {
-									if (file.createNewFile()) {
-										System.out.println("File created: " + file.getAbsolutePath());
-									}
-								}
-
-								return file;
-							}
-
-							private static File createDirectoryIfNotExists(String path) throws IllegalStateException {
-								File directory = new File(path);
-
-								if (directory.exists()) {
-									System.out.println("Directory already exists: " + directory.getAbsolutePath());
-								} else {
-									if (directory.mkdir()) {
-										System.out.println("Directory created: " + directory.getAbsolutePath());
-									} else {
-										throw new IllegalStateException("Directory not created: " + directory.getAbsolutePath());
-									}
-								}
-
-								return directory;
-							}
-
-						}
-					</code>
-				</pre>
+				<h3>Working with Files</h3>
+				<div class="summary">
+					Kotlin provides a <strong>kotlin.io</strong> library of functions to work with files which is actually an extension of Java libraries.
+				</div>
+				<div class="content">
+					<p>
+						This is where it gets a little messy. When we work with files in Kotlin, we need to understand a little bit about Java history.
+					</p>
+					<p>
+						Java comes with two libraries for working with files and directories:
+					</p>
+					<ul>
+						<li>
+							<strong>java.io</strong> <em>(legacy)</em><br />
+							Provides classes for reading and writing files, and working with directories.
+							This library contains the <code class="inline">File</code> class that represents a file or directory path.
+						</li>
+						<li>
+							<strong>java.nio.file</strong> <em>("modern")</em><br />
+							Provides a more modern way to work with files and directories and was introduced in Java 7.
+						</li>
+					</ul>
+					<p>
+						Kotlin also provides its own functions for working with files in the <strong>kotlin.io</strong> package.
+						These functions are implemented as extension functions on top of the Java libraries,
+						specifically the <code class="inline">File</code> class.
+					</p>
+				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Reading Files</h2>
-				<em>InputStream</em>
 			</section>
 			<section>
-				<h3>InputStream and OutputStream</h3>
-				<p>
-					We have learned how to work with files and directories, but we have not yet learned how to read from and write to them.
-				</p>
-				<p>
-					For this, we will use <strong>InputStream</strong> and <strong>OutputStream</strong> classes.
-					These classes are used to read and write data from and to files, network connections, or other I/O sources.
-				</p>
+				<h3>Reading Files</h3>
+				<div class="content">
+					<p>
+						Kotlin provides a whole library of <code class="inline">File</code> extension functions for working with files.
+						Few to mentions are:
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">readText</strong><br />
+							<em>Reads the entire content of the file as a String.</em>
+						</li>
+						<li>
+							<strong class="highlight">readLines</strong><br />
+							<em>Reads the file content as a list of lines.</em>
+						</li>
+						<li>
+							<strong class="highlight">forEachLine</strong><br />
+							<em>Reads the file line by line and processes each line with a given action.</em>
+						</li>
+						<li>
+							<strong class="highlight">readBytes</strong><br />
+							<em>Reads the entire content of the file as a byte array.</em>
+						</li>
+						<li>
+							<strong class="highlight">copyTo</strong><br />
+							<em>Copies the file to the specified destination.</em>
+						</li>
+					</ul>
+				</div>
 			</section>
 			<section>
-				<h3>InputStream</h3>
-				<em>Reading files</em>
-				<hr />
-				<p>
-					The basic usage would be like this ...
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						InputStream inputStream = FileExample.class.getClassLoader().getResourceAsStream("timezone-cities.txt");
-					</code>
-				</pre>
-				<p>
-					However, in reality there is little more that needs to be done in order to handle streams correctly.
-				</p>
-				<hr />
-				<p>
-					<strong>
-						One important thing to keep in mind when working with I/O streams is that they need to be closed after use to release resources.
-					</strong>
-				</p>
-				<hr />
+				<h3>Reading Files</h3>
+				<div class="summary">
+					Reading files in Kotlin is straightforward, but we still need to be mindful of few possible problems.
+				</div>
+				<div class="content">
+					<div class="row">
+						<div class="column">
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									import mu.KotlinLogging
+									import java.io.File
+									import java.io.IOException
+
+									private val logger = KotlinLogging.logger {}
+
+									fun main() {
+
+										val fileName = "characters.csv"
+										val resource = object {}.javaClass.getResource("characters.csv")
+										val uri = requireNotNull(resource?.toURI()) { "$fileName file not found"}
+
+										try {
+											val file = File(path)
+
+											if (file.exists()) {
+												logger.info { "Reading file: ${file.absolutePath}" }
+												file.readLines().forEach {
+													logger.info { it }
+												}
+											} else {
+												error("characters.csv file not found")
+											}
+
+										} catch (e: IOException) {
+											error("Error reading the file: ${e.message}")
+										} finally {
+											logger.info("File reading finished")
+										}
+									}
+								</code>
+							</pre>
+						</div>
+						<div class="column">
+							<ul>
+								<li>
+									We are using <code class="inline">File</code> class to create a file object from a resource (URI).
+								</li>
+								<li>
+									We are checking if the URI exists, since the class loader might not find the resource.
+								</li>
+								<li>
+									We are also checking if the file exists, since the file might have been deleted or moved.
+								</li>
+								<li>
+									We are surrounded the file reading code with <code class="inline">try-catch-finally</code> block.
+									<ul>
+										<li>It is a good idea to catch IOException when working with files.</li>
+										<li>It is also a good idea to have a <code class="inline">finally</code> block when working with system resources such as files.</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</section>
 			<section>
-				<h4>InputStream</h4>
-				<em>
-					Let's look at technically correct, but suboptimal way of reading from a file first ...
-				</em>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class LegacyInputStreamExample {
+				<h3>Reading Files</h3>
+				<div class="summary">
+					Buffered Reader
+				</div>
+				<div class="content">
+					<p>
+						In addition to file reading functions mentioned, Kotlin also provides <strong>BufferedReader</strong> class,
+						which you can obtain by calling <code class="inline">bufferedReader()</code> on a file object.
+					</p>
+					<p>
+						The purpose of <strong>bufferedReader</strong> is to provide efficient reading text data by buffering input.
+						This reduces the number of I/O operations, which can significantly improve performance,
+						especially when dealing with large files.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import java.io.File
+							import java.io.IOException
 
-							private static final String PATH = "timezone-cities.txt";
-
-							public static void main(String[] args) {
-
-								// create null input stream
-								InputStream inputStream = null;
-
-								// optionally, create StringBuilder to append the content of the file
-								StringBuilder fileContent = new StringBuilder();
+							fun main() {
+								val path = "example.txt"
 
 								try {
-									// using class loader anf getResourceAsStream to get resource as input stream
-									inputStream = FileExample.class.getClassLoader().getResourceAsStream(PATH);
+									val file = File(path)
 
-									if (inputStream == null) {
-										System.out.println("File not found!");
-
-									} else {
-										// reading the input stream byte by byte
-										int data = inputStream.read();
-										while(data != -1) {
-											data = inputStream.read();
-
-											// print the content of the file
-											System.out.print((char) data);
-
-											// or we can use StringBuilder to append the content of the file
-											fileContent.append((char) data);
+									// Reading from the file using bufferedReader
+									file.bufferedReader().use { reader ->
+										reader.forEachLine { line ->
+											println(line)
 										}
 									}
 
-								} catch (IOException e) {
-									throw new RuntimeException(e);
-								} finally {
-									if (inputStream != null) {
-										try {
-											// close the input stream in finally block, this is IMPORTANT!
-											inputStream.close();
-										} catch (IOException e) {
-											System.out.println("Error closing the input stream!");
-										}
-									}
+								} catch (e: IOException) {
+									println("An error occurred: ${e.message}")
 								}
-
-								// this will print the content of the file we appended using the StringBuilder
-								System.out.println(fileContent);
 							}
-
-						}
-					</code>
-				</pre>
-				<blockquote>
-					What is wrong with this code?
-				</blockquote>
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
-				<h4>InputStream</h4>
-				<em>
-					A better way to read from a file ...
-				</em>
-				<hr />
-				<p>
-					Using try-with-resources statement, which was introduced in Java 7.
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class InputStreamExample {
-
-							private static final String PATH = "timezone-cities.txt";
-
-							public static void main(String[] args) {
-
-								// optionally, create StringBuilder to append the content of the file
-								StringBuilder fileContent = new StringBuilder();
-
-								// defining input stream as part of try-with-resources
-								try(InputStream inputStream = FileExample.class.getClassLoader().getResourceAsStream(PATH)) {
-
-									if (inputStream == null) {
-										System.out.println("File not found!");
-
-									} else {
-										// reading the input stream byte by byte
-										int data = inputStream.read();
-										while(data != -1) {
-											data = inputStream.read();
-
-											// print the content of the file
-											System.out.print((char) data);
-
-											// or we can use StringBuilder to append the content of the file
-											fileContent.append((char) data);
-										}
-									}
-
-								} catch (IOException e) {
-									throw new RuntimeException(e);
-								}
-								// we don't need a finally block, because try-with-resources will close the input stream for us
-
-								System.out.println(fileContent);
-							}
-
-						}
-					</code>
-				</pre>
+				<h3>Exercise</h3>
+				<div class="summary">
+					Load characters from a file.
+				</div>
+				<div class="content">
+					<p>
+						Create a csv file containing Star Wars characters with their faction.
+						It may or may ot have a header, if it does handle it while loading.
+					</p>
+					<p>Example:</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs">
+							name,fraction
+							Luke Skywalker,JEDI
+							Yoda,JEDI
+							Obi-Wan Kenobi,JEDI
+							Mace Windu,JEDI
+							Qui-Gon Jinn,JEDI
+							Darth Vader,SITH
+							Emperor Palpatine,SITH
+							Darth Maul,SITH
+							Kylo Ren,SITH
+							Count Dooku,SITH
+							Leia Organa,REBEL
+							Han Solo,REBEL
+							Chewbacca,REBEL
+							C3PO,REBEL
+							R2D2,REBEL
+							Stormtrooper,IMPERIAL
+							Imperial Officer,IMPERIAL
+							Imperial Guard,IMPERIAL
+							Death Trooper,IMPERIAL
+							TIE Fighter Pilot,IMPERIAL
+						</code>
+					</pre>
+					<p>
+						Create loadStarWarsCharacters function with one argument for the file path. It may be an absolute path.
+					</p>
+					<p>
+						In that function, load all characters and return <code class="inline">List&lt;StartWarsCharacter&gt;</code>.
+					</p>
+					<p>
+						Make sure to handle possible IO errors.
+					</p>
+				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Writing Files</h2>
-				<em>OutputStream</em>
 			</section>
 			<section>
-				<h3>OutputStream</h3>
-				<em>Writing files</em>
-				<p>
-					Writing data to a file is not difficult, using what we already learned about try-with-resources.
-				</p>
-				<pre>OutputStreamExample.java
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class OutputStreamExample {
+				<h3>Writing Files</h3>
+				<div class="content">
+					<p>
+						Some of the <strong>kotlin.io</strong> functions to write files are:
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">writeText</strong><br />
+							<em>Writes the specified text to the file.</em>
+						</li>
+						<li>
+							<strong class="highlight">writeBytes</strong><br />
+							<em>Writes the specified byte array to the file.</em>
+						</li>
+						<li>
+							<strong class="highlight">writeLines</strong><br />
+							<em>Writes the specified lines to the file.</em>
+						</li>
+						<li>
+							<strong class="highlight">appendText</strong><br />
+							<em>Appends the specified text to the file.</em>
+						</li>
+						<li>
+							<strong class="highlight">appendBytes</strong><br />
+							<em>Appends the specified byte array to the file.</em>
+						</li>
+						<li>
+							<strong class="highlight">appendLines</strong><br />
+							<em>Appends the specified lines to the file.</em>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Writing Files</h3>
+				<div class="content">
+					<div class="row">
+						<div class="column">
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									import mu.KotlinLogging
+									import java.io.File
+									import java.io.IOException
+									import java.time.ZonedDateTime
 
-							private static final String PATH = "output-stream.txt";
+									private val logger = KotlinLogging.logger {}
 
-							public static void main(String[] args) {
+									fun main() {
 
-								String data = "Hello, World!";
+										val path = "characters-copy.csv"
 
-								// using try-with-resources to close the stream after we are done
-								try(FileOutputStream outputStream = new FileOutputStream(PATH)) {
+										try {
+											val file = File(path)
 
-									// convert string to byte array
-									byte[] bytesArray = data.getBytes();
+											if (file.exists().not()) {
+												file.createNewFile()
+											}
 
-									// write byte array to the file
-									outputStream.write(bytesArray);
+											file.writeText(ZonedDateTime.now().toString())
 
-								} catch (IOException e) {
-									throw new RuntimeException(e);
+											file.appendText("\nHello Kotlin!")
+
+										} catch (e: IOException) {
+											error("Error writing to file: ${e.message}")
+										} finally {
+											logger.info { "File reading finished" }
+										}
+
+									}
+								</code>
+							</pre>
+						</div>
+						<div class="column">
+							<ul>
+								<li>
+									This time, we are using relative path to create a file. It will be created in our project root.
+								</li>
+								<li>
+									We are checking if the file exists, and if not, we create it.
+								</li>
+								<li>
+									Again, we surround the file writing code with <code class="inline">try-catch-finally</code> block
+									to catch any IO exceptions and to free system resources.
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h3>Writing Files</h3>
+				<div class="summary">
+					Buffered Writer
+				</div>
+				<div class="content">
+					<p>
+						Similarly, for reading operations, Kotlin provides <strong>BufferedWriter</strong> class,
+						which you can obtain by calling <code class="inline">bufferedWriter()</code> on a file object.
+					</p>
+					<p>
+						The purpose of <strong>bufferedWriter</strong> is to provide efficient writing of text data by buffering the output.
+						This reduces the number of I/O operations, which can significantly improve performance,
+						especially when dealing with large files.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import java.io.File
+							import java.io.IOException
+
+							fun main() {
+								val path = "example.txt"
+
+								try {
+									val file = File(path)
+
+									// Writing to the file using bufferedWriter
+									file.bufferedWriter().use { writer ->
+										writer.write("Hello, World!\n")
+										writer.write("This is an example of bufferedWriter.\n")
+									}
+
+								} catch (e: IOException) {
+									println("An error occurred: ${e.message}")
 								}
 							}
-
-						}
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="summary">
+					Save results to a file.
+				</div>
+				<div class="content">
+					<p>
+						Use functions from previous lessons to create match pairs for our Star Wars characters and perform
+						a battle simulation.
+					</p>
+					<p>
+						Create new <code class="inline">saveResults</code> function to take the results of the battle and save them to a file.
+						The functions should return <code class="inline">File</code>.
+						I leave the file format up to you.
+					</p>
+					<p>
+						Finally, take the results file created by the <code class="inline">saveResults</code> function
+						and print it's absolute path to the console (preferably using logger).
+					</p>
+					<p>
+						Again, make sure to handle possible IO errors or invalid states.
+					</p>
+				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Working with Files</h2>
-				<h4>part 2</h4>
-				<em>java.nio.Path</em>
+				<h2>Other File Operations</h2>
 			</section>
 			<section>
-				<h3>Reading and writing data</h3>
-				<blockquote>
-					Did you like the way we were reading from a file?
-				</blockquote>
-				<p class="fragment fade-in">
-					I didn't. It was cumbersome and error-prone.
-				</p>
+				<h3>Other File Operations</h3>
+				<div class="content">
+					<p>
+						Other file operations Kotlin makes available for us include:
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">exists</strong> - <em>Checks if the file exists.</em>
+						</li>
+						<li>
+							<strong class="highlight">absolutePath</strong> - <em>Returns the absolute path of the file.</em>
+						</li>
+						<li>
+							<strong class="highlight">canonicalPath</strong> - <em>Returns the canonical path of the file.</em>
+						</li>
+						<li>
+							<strong class="highlight">isFile</strong> - <em>Checks if the file is a regular file.</em>
+						</li>
+						<li>
+							<strong class="highlight">isDirectory</strong> - <em>Checks if the file is a directory.</em>
+						</li>
+						<li>
+							<strong class="highlight">canRead</strong> - <em>Checks if has read permissions.</em>
+						</li>
+						<li>
+							<strong class="highlight">canWrite</strong> - <em>Checks if the file has write permissions.</em>
+						</li>
+						<li>
+							<strong class="highlight">canExecute</strong> - <em>Checks if the file execute permissions.</em>
+						</li>
+						<li>
+							<strong class="highlight">setReadonly</strong> - <em>Sets the file's read permission to be radable.</em>
+						</li>
+						<li>
+							<strong class="highlight">setReadable</strong> - <em>Sets the file's read permission to given value (boolean) either for all or for owner only.</em>
+						</li>
+						<li>
+							<strong class="highlight">setWritable</strong> - <em>Sets the file's write permission to given value (boolean) either for all or for owner only.</em>
+						</li>
+						<li>
+							<strong class="highlight">setExecutable</strong> - <em>Sets the file's execute permission to given value (boolean) either for all or for owner only.</em>
+						</li>
+						<li>
+							<strong class="highlight">lastModified</strong> - <em>Returns the time the file was last modified.</em>
+						</li>
+						<li>
+							<strong class="highlight">setLastModified</strong> - <em>Sets the time the file was last modified.</em>
+						</li>
+						<li>
+							<strong class="highlight">delete</strong> - <em>Deletes the file.</em>
+						</li>
+					</ul>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Input and Output Stream</h2>
 			</section>
 			<section>
-				<h3>java.nio.Path</h3>
-				<p>
-					The <strong>java.nio.file</strong> package was introduced in <strong>Java 7</strong>.
-					<br />
-					It provides a more modern way to work with files and directories.
-				</p>
-				<hr />
-				<p>
-					It provides a Path interface and Files and Paths classes.
-				</p>
-				<ul>
-					<li>
-						<strong>Path</strong> <em>(interface)</em><br />
-						Represents a file path.<br />
-						<sub>
-							<em>
-								In contrast to previously shown File class, which represents a file or directory
-							</em>
-						</sub>
-					</li>
-					<li>
-						<strong>Files</strong> <em>(class)</em><br />
-						Provides methods for file operations, such as moving, copying, deleting, and reading/writing files.
-					</li>
-					<li>
-						<strong>Paths</strong> <em>(class)</em><br />
-						Provides methods for converting path strings to Path objects.<br />
-						<sub>
-							<em>
-								It is not recommended to use as this class as may be deprecated in the future.
-								It provides the same functionality as Path class.
-							</em>
-						</sub>
-					</li>
-				</ul>
-			</section>
-<!--			<section>-->
-<!--				<h3>Path</h3>-->
-<!--				<p>-->
-<!--					Paths class provides methods for converting path strings and URIs to Path objects.-->
-<!--				</p>-->
-<!--				<p>-->
-<!--					It provides two static methods ...-->
-<!--				</p>-->
-<!--				<ul>-->
-<!--					<li>-->
-<!--						<strong>Paths.get(String first, String... more)</strong><br />-->
-<!--						Converts a sequence of strings that when joined form a path string to a Path.-->
-<!--					</li>-->
-<!--					<li>-->
-<!--						<strong>Paths.get(URI uri)</strong> <em>(static)</em><br />-->
-<!--						Converts the given URI to a Path.-->
-<!--					</li>-->
-<!--				</ul>-->
-<!--				<p>-->
-<!--					Under the covers, both call the <strong>Path.of()</strong> method.-->
-<!--				</p>-->
-<!--			</section>-->
-			<section>
-				<h3>Path</h3>
-				<p>
-					Path is an interface that represents a file path.
-					Once we have a Path object, we can use it to perform various file operations.
-				</p>
-<!--				<p>-->
-<!--					Here are some of the <strong>static</strong> methods you will find in the Path interface:-->
-<!--				</p>-->
-				<ul>
-					<li>
-						<strong>of</strong> <em>(static)</em><br />
-						<em>Accepts either one or more strings or URI. Returns a Path object.</em>
-					</li>
-					<li>
-						<strong>toUri</strong><br />
-						<em>Returns the URI representation of the path.</em>
-					</li>
-					<li>
-						<strong>getFileName</strong><br />
-						<em>Returns the file name of the path as a Path object.</em>
-					</li>
-					<li>
-						<strong>getFileSystem</strong><br />
-						<em>Returns the underlying file system.</em>
-					</li>
-					<li>
-						<strong>getParent</strong><br />
-						<em>Returns the parent path, or null if there is no parent.</em>
-					</li>
-					<li>
-						<strong>getRoot</strong><br />
-						<em>Returns the root component of the path, or null if there is no root.</em>
-					</li>
-					<li>And many more ...</li>
-				</ul>
-			</section>
-			<section>
-				<h4>Path</h4>
-				<pre>PathExample.java
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						// These paths would probably would not work if run outside the IDE.
-						String resourcesPath = "m1-java-basics/src/main/resources";
-						String fileName = "timezone-cities.txt";
+				<h3>Input and Output Stream</h3>
+				<div class="summary">
+					Working with InputStream and OutputStream classes.
+				</div>
+				<div class="content">
+					<p>
+						When working with programs and libraries, you may come across code that uses <strong>InputStream</strong> and <strong>OutputStream</strong> classes.
+					</p>
+					<p>
+						These classes are used to read and write data from and to a source, such as a file, network connection, or memory.
+					</p>
+					<ul>
+						<li><code class="inline">InputStream</code> is an abstract class that represents an input stream of bytes.</li>
+						<li><code class="inline">OutputStream</code> is an abstract class that represents an output stream of bytes.</li>
+					</ul>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import java.io.FileInputStream
+							import java.io.FileOutputStream
+							import java.io.IOException
 
-						// Path object resolved from the string(s)
-						Path path = Path.of(resourcesPath, fileName);
+							fun main() {
 
-						System.out.println("URI: " + path.toUri());
-						System.out.println("File name: " + path.getFileName());
-						System.out.println("File system: " + path.getFileSystem());
-						System.out.println("Parent: " + path.getParent());
-						System.out.println("Root: " + path.getRoot());
-					</code>
-				</pre>
-				<pre>PathExample.java
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						try {
-							// URI is a uniform resource identifier
-							URI uri = Objects.requireNonNull(PathExample.class.getResource("timezone-cities.txt")).toURI();
-
-							// Path object resolved from the URI
-							Path path = Path.of(uri);
-
-							System.out.println("URI: " + path.toUri());
-							System.out.println("File name: " + path.getFileName());
-							System.out.println("File system: " + path.getFileSystem());
-							System.out.println("Parent: " + path.getParent());
-							System.out.println("Root: " + path.getRoot());
-
-						} catch (URISyntaxException e) {
-							throw new RuntimeException(e);
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h3>Files</h3>
-				<p>
-					Files class provides methods for file operations, such as moving, copying, deleting, reading and writing.
-				</p>
-				<ul>
-					<li>
-						<strong>exists</strong>
-					</li>
-					<li>
-						<strong>isReadable, isWritable, isExecutable</strong>
-					</li>
-					<li>
-						<strong>readString, readAllLines, readAllBytes</strong>
-					</li>
-					<li>
-						<strong>createFile, createDirectory, createDirectories, createLink, ...</strong>
-					</li>
-					<li>
-						<strong>delete, deleteIfExists</strong>
-					</li>
-					<li>
-						<strong>copy</strong>
-					</li>
-					<li>
-						<strong>isDirectory</strong>
-					</li>
-					<li>And many more ...</li>
-				</ul>
-			</section>
-			<section>
-				<h4>Files</h4>
-				<pre>FilesExample.java
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class FilesExample {
-
-							public static void main(String[] args) {
-								Path path = Path.of("hello.txt");
+								val inputStream = FileInputStream("input.txt")
+								val outputStream = FileOutputStream("output.txt")
 
 								try {
-									// delete if exists
-									boolean exists = Files.deleteIfExists(path);
-									System.out.println("File exists: " + exists);
 
-									// creates the file and returns its Path (should be the same as the input path)
-									// throws FileAlreadyExistsException if the file already exists
-									Path newFilePath = Files.createFile(path);
+									val buffer = ByteArray(1024)
+									var bytesRead: Int
 
-									writeHello(newFilePath);
+									while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+										outputStream.write(buffer, 0, bytesRead)
+									}
 
-								} catch (IOException e) {
-									throw new RuntimeException(e);
+								} catch (e: IOException) {
+									println("An error occurred: ${e.message}")
+								} finally {
+									inputStream.close()
+									outputStream.close()
 								}
 							}
-
-							private static void writeHello(Path path) {
-								try {
-
-									// write some lines
-									Files.writeString(path,  "Hello, World!\n", StandardOpenOption.APPEND);
-									Files.writeString(path,  "Hello, Thailand!\n", StandardOpenOption.APPEND);
-									Files.writeString(path,  "Hello, Bangkok!\n", StandardOpenOption.APPEND);
-
-									// read the lines and print them
-									Files.readAllLines(path).forEach(System.out::println);
-
-								} catch (IOException e) {
-									throw new RuntimeException(e);
-								}
-							}
-
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h4>Files</h4>
-				<p>
-					You can also control file permissions and attributes, either during creation or later.
-				</p>
-				<pre>FilesExample.java
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						Path path = Path.of("hello.txt");
-
-							try {
-								Files.deleteIfExists(path);
-
-								FileAttribute<?> attrs = PosixFilePermissions.asFileAttribute(
-										PosixFilePermissions.fromString("rwxrw-rw-")
-								);
-
-								// you can create a file with attributes
-								Files.createFile(path, attrs);
-
-								// you can set file attributes later
-								Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("r--r--r--"));
-
-
-							} catch (IOException e) {
-								throw new RuntimeException(e);
-							}
-							return path;
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Practice</h2>
+				<em>↓</em>
+			</section>
+			<section>
+				<h3>Can you see a problem?</h3>
+				<div class="summary" style="font-size: 120%">
+					Looking back at our fantasy characters game model, there is one problem that breaks one of the OOP principles.
+				</div>
+				<div class="content" style="font-size: 120%">
+					<p>
+						Can you see it?
+					</p>
+					<p>
+						Can you fix it?
+					</p>
+				</div>
+				<br />
+				<br />
+				<br />
+				<em>Practice ↓</em>
+			</section>
+			<section>
+				<h3>Practice</h3>
+				<div class="content">
+					<ol>
+						<li>Update our fantasy game to load characters from file.</li>
+						<li>Remember, there are 2 classes of characters with different properties, so handle them appropriately</li>
+						<li>Save match results to a file as well.</li>
+						<li>Consider saving each match to a separate file.</li>
+						<li>Consider keeping a full match log, maybe you can crate a new file for each match, or you can append matches to one file.</li>
+						<li>
+							<strong>Hint:</strong> We didn't learn to work with time yet, but you can use
+							<code class="inline">ZonedDateTime.now()</code> to get current date and time.
+						</li>
+					</ol>
+				</div>
 			</section>
 		</section>
 	</div>

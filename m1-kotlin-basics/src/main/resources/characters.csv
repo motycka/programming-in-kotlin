@@ -1,0 +1,21 @@
+class,name,health,attackPower,stamina,defensePower,mana,healingPower
+Sorcerer,"Harry Potter",130,80,90,70,90,30
+Sorcerer,"Hermione Granger",105,75,120,60,120,30
+Sorcerer,"Ron Weasley",150,85,65,80,65,35
+Sorcerer,"Severus Snape",95,100,120,70,120,20
+Sorcerer,"Albus Dumbledore",105,75,110,65,110,50
+Sorcerer,"Lord Voldemort",100,135,85,60,85,20
+Sorcerer,"Minerva McGonagall",120,90,95,75,95,30
+Sorcerer,"Bellatrix Lestrange",95,120,75,65,75,20
+Sorcerer,"Draco Malfoy",120,85,90,70,90,35
+Sorcerer,"Neville Longbottom",160,70,70,85,70,40
+Warrior,"Luke Skywalker",130,80,90,70,90,30
+Warrior,"Yoda",100,70,130,60,130,40
+Warrior,"Han Solo",150,85,65,80,65,35
+Warrior,"Darth Vader",120,110,95,70,95,25
+Warrior,"Obi-Wan Kenobi",120,75,110,65,110,40
+Warrior,"Emperor Palpatine",100,140,80,60,80,20
+Warrior,"Mace Windu",130,90,90,75,90,35
+Warrior,"Darth Maul",105,130,75,65,75,20
+Warrior,"Kylo Ren",120,100,85,70,85,30
+Warrior,"Finn",160,60,70,85,70,45
