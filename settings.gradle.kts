@@ -16,11 +16,6 @@ pluginManagement {
     }
 }
 
-//plugins {
-//    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
-//}
-
 rootProject.name = "programming-in-kotlin"
-include("m1-kotlin-basics")
-include("m2-kotlin-practice")
-include("m3-spring-application")
+include("kotlin-basics")
+include("spring-application")

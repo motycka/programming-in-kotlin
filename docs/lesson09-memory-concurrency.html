@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/kotlin.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/vs.css">
+</head>
+<body>
+<div class="reveal">
+	<div class="slides">
+		<section data-background-gradient="var(--kotlin-gradient)">
+			<i>Week 2 | Lesson 9</i>
+			<h1>Memory & Threads</h1>
+			<em>JVM, JRE, JDK, compiler</em><br />
+			<em>Memory management</em><br />
+			<em>Multithreading</em><br />
+			<em>Coroutines</em>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Java Virtual Machine</h2>
+				<em>JVM</em>
+			</section>
+			<section>
+				<h3>Java Virtual Machine</h3>
+				<div class="summary">
+					"Write Once, Run Anywhere"
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							The main purpose of JVM is to provide a runtime environment for Java applications,
+							that is independent of the underlying hardware and operating system.
+						</li>
+						<li>
+							Other programming languages that can run on JVM include <strong>Kotlin</strong>, <strong>Scala</strong>, <strong>Groovy</strong> and <strong>Clojure</strong>.
+						</li>
+						<li>
+							JVM also provides tools for runtime performance optimization, memory management (garbage collection), monitoring, and other.
+						</li>
+						<li>
+							Java Virtual Machine is a part of the Java Runtime Environment (JRE).
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Java Virtual Machine</h3>
+				<div class="summary">
+					There are three ways to look at JVM implementations.
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							<strong>Specification</strong><br />
+							Defines how the JVM should be implemented.
+						</li>
+						<li>
+							<strong>Implementation</strong><br />
+							The actual JVM implementation.
+						</li>
+						<li>
+							<strong>Instance</strong><br />
+							A running JVM process (create every time you start a Java program).
+						</li>
+					</ul>
+					<p>
+						Since JVM is open source, it exists in more than one implementation.
+						They all follow the specification, but may differ in performance, memory management, and other aspects.
+					</p>
+					<p>
+						Some of the most popular JVM implementations are:
+					</p>
+					<ul>
+						<li>Oracle HotSpot JVM</li>
+						<li>Eclipse OpenJ9</li>
+						<li>GraalVM</li>
+					</ul>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>JRE, JDK, compiler</h2>
+			</section>
+			<section>
+				<h3>JRE, JDK, compiler</h3>
+				<div class="content">
+					<p>
+						<h4>JRE - Java Runtime Environment</h4>
+						JRE is the part of Java required to run Java applications. It includes JVM, core libraries, and other components.
+						If you only want to run Java applications, you only need JRE.
+					</p>
+					<p>
+						<h4>JDK - Java Development Kit</h4>
+						You need JDK if you want to develop Java applications. It includes JRE, compiler, and other development tools.
+					</p>
+					<p>
+						<h4>Java Compiler</h4>
+						Java source code is compiled into <strong>bytecode</strong>, which is then executed by JVM. To do so, you need a Java compiler.
+					</p>
+					<p>
+						<h4>Java Bytecode</h4>
+						Java bytecode is the instruction set for the Java Virtual Machine.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Java Bytecode</h3>
+				<div class="summary">Write Once, Run Anywhere</div>
+				<div class="content content-100">
+					<p>
+						Java bytecode is the intermediate representation of Java code which is output by the Java compiler (javac).
+						It is not the machine code for any particular computer - it is not executed by the CPU of any computer.
+					</p>
+					<p>
+						Instead, the Java bytecode is executed by the Java Virtual Machine (JVM).
+						You can say it is an instruction set for the JVM.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Java Bytecode</h3>
+				<div class="summary">Write Once, Run Anywhere</div>
+				<div class="content">
+					<p>
+						When a Java program is compiled, each individual class file is compiled into a separate bytecode file (with a .class extension).
+						This bytecode is platform independent, which means the same bytecode can run on any device that has a JVM.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main(args: Array&lt;String&gt;) {
+								println("Hello, World!")
+							}
+						</code>
+					</pre>
+					<p>
+						Compiles to following bytecode:
+					</p>
+					<div style="background-color: yellow">TODO</div>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="">
+							Compiled from "HelloWorld.java"
+							public class lesson08.HelloWorld {
+							  public lesson08.HelloWorld();
+								Code:
+								   0: aload_0
+								   1: invokespecial #1                  // Method java/lang/Object."&lt;init&gt;":()V
+								   4: return
+
+							  public static void main(java.lang.String[]);
+								Code:
+								   0: getstatic     #7                  // Field java/lang/System.out:Ljava/io/PrintStream;
+								   3: ldc           #13                 // String Hello, World!
+								   5: invokevirtual #15                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+								   8: return
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Java Memory Management</h2>
+			</section>
+			<section>
+				<h3>Java Memory Management</h3>
+				<div class="summary">
+					Java memory management is to a large extent automatic.
+<!--					As your program runs, the JVM automatically allocates and de-allocates memory for objects.-->
+<!--					The de-allocation process is known as <span class="highlight">garbage collection</span> (GC),-->
+<!--					and the process responsible for it is called the <span class="highlight">garbage collector</span>.-->
+				</div>
+				<div class="content">
+					<p>
+						As your program runs, the JVM automatically allocates and de-allocates memory for objects.
+						The de-allocation process is known as <span class="highlight">garbage collection</span> (GC),
+						and the process responsible for it is called the <span class="highlight">garbage collector</span>.
+					</p>
+					<p>
+						<strong>There are two types of memory in Java:</strong>
+					</p>
+					<ul>
+						<li><span class="highlight">Heap Memory</span></li>
+						<li><span class="highlight">Stack Memory</span></li>
+					</ul>
+					<p>
+						Java GC helps us to avoid memory leaks and optimize memory usage, however,
+						some memory leaks can still occur due to programming errors.
+						<em>(By not releasing references to objects that are no longer needed.)</em>
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Heap memory</h3>
+				<div class="summary">
+					Heap memory is where all objects (instances of classes) are stored.
+					<br />
+					Each time an object is created, memory is allocated on the heap at runtime.
+				</div>
+				<div class="content">
+					<p>
+						Heap memory is shared among all threads, and it is the memory area that is maintained by the garbage collector.
+					</p>
+					<p>
+						You can control the size of the heap using the -Xms and -Xmx JVM options.
+					</p>
+					<ul>
+						<li><code class="inline">-Xms</code> sets the initial size of the heap</li>
+						<li><code  class="inline">-Xmx</code> sets the maximum size of the heap</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Stack memory</h3>
+				<div class="summary">
+					Stack memory is used for <span class="highlight">static memory allocation</span>, <span class="highlight">storing primitive values local to method calls</span>
+					and <span class="highlight">references to objects in heap space</span>.
+				</div>
+				<div class="content">
+					<p>
+						Each thread in Java has its own JVM stack which is created at the same time as the thread.
+					</p>
+					<p>
+						Stack memory has a specific size and is not directly controlled by the programmer.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Garbage Collection</h3>
+				<div class="summary">
+					Garbage Collection (GC) is a process of automatically reclaiming memory.
+				</div>
+				<div class="content">
+					<p>
+						The Garbage Collector automatically frees up heap space memory allocations that are no longer
+						referenced by any running part of the program.
+					</p>
+					<p>
+						The process of GC is not predictable, and the programmer can’t force garbage collection.
+						System.gc() can be called as a hint to JVM for garbage collection, but it is not guaranteed that it will be performed.
+					</p>
+					<p>
+						To make the garbage collection process more efficient, the heap is divided into generations.
+					</p>
+					<ul>
+						<li>
+							<span class="highlight">Young Generation (Eden)</span><br />
+						</li>
+						<li>
+							<span class="highlight">Old Generation (Tenured)</span><br />
+						</li>
+						<li>
+							<span class="highlight">Permanent Generation (Meta Space)</span><br />
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Garbage Collection Generations</h3>
+				<div class="summary">
+					Java uses generational garbage collection strategy that categorizes objects by age.
+					This is because performing GC on the entire heap would be inefficient.
+					Most objects in java are short-lived, therefore, there can be more frequent GC events for those.
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							<span class="highlight">Young Generation (Eden)</span><br />
+							This is where all new objects are created. It can be further divided into Eden space and Survivor spaces (FromSpace and ToSpace).
+							<ul>
+								<li>When it fills up, a Minor GC event occurs.</li>
+								<li>Objets that are evaluated as dead or alive.</li>
+								<li>Dead objects are removed, and the memory is compacted.</li>
+								<li>If an object survives for a given number minor GC cycles, it is promoted to the Old Generation.</li>
+							</ul>
+						</li>
+						<li>
+							<span class="highlight">Old Generation (Tenured)</span><br />
+							This contains objects that have survived the garbage collection from the Young Generation.
+						</li>
+						<li>
+							<span class="highlight">Permanent Generation (Meta Space)</span><br />
+							This is used to store metadata about classes and methods.
+							It's garbage collected just like the other generations but usually at a slower rate.
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Garbage Collection Strategies</h3>
+				<div class="summary">
+					There is a number of GC strategies that can be used in Java.
+					Each strategy has its own advantages and disadvantages, and is suitable for different types of applications.
+				</div>
+				<div class="content">
+					<ul>
+						<li>Serial Collector (-XX:+UseSerialGC)</li>
+						<li>Parallel Collector (-XX:+UseParallelGC and -XX:+UseParallelOldGC)</li>
+						<li>Concurrent Mark Sweep (CMS) Collector (-XX:+UseConcMarkSweepGC)</li>
+						<li>G1 (Garbage-First) Collector (-XX:+UseG1GC)</li>
+						<li>Shenandoah GC (-XX:+UseShenandoahGC) </li>
+					</ul>
+					<p>
+						Each JVM implementation may implement GC differently, and may have its own GC strategies,
+						although they should all follow the JVM specification.
+					</p>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Multithreading</h2>
+			</section>
+			<section>
+				<h3>Multithreading</h3>
+<!--				<em>What is multithreading?</em>-->
+				<div class="summary">
+					Multithreading allows execution of multiple parts of a program concurrently,
+					using lightweight processes called threads. It aims to maximize the use of CPU time.
+				</div>
+				<div class="content">
+					<p>
+						Generally, there is always at least one thread running in a Java program - the <strong>main</strong> thread.
+					</p>
+					<p>
+						To create a new thread, need to create new instance <strong><code>Thread</code></strong> class.
+						To start a thread, need to call its <strong><code>start()</code></strong> method of the <strong><code>Thread</code></strong> class instance.
+					</p>
+					<p>
+						Another way to create a thread is by implementing the <strong><code>Runnable</code></strong> interface and passing an instance of it to a new thread.
+					</p>
+					<p>
+						Alternatively, we can use the <strong>Executor Framework</strong> provided by <strong>java.util.concurrent</strong>.
+					</p>
+					<hr />
+					<p>
+						Synchronization in Java is an important feature that allows only one thread to have access to the shared resource.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Thread</h3>
+				<p>
+					<strong><code>Thread</code></strong> is a class in Java that allows you to create and manage threads.
+					You can create thread directly, or by extending the <strong><code>Thread</code></strong> class and overriding the <strong><code>run()</code></strong> method.
+				</p>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class SimplestThreadExample {
+
+							public static void main(String[] args) {
+
+								var thread = new Thread(() -> {
+									System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+								});
+
+								thread.start();
+
+								System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+							}
+
+						}
+					</code>
+				</pre>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class ExtendingThreadExample {
+
+							public static void main(String[] args) {
+
+								new MyThread().start();
+
+								System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+							}
+
+							static class MyThread extends Thread {
+								@Override
+								public void run() {
+									System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+								}
+							}
+
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>Thread</h3>
+				<p>
+					Thread is started by calling the <strong><code>start()</code></strong> method.
+					When the <strong><code>start()</code></strong> method is called, the JVM calls the <strong><code>run()</code></strong> method of the thread.
+				</p>
+				<p>
+					When the <strong><code>run()</code></strong> method finishes, the thread is considered to be terminated.
+				</p>
+				<p>
+					If at any time you want to stop a thread, you can call the <strong><code>interrupt()</code></strong> method.
+				</p>
+				<p>
+					To wait for a thread to finish, you can call the <strong><code>join()</code></strong> method.
+					However, beware that this will block the current thread until the other thread finishes.
+				</p>
+			</section>
+			<section>
+				<h3>Runnable</h3>
+				<p>
+					Runnable is an interface in Java that allows you to create and manage threads.
+				</p>
+				<p>
+					To use Runnable, you pass an instance of Runnable to a new Thread.
+				</p>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class RunnableExample {
+
+							public static void main(String[] args) {
+								var thread = new Thread(new MyRunnable(), "Runner 1");
+
+								System.out.println("Starting thread '" + thread.getName() + "'");
+
+								thread.start();
+
+								try {
+									// this will block the main thread until the other thread finishes
+									thread.join();
+								} catch (InterruptedException e) {
+									throw new RuntimeException(e);
+								}
+
+								System.out.println("Thread '" + thread.getName() + "' finished");
+
+							}
+
+							static class MyRunnable implements Runnable {
+								@Override
+								public void run() {
+									System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+								}
+							}
+
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>Memory Synchronization</h3>
+				<p>
+					Memory synchronization ensures that the changes made by one thread to the shared data are visible to other threads.
+				</p>
+				<hr />
+				<ul>
+					<li>
+						<strong><code>volatile</code></strong><br />
+						If a <strong>field</strong> is declared as <code>volatile</code>, the Java memory model ensures that all reads of a volatile
+						variable are read directly from main memory, and all writes to a volatile variable are written
+						directly to main memory.
+
+						<pre>
+							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+								private volatile boolean flag = true;
+							</code>
+						</pre>
+					</li>
+					<li>
+						<strong><code>synchronized</code></strong><br />
+						If <strong>method</strong> is synchronized, only one thread can access the method or block at a time.
+						<pre>
+							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+								public synchronized void someMethod() {
+									// ...
+								}
+							</code>
+						</pre>
+					</li>
+				</ul>
+				<hr />
+				<p>
+					Remember that incorrect synchronization can lead to issues like race conditions, deadlocks or even data inconsistency.
+					It advised to avoid shared mutable data for threads and use thread confinement or immutability.
+				</p>
+			</section>
+			<section>
+				<h3>Memory Synchronization</h3>
+				<em>No synchronization - NOT thread safe!</em>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class MemorySyncExample {
+
+							private static int sharedCounter = 0;
+
+							public static void main(String[] args) throws InterruptedException {
+								Thread thread1 = new Thread(MemorySyncExample::incrementCounter);
+								Thread thread2 = new Thread(MemorySyncExample::incrementCounter);
+
+								thread1.start();
+								thread2.start();
+
+								// wait for both threads to finish
+								thread1.join();
+								thread2.join();
+
+								System.out.println("Final Counter Value: " + sharedCounter);
+							}
+
+							private static void incrementCounter() {
+								for (int i = 0; i < 10000; i++) {
+									sharedCounter++;
+								}
+							}
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>Memory Synchronization</h3>
+				<em>With synchronization - thread safe.</em>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class MemorySyncExample {
+
+							private static volatile int sharedCounter = 0;
+
+							public static void main(String[] args) throws InterruptedException {
+								Thread thread1 = new Thread(MemorySyncExample::incrementCounter);
+								Thread thread2 = new Thread(MemorySyncExample::incrementCounter);
+
+								thread1.start();
+								thread2.start();
+
+								// wait for both threads to finish
+								thread1.join();
+								thread2.join();
+
+								System.out.println("Final Counter Value: " + sharedCounter);
+							}
+
+							private static synchronized void incrementCounter() {
+								for (int i = 0; i < 10000; i++) {
+									sharedCounter++;
+								}
+							}
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>java.util.concurrent</h3>
+				<p>
+					Besides the low-level synchronization mechanisms such as <code>volatile</code> and <code>synchronized</code> keywords,
+					Java provides a number of classes and interfaces in the <strong>java.util.concurrent</strong> package to help with multithreading.
+				</p>
+				<hr />
+				<p>
+					The package includes:
+				</p>
+				<ul>
+					<li><strong>Atomic Variables</strong></li>
+					<li><strong>Synchronizers</strong></li>
+					<li>Concurrent Collections</li>
+					<li>Locks</li>
+					<li>Callable and Future</li>
+					<li>Executor Framework</li>
+				</ul>
+			</section>
+			<section>
+				<h3>Atomic Variables</h3>
+				<p>
+					The <strong>java.util.concurrent.atomic</strong> package defines classes that support atomic operations on single variables.
+					All atomic operations are thread-safe.
+				</p>
+				<p>
+					There are several classes in this package, for example <strong>AtomicBoolean</strong>,
+					<strong>AtomicInteger</strong>, <strong>AtomicLong</strong>, etc.
+				</p>
+				<hr />
+				<p>
+					Here is what you can do with atomic variables ...
+				</p>
+			</section>
+			<section>
+				<h4>Atomic Variables</h4>
+				<p>
+					<strong>Atomic Read and Write</strong><br />
+					You can read or write the value of atomic variables in a thread-safe manner. When you update an atomic variable, it ensures that the new value is immediately visible to other threads.
+				<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							AtomicInteger atomicInteger = new AtomicInteger(0);
+							atomicInteger.set(78);
+							int value = atomicInteger.get();
+						</code>
+					</pre>
+				</p>
+				<p>
+					<strong>Atomic Update</strong><br />
+					This allows you to atomically update the value of atomic variables. For Atomic integers and longs, it includes methods to increment, decrement, and add a certain value atomically.
+				<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							AtomicInteger atomicInteger = new AtomicInteger(0);
+							atomicInteger.incrementAndGet();
+							atomicInteger.addAndGet(46);
+						</code>
+					</pre>
+				</p>
+			</section>
+			<section>
+				<h4>Atomic Variables</h4>
+				<p>
+					<strong>Compare and Set/Swap (CAS)</strong><br />
+					It enables you to update the value of a variable only when it has a certain expected value. It’s a way of managing concurrency, without traditional lock-based synchronization.
+					For example, to atomically update a value only if it's currently equal to 10, you can use:
+				<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							AtomicInteger atomicInteger = new AtomicInteger(10);
+							boolean updated = atomicInteger.compareAndSet(10, 78);
+						</code>
+					</pre>
+				</p>
+				<p>
+					<strong>getAndIncrement, getAndDecrement, getAndAdd</strong><br />
+					These are atomic operations that atomically increment, decrement, or add the value and return the old value.
+				<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							AtomicInteger atomicInteger = new AtomicInteger(0);
+							int oldValue = atomicInteger.getAndIncrement();
+						</code>
+					</pre>
+				</p>
+			</section>
+			<section>
+				<h4>Atomic Variables</h4>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class AtomicVariablesExample {
+
+							private static final AtomicInteger counter = new AtomicInteger(10);
+
+							public static void main(String[] args) {
+								new Thread(new MyRunnable()).start();
+								new Thread(new MyRunnable()).start();
+							}
+
+							static class MyRunnable implements Runnable {
+								@Override
+								public void run() {
+									while (counter.getAndDecrement() > 0) {
+										System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+									}
+								}
+							}
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>Synchronizers</h3>
+				<div style="font-size: 90%">
+					<p>
+						<strong>Semaphore</strong><br />
+						It controls the access to a shared resource through the use of a counter. If the counter is greater than zero, the access is allowed, otherwise the access is denied. This is often used to limit the number of threads that can access a particular resource.
+					</p>
+					<p>
+						<strong>CountDownLatch</strong><br />
+						It allows one or more threads to wait until a set of operations being performed in other threads completes. Once the count is zero, all waiting threads proceed. It's a one-time phenomenon, once the latch reaches zero it cannot be reset.
+					</p>
+					<p>
+						<strong>CyclicBarrier</strong><br />
+						It's used when multiple threads carry out different sub tasks and the output of these sub tasks need to be combined to form the final output. It's called cyclic because it can be reused after waiting threads are released.
+					</p>
+					<p>
+						<strong>Phaser</strong><br />
+						It's more flexible than both CountDownLatch and CyclicBarrier. It's called Phaser because it phases all the threads into stages of execution.
+					</p>
+					<p>
+						<strong>Exchanger</strong><br />
+						It's used to exchange data between two threads. It waits for both the threads to reach the exchange point. If the threads do not appear simultaneously to exchange their objects, they'll be paused until the arrival of the other thread.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h4>Semaphore</h4>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class SemaphoreExample {
+
+							private static final Semaphore semaphore = new Semaphore(1);
+
+							public static void main(String[] args) {
+								new Thread(new MyRunnable(semaphore), "A").start();
+								new Thread(new MyRunnable(semaphore), "B").start();
+							}
+
+							static class MyRunnable implements Runnable {
+
+								private final Semaphore semaphore;
+
+								public MyRunnable(Semaphore semaphore) {
+									this.semaphore = semaphore;
+								}
+
+								@Override
+								public void run() {
+									try {
+										semaphore.acquire();
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' acquired the semaphore");
+									} catch (InterruptedException e) {
+										throw new RuntimeException(e);
+									} finally {
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' is releasing the semaphore");
+										semaphore.release();
+									}
+								}
+							}
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h4>CountDownLatch</h4>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class CountDownLatchExample {
+
+							private static final CountDownLatch latch = new CountDownLatch(3);
+
+							public static void main(String[] args) {
+								var waitingThread = new Thread(() -> {
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
+									try {
+										latch.await();
+									} catch (InterruptedException e) {
+										throw new RuntimeException(e);
+									}
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
+								}, "WAITING");
+
+
+								var countingThread = new Thread(() -> {
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
+									while (latch.getCount() > 0) {
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' counting down " + latch.getCount() + "...");
+										latch.countDown();
+									}
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
+								}, "COUNTING");
+
+								waitingThread.start();
+								countingThread.start();
+							}
+
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h4>CyclicBarrier</h4>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class CyclicBarrierExample {
+
+							public static void main(String[] args) {
+								var barrier = new CyclicBarrier(3, () -> System.out.println("Barrier reached"));
+
+								new Thread(new MyRunnable(barrier), "A").start();
+								new Thread(new MyRunnable(barrier), "B").start();
+								new Thread(new MyRunnable(barrier), "C").start();
+							}
+
+							static class MyRunnable implements Runnable {
+								private final CyclicBarrier barrier;
+
+								public MyRunnable(CyclicBarrier barrier) {
+									this.barrier = barrier;
+								}
+
+								@Override
+								public void run() {
+									try {
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' is waiting on the barrier");
+										barrier.await();
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' has passed the barrier");
+									} catch (Exception e) {
+										throw new RuntimeException(e);
+									}
+								}
+							}
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h4>Phaser</h4>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class PhaserExample {
+
+							private static final Phaser phaser = new Phaser(2);
+
+							public static void main(String[] args) {
+								new Thread(new PreProcessor(phaser), "PRE-PROCESSOR").start();
+								new Thread(new PostProcessor(phaser), "POST-PROCESSOR").start();
+							}
+
+							static class PostProcessor implements Runnable {
+								private final Phaser phaser;
+
+								public PostProcessor(Phaser phaser) {
+									this.phaser = phaser;
+								}
+
+								@Override
+								public void run() {
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' has arriver. Waiting for others...");
+									phaser.arriveAndAwaitAdvance();
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
+								}
+							}
+
+							static class PreProcessor implements Runnable {
+								private final Phaser phaser;
+
+								public PreProcessor(Phaser phaser) {
+									this.phaser = phaser;
+								}
+
+								@Override
+								public void run() {
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										throw new RuntimeException(e);
+									}
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' has arrived.");
+									phaser.arriveAndDeregister();
+									System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
+								}
+							}
+
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h4>Exchanger</h4>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class ExchangerExample {
+
+							private static final Exchanger&lt;String&gt; exchanger = new Exchanger<>();
+
+							public static void main(String[] args) {
+								new Thread(new MyRunnable(exchanger), "A").start();
+								new Thread(new MyRunnable(exchanger), "B").start();
+							}
+
+							static class MyRunnable implements Runnable {
+								private final Exchanger&lt;String&gt; exchanger;
+
+								public MyRunnable(Exchanger&lt;String&gt; exchanger) {
+									this.exchanger = exchanger;
+								}
+
+								@Override
+								public void run() {
+									try {
+										String message = exchanger.exchange("Hello from " + Thread.currentThread().getName());
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' received message: " + message);
+									} catch (InterruptedException e) {
+										throw new RuntimeException(e);
+									}
+								}
+							}
+
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>java.util.concurrent</h3>
+				<p>
+					<strong>Concurrent Collections</strong><br />
+					This includes thread-safe collection classes used in place of synchronized wrappers such as Hashtable or Collections.synchronizedMap(Map).
+				</p>
+				<p>
+					<strong>Locks</strong><br />
+					More advanced and flexible locking mechanism compared to intrinsic locking.
+				</p>
+				<p>
+					<strong>Callable and Future</strong><br />
+					Callable tasks are similar to Runnable tasks but they can return a result and are capable of throwing checked exceptions. Futures represent result of an asynchronous computation - a way to handle the results of callable tasks.
+				</p>
+				<p>
+					<strong>Executor Framework</strong><br />
+					This is a higher-level replacement for working with threads directly. Executors are capable of managing a pool of threads, so we do not need to manually create new threads and run tasks in an asynchronous fashion.
+				</p>
+			</section>
+			<section>
+				<h4>Future example</h4>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						public class FutureExample {
+
+							public static void main(String[] args) {
+
+								Messenger messenger = new Messenger();
+
+								Future&lt;String&gt; message = messenger.receiveMessage();
+
+								while (!message.isDone()) {
+									System.out.println("Waiting for message...");
+									try {
+										Thread.sleep(500);
+									} catch (InterruptedException e) {
+										throw new RuntimeException(e);
+									}
+								}
+
+								try {
+									System.out.println("Received message: " + message.get());
+								} catch (Exception e) {
+									throw new RuntimeException(e);
+								}
+							}
+
+							static class Messenger {
+
+								private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+								public Future&lt;String&gt; receiveMessage() {
+									return executor.submit(() -> {
+										Thread.sleep(3000);
+										return "Hello from future!";
+									});
+								}
+							}
+						}
+					</code>
+				</pre>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Practice</h2>
+				<em>↓</em>
+			</section>
+			<section>
+				<h3>Practice</h3>
+				<div class="content">
+					Concurrent match
+				</div>
+			</section>
+		</section>
+	</div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+	// More info about initialization & config:
+	// - https://revealjs.com/initialization/
+	// - https://revealjs.com/config/
+	Reveal.initialize({
+		hash: true,
+
+		// Learn about plugins: https://revealjs.com/plugins/
+		plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+	});
+</script>
+</body>
+</html>
