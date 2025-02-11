@@ -2,6 +2,8 @@ package com.motycka.edu.game
 
 fun main() {
 
+//    val characters = TODO()
+
     val match = Match(
         rounds = 20,
         challenger = Warrior(
@@ -22,5 +24,5 @@ fun main() {
         )
     )
 
-    match.fight()
+    val result = match.fight()
 }

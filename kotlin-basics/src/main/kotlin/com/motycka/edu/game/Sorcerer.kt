@@ -1,5 +1,9 @@
 package com.motycka.edu.game
 
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
 internal class Sorcerer(
     name: String,
     health: Int,
@@ -25,10 +29,10 @@ internal class Sorcerer(
     override fun attack(target: Character) {
         heal()
         when {
-            health <= 0 -> println("$name is dead and cannot attack")
-            mana <= 0 -> println("$name out of mana")
+            health <= 0 -> logger.info { "$name is dead and cannot attack" }
+            mana <= 0 -> logger.info { "$name out of mana" }
             else -> {
-                println("$name casts a spell at ${target.name}")
+                logger.info { "$name casts a spell at ${target.name}" }
                 target.receiveAttack(attackPower)
                 currentMana--
             }
@@ -37,8 +41,8 @@ internal class Sorcerer(
 
     override fun heal() {
         when {
-            health <= 0 -> println("$name is dead and cannot heal")
-            mana <= 0 -> println("$name is out of mana")
+            health <= 0 -> logger.info { "$name is dead and cannot heal"}
+            mana <= 0 -> logger.info { "$name is out of mana" }
             else -> {
                 if (health + healingPower > health) {
                     currentHealth = health
@@ -52,7 +56,7 @@ internal class Sorcerer(
 
     override fun beforeRound() {
         if (currentMana < mana) {
-            println("$name regenerates 1 mana")
+            logger.info { "$name regenerates 1 mana" }
             currentMana++
         }
     }

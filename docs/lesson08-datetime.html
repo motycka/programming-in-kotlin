@@ -18,258 +18,126 @@
 	<div class="slides">
 		<section data-background-gradient="var(--kotlin-gradient)">
 			<i>Week 2 | Lesson 7</i>
-			<h1>Standard Kotlin Library</h1>
-			<em>math</em><br />
-			<em>Java Optional</em><br />
-			<em>Date and Time</em><br />
+			<h1>Date and Time</h1>
+			<em>kotlin.math</em><br />
+			<em>+ BigDecimal & Java Optional</em><br />
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Java Math</h2>
-				<em>java.lang</em>
+				<h2>Working with date and time</h2>
 			</section>
 			<section>
-				<h3>Math</h3>
-				<p>
-					The <strong>java.lang</strong> package provides us with tools to work with numbers and perform basic numeric operations.
-				</p>
-				<hr />
-				<p>
-					Math is a static class and provides methods such as <code>abs()</code>, <code>max()</code>,
-					<code>min()</code>, <code>pow()</code>, <code>sqrt()</code>, <code>cbrt()</code>,
-					<code>random()</code>, <code>round()</code>, <code>floor()</code>, <code>ceil()</code>, and many more.
-				</p>
-				<p>
-					See <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Math.html">Java SE 8 documentation</a> for more details.
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						double a = 3.14;
-						double b = -3.14;
-
-						double abs = Math.abs(b);
-						System.out.println("Absolute value of " + b + " is " + abs);
-
-						double max = Math.max(a, b);
-						System.out.println("Max value of " + a + "and " + b + " is " + max);
-
-						double min = Math.min(a, b);
-						System.out.println("Min value of " + a + "and " + b + " is " + min);
-
-						double pow = Math.pow(2, 3);
-						System.out.println("2 to the power of 3 is " + pow);
-
-						double sqrt = Math.sqrt(16);
-						System.out.println("Square root of 16 is " + sqrt);
-
-						double random = Math.random();
-						System.out.println("Random number between 0 and 1 is " + random);
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h3>BigDecimal</h3>
-				<p>
-					Part of the <strong>java.math</strong> package,
-					<strong>BigDecimal</strong> is a class that provides arbitrary-precision signed decimal numbers.
-				</p>
-				<p>
-					So far we used <strong>double</strong> and <strong>float</strong> to represent floating point numbers,
-					but these types have limitations in terms of precision and rounding errors.
-				</p>
-				<p>
-					<code>BigDecimal</code> is better choice when we need to represent numbers with high precision, such as when working with very large or very small numbers.
-				</p>
-				<p>
-					It's use, however, comes with a cost of performance and memory consumption.
-				</p>
-				<p>
-					It has methods such as <code>add()</code>, <code>subtract()</code>, <code>multiply()</code>, <code>divide()</code>, <code>pow()</code>, <code>sqrt()</code>, <code>cbrt()</code>,
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						// parse big decimal from string
-						BigDecimal radius = new BigDecimal("987654321.12345678901234567890");
-
-						// get big decimal value from other types
-						BigDecimal two = BigDecimal.valueOf(2);
-
-						// get big decimal representation of pi
-						BigDecimal pi = BigDecimal.valueOf(Math.PI);
-
-						var circleCircumference = two.multiply(pi).multiply(radius);
-
-						System.out.println(circleCircumference); // 6205615119.05533231868504652218099103339093540
-					</code>
-				</pre>
-			</section>
-		</section>
-		<section>
-			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Java Optional</h2>
-				<em>java.util</em>
-			</section>
-			<section>
-				<h3>Java Optional</h3>
-				<em>
-					<strong>Optional</strong> is a container object which may or may not contain a non-null value.
-				</em>
-				<hr />
-				<p>
-					Its purpose is to provide a type-level solution for representing optional values instead of using <strong>null</strong>.
-
-				</p>
-				<p>
-					It forces the user to think about the possibility of a value being absent by requiring the user to explicitly unwrap the value.
-				</p>
-				<p>
-					This in contrast, null values can be accessed without any checks and therefore can lead to <strong>NullPointerException</strong>.
-				</p>
-				<hr />
-				<p>
-					It was introduced in <strong>Java 8</strong> and resides in <code>java.util</code> package.
-				</p>
-			</section>
-			<section>
-				<h4>Java Optional</h4>
-				<pre>OptionalExample.java
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class OptionalExample {
-
-							public static void main(String[] args) {
-
-								// create an instance of Optional
-								Optional&lt;String&gt; optional = Optional.ofNullable(getRandomValue());
-
-								// check if the value is present
-								boolean isPresent = optional.isPresent();
-								System.out.println("Value is present: " + isPresent);
-
-								// you can also use orElse method to provide a default value
-								String result = optional.orElse("Optional is cool!");
-								System.out.println("Value: " + result);
-
-								// or in a functional way
-								String result2 = optional.orElseGet(() -> "Optional is cool!");
-								System.out.println("Value: " + result2);
-
-								try {
-									// or to throw an exception if the value is not present
-									optional.orElseThrow(() -> new RuntimeException("Value was not present"));
-								} catch (RuntimeException e) {
-									System.out.println(e.getMessage());
-								}
-							}
-
-							private static String getRandomValue() {
-								List&lt;String&gt; values = Arrays.asList(null, "Java is fun!");
-								return values.get(new Random().nextInt(values.size()));
-							}
-
-						}
-					</code>
-				</pre>
-			</section>
-		</section>
-		<section>
-			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Java Time</h2>
-				<em>java.time</em>
+				<h3>Working with date and time</h3>
+				<div class="summary">
+					Using <code class="inline">java.time</code>
+				</div>
+				<div class="content">
+					<p>
+						Kotlin does provide date and time library in the SDK.
+						Instead, you can use Java's <code class="inline">java.time</code> package for date and time operations.
+					</p>
+					<p>
+						There is kotlinx-datetime library, which is a multiplatform library for working with dates and times in Kotlin,
+						but you need to add it as an extra dependency to your project.
+					</p>
+					<p>
+						For most of the cases, however, <code class="inline">java.time</code> should be sufficient.
+					</p>
+				</div>
 			</section>
 			<section>
 				<h3>Java Time</h3>
-				<hr />
-				<p>
-					The <strong>java.time</strong> package provides us with tools to work with dates, time, intervals and durations.
-				</p>
-				<hr />
-				<p>
-					As already mentioned, it replaced date and time related tools from <strong>java.util</strong>, which was not well-designed,
-					was cumbersome to use, did not provide good way fo handling time zones and was not thread safe (!!!).
-					<br />
-					<br />
-					For these reasons, it was often substituted with 3rd party libraries such as <strong>joda.time</strong>.
-				</p>
-				<p>
-					The current <strong>java.time</strong> package, however, is generally considered to be good implementation
-					and you should be using it whenever you are working with Java 8 newer.
-				</p>
-				<blockquote>
-					Note that most classes in <strong>java.time</strong> are nice examples of implementations using static inner classes.
-				</blockquote>
+				<div class="summary">
+					The <code class="inline">java.time</code> package contains tools to work with dates, time, intervals and durations.
+				</div>
+				<div class="content">
+					<p>
+						<code class="inline">java.time</code> replaced date and time related tools from <code class="inline">java.util</code>, which was not well-designed,
+						was cumbersome to use, did not provide good way fo handling time zones and was not thread safe (!!!).
+					</p>
+					<p>
+						For these reasons, it was often substituted with 3rd party libraries such as <code class="inline">joda.time</code>,
+						which you may come across in older projects.
+					</p>
+					<p>
+						The current <code class="inline">java.time</code> package, however, is generally considered to be good implementation,
+						and you should be using it whenever you are working with <strong>Java 8</strong> newer.
+					</p>
+				</div>
 			</section>
-
 			<section>
-				<h4>Java Time</h4>
-				<p>
-					Here are the tools you will find in <strong>java.time</strong>.
-				</p>
-				<table style="font-size: 70%">
-					<tbody>
-					<tr>
-						<td><code><strong>Clock</strong></code></td>
-						<td>A clock providing access to the current instant, date and time using a time-zone.</td>
-					</tr>
-					<tr>
-						<td><code><strong>Duration</strong></code></td>
-						<td>A time-based amount of time, such as '34.5 seconds'.</td>
-					</tr>
-					<tr>
-						<td><code><strong>Instant</strong></code></td>
-						<td>An instantaneous point on the time-line.</td>
-					</tr>
-					<tr>
-						<td><code><strong>LocalDate</strong></code></td>
-						<td>A date without a time-zone in the ISO-8601 calendar system, such as 2007-12-03.</td>
-					</tr>
-					<tr>
-						<td><code><strong>LocalDateTime</strong></code></td>
-						<td>A date-time without a time-zone in the ISO-8601 calendar system, such as 2007-12-03T10:15:30.</td>
-					</tr>
-					<tr>
-						<td><code><strong>LocalTime</strong></code></td>
-						<td>A time without a time-zone in the ISO-8601 calendar system, such as 10:15:30.</td>
-					</tr>
-					<tr>
-						<td><code><strong>MonthDay</strong></code></td>
-						<td>A month-day in the ISO-8601 calendar system, such as --12-03.</td>
-					</tr>
-					<tr>
-						<td><code><strong>OffsetDateTime</strong></code></td>
-						<td>A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system, such as 2007-12-03T10:15:30+01:00.</td>
-					</tr>
-					<tr>
-						<td><code><strong>OffsetTime</strong></code></td>
-						<td>A time with an offset from UTC/Greenwich in the ISO-8601 calendar system, such as 10:15:30+01:00.</td>
-					</tr>
-					<tr>
-						<td><code><strong>Period</strong></code></td>
-						<td>A date-based amount of time in the ISO-8601 calendar system, such as '2 years, 3 months and 4 days'.</td>
-					</tr>
-					<tr>
-						<td><code><strong>Year</strong></code></td>
-						<td>A year in the ISO-8601 calendar system, such as 2007.</td>
-					</tr>
-					<tr>
-						<td><code><strong>YearMonth</strong></code></td>
-						<td>A year-month in the ISO-8601 calendar system, such as 2007-12.</td>
-					</tr>
-					<tr>
-						<td><code><strong>ZonedDateTime</strong></code></td>
-						<td>A date-time with a time-zone in the ISO-8601 calendar system, such as 2007-12-03T10:15:30+01:00 Europe/Paris.</td>
-					</tr>
-					<tr>
-						<td><code><strong>ZoneId</strong></code></td>
-						<td>A time-zone ID, such as Europe/Paris.</td>
-					</tr>
-					<tr>
-						<td><code><strong>ZoneOffset</strong></code></td>
-						<td>A time-zone offset from Greenwich/UTC, such as +02:00.</td>
-					</tr>
-					</tbody>
-				</table>
-				<div style="font-size: 60%; text-align: right;">
-					Source: <a href="https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html">Oracle Java SE 8 documentation</a>
+				<h3>Java Time</h3>
+				<div class="summary">
+					Here are the tools you will find in <code class="inline">java.time</code>.
+				</div>
+				<div class="content" style="font-size: 70%">
+					<table>
+						<tbody>
+						<tr>
+							<td><code class="inline"><strong class="highlight">Clock</strong></code></td>
+							<td>A clock providing access to the current instant, date and time using a time-zone.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">Duration</strong></code></td>
+							<td>A time-based amount of time, such as '34.5 seconds'.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">Instant</strong></code></td>
+							<td>An instantaneous point on the time-line.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">LocalDate</strong></code></td>
+							<td>A date without a time-zone in the ISO-8601 calendar system, such as 2007-12-03.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">LocalDateTime</strong></code></td>
+							<td>A date-time without a time-zone in the ISO-8601 calendar system, such as 2007-12-03T10:15:30.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">LocalTime</strong></code></td>
+							<td>A time without a time-zone in the ISO-8601 calendar system, such as 10:15:30.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">MonthDay</strong></code></td>
+							<td>A month-day in the ISO-8601 calendar system, such as --12-03.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">OffsetDateTime</strong></code></td>
+							<td>A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system, such as 2007-12-03T10:15:30+01:00.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">OffsetTime</strong></code></td>
+							<td>A time with an offset from UTC/Greenwich in the ISO-8601 calendar system, such as 10:15:30+01:00.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">Period</strong></code></td>
+							<td>A date-based amount of time in the ISO-8601 calendar system, such as '2 years, 3 months and 4 days'.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">Year</strong></code></td>
+							<td>A year in the ISO-8601 calendar system, such as 2007.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">YearMonth</strong></code></td>
+							<td>A year-month in the ISO-8601 calendar system, such as 2007-12.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">ZonedDateTime</strong></code></td>
+							<td>A date-time with a time-zone in the ISO-8601 calendar system, such as 2007-12-03T10:15:30+01:00 Europe/Paris.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">ZoneId</strong></code></td>
+							<td>A time-zone ID, such as Europe/Paris.</td>
+						</tr>
+						<tr>
+							<td><code class="inline"><strong class="highlight">ZoneOffset</strong></code></td>
+							<td>A time-zone offset from Greenwich/UTC, such as +02:00.</td>
+						</tr>
+						</tbody>
+					</table>
+					<div style="font-size: 60%; text-align: right;">
+						Source: <a href="https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html">Oracle Java SE 8 documentation</a>
+					</div>
 				</div>
 			</section>
 		</section>
@@ -280,60 +148,73 @@
 			</section>
 			<section>
 				<h3>LocalDate</h3>
-				<p>
-					<strong>LocalDate</strong> allows us to work with dates without time zone. Let's have a look ...
-				</p>
-				<pre>
-					Get today's date
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						LocalDate dateNow = LocalDate.now();
-					</code>
-				</pre>
+				<div class="summary">
+					<strong class="highlight">LocalDate</strong> allows us to work with dates without time zone.
+					Here are some examples.
+				</div>
+				<div class="content">
+					<p>Get today's date</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val dateNow = LocalDate.now()
+						</code>
+					</pre>
+					<p>Get a specific date</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val date = LocalDate.of(2024, 2, 20)
+						</code>
+					</pre>
+					<p>Parse an ISO-8601 format date</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val date = LocalDate.parse("2024-02-20")
+						</code>
+					</pre>
+					<p>Manipulate dates</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val tomorrow = LocalDate.now().plusDays(1)
 
-				<pre>
-					Get a specific date
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						LocalDate date = LocalDate.of(2024, 2, 20);
-					</code>
-				</pre>
+							val nextPeriod = LocalDate.now().plusMonths(3)
 
-				<pre>
-					Parse an ISO-8601 format date
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						LocalDate date = LocalDate.parse("2024-02-20");
-					</code>
-				</pre>
+							val lastYear = LocalDate.now().minusYears(1)
+						</code>
+					</pre>
+				</div>
+				<br />
+				<br />
+				<em>↓</em>
+			</section>
+			<section>
+				<h3>LocalDate</h3>
+				<div class="content">
+					<p>Extract information about date</p>
+					<pre>
 
-				<pre>
-					Manipulate dates
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						LocalDate tomorrow = LocalDate.now().plusDays(1);
-						LocalDate nextPeriod = LocalDate.now().plusMonths(3);
-						LocalDate lastYear = LocalDate.now().minusYears(1);
-					</code>
-				</pre>
-				<pre>
-					Extract information about date
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						LocalDate dateNow = LocalDate.now();
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val dateNow = LocalDate.now()
 
-						// get parts of the date
-						int dayOfYear = dateNow.getDayOfYear();
-						int dayOfMonth = dateNow.getDayOfMonth();
-						DayOfWeek dayOfWeek = dateNow.getDayOfWeek();
+							// get parts of the date
+							val dayOfYear = dateNow.getDayOfYear()
+							val dayOfMonth = dateNow.getDayOfMonth()
+							val dayOfWeek = dateNow.getDayOfWeek()
 
-						// or even leap year
-						boolean leapYear = dateNow.isLeapYear();
-					</code>
-				</pre>
-				<pre>
-					Compare dates
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						boolean isBefore = LocalDate.now().isBefore(LocalDate.parse("2024-03-08"));
-						boolean isAfter = LocalDate.now().isAfter(LocalDate.parse("2024-02-19"));
-						boolean isEqual = LocalDate.now().isEqual(LocalDate.parse("2024-02-20"));
-					</code>
-				</pre>
+							// or even leap year
+							val leapYear = dateNow.isLeapYear()
+						</code>
+					</pre>
+					<p>Compare dates</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val isBefore = LocalDate.now().isBefore(LocalDate.parse("2024-03-08"))
+
+							val isAfter = LocalDate.now().isAfter(LocalDate.parse("2024-02-19"))
+
+							val isEqual = LocalDate.now().isEqual(LocalDate.parse("2024-02-20"))
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -343,36 +224,49 @@
 			</section>
 			<section>
 				<h3>LocalDateTime</h3>
-				<p>
-					<strong>LocalDateTime</strong> works the same way, but it also adds time component ...
-				</p>
-				<pre>
-					Examples
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						LocalDateTime dateTimeNow = LocalDateTime.now();
-						System.out.println(dateTimeNow); // prints local date and time, for example 2024-01-14T08:08:44.548746
+				<div class="summary">
+					<strong class="highlight">LocalDateTime</strong> works the same way, but it also adds time component ...
+				</div>
+				<div class="content">
+					<strong>Examples:</strong>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val dateTimeNow = LocalDateTime.now() // local date in format 2024-01-14T08:08:44.548746
 
-						int year = dateTimeNow.getYear();
-						Month month = dateTimeNow.getMonth();
-						int monthValue = dateTimeNow.getMonthValue();
-						DayOfWeek dayOfWeek = dateTimeNow.getDayOfWeek();
-						int day = dateTimeNow.getDayOfMonth();
-						int hour = dateTimeNow.getHour();
-						int minute = dateTimeNow.getMinute();
-						int second = dateTimeNow.getSecond();
+							val year = dateTimeNow.getYear()
 
-						LocalDateTime dateTime = LocalDateTime.parse("2024-01-14T08:08:44.548746");
-						boolean isAfter = dateTimeNow.isAfter(dateTime);
-					</code>
-				</pre>
-				<pre>
-					Convert LocalDate to LocalDateTime
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						LocalDate dateNow = LocalDate.now();
-						LocalDateTime dateTimeNow1 = dateNow.atTime(LocalTime.now());
-						LocalDateTime dateTimeNow2 = dateNow.atTime(LocalTime.parse("08:08:44"));
-					</code>
-				</pre>
+							val month = dateTimeNow.getMonth()
+
+							val monthValue = dateTimeNow.getMonthValue()
+
+							val dayOfWeek = dateTimeNow.getDayOfWeek()
+
+							val day = dateTimeNow.getDayOfMonth()
+
+							val hour = dateTimeNow.getHour()
+
+							val minute = dateTimeNow.getMinute()
+
+							val second = dateTimeNow.getSecond()
+
+							val dateTime = LocalDateTime.parse("2024-01-14T08:08:44.548746")
+
+							val isAfter = dateTimeNow.isAfter(dateTime)
+						</code>
+					</pre>
+					<p>
+						Convert <strong class="highlight">LocalDate</strong> to <strong class="highlight">LocalDateTime</strong>
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val dateNow = LocalDate.now()
+
+							val dateTimeNow1 = dateNow.atTime(LocalTime.now())
+
+							val dateTimeNow2 = dateNow.atTime(LocalTime.parse("08:08:44"))
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -382,35 +276,46 @@
 			</section>
 			<section>
 				<h3>ZonedDateTime</h3>
-				<p>
-					<strong>ZonedDateTime</strong> adds time zones ...
-				</p>
-				<pre>
-					Examples
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						ZonedDateTime zonedDateTimeNow = ZonedDateTime.now();
-						System.out.println(zonedDateTimeNow); // 2024-01-14T09:44:26.147022+01:00[Europe/Prague]
-						System.out.println(zonedDateTimeNow.toLocalDateTime()); // 2024-01-14T09:44:26.147022
-					</code>
-				</pre>
-				<pre>
-					Convert LocalDateTime to ZonedDateTime
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(ZoneId.of("Asia/Bangkok"));
-						System.out.println(zonedDateTime); // 2024-01-14T09:44:26.150263+07:00[Asia/Bangkok]
-					</code>
-				</pre>
+				<div class="summary">
+					<strong class="highlight">ZonedDateTime</strong> adds time zones ...
+				</div>
+				<div class="content">
+					<strong>Examples:</strong>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val zonedDateTimeNow = ZonedDateTime.now() // 2024-01-14T09:44:26.147022+01:00[Europe/Prague]
+						</code>
+					</pre>
+					<p>
+						Convert <strong class="highlight">ZonedDateTime</strong> to <strong class="highlight">LocalDateTime</strong>
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val localDateTimeNow = zonedDateTimeNow.toLocalDateTime()) // 2024-01-14T09:44:26.147022
+						</code>
+					</pre>
+					<p>
+						Convert <strong class="highlight">LocalDateTime</strong> to <strong class="highlight">ZonedDateTime</strong>
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val zonedDateTime = LocalDateTime.now().atZone(ZoneId.of("Asia/Bangkok")) // 2024-01-14T09:44:26.150263+07:00[Asia/Bangkok]
+						</code>
+					</pre>
+					<p>Convert between zones using <strong class="highlight">Instant</strong></p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val zonedDateTimeNow = ZonedDateTime.now() // 2024-01-14T09:44:26.147022+01:00[Europe/Prague]
 
-				<pre>
-					Convert between zones using instant
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						ZonedDateTime zonedDateTimeNow = ZonedDateTime.now();
-						System.out.println(zonedDateTimeNow); // 2024-01-14T09:44:26.147022+01:00[Europe/Prague]
-
-						ZonedDateTime zonedDateTime2 = zonedDateTimeNow.withZoneSameInstant(ZoneId.of("Asia/Bangkok"));
-						System.out.println(zonedDateTime2); // 2024-01-14T15:44:26.147022+07:00[Asia/Bangkok]
-					</code>
-				</pre>
+							val zonedDateTime = zonedDateTimeNow.withZoneSameInstant(ZoneId.of("Asia/Bangkok")) // 2024-01-14T15:44:26.147022+07:00[Asia/Bangkok]
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val zonedDateTime = zonedDateTimeNow.withZoneSameInstant(ZoneId.of("Asia/Bangkok")) // 2024-01-14T15:44:26.147022+07:00[Asia/Bangkok]
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -420,37 +325,35 @@
 			</section>
 			<section>
 				<h3>Instant</h3>
-				<p>
+				<div class="summary">
 					To work with zoned date and time correctly, we need to understand the concept of an instant.<br />
-				</p>
-				<ul style="font-size: 80%">
-					<li>Instant represents an instantaneous point on the time-line.</li>
-					<li>Instant stores date and time information in UTC (Coordinated Universal Time) format.</li>
-					<li>Instant doesn't contain any information about time zones and doesn't take daylight saving time into account.</li>
-					<li>Instant is useful for applications requiring a high degree of time precision.</li>
-					<li>You can easily convert Instant to DateTime, LocalDateTime, ZonedDate ZonedDateTime, but to convert to Instant, you need to specify time zone. </li>
-				</ul>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						Instant instantNow = Instant.now();
-						System.out.println(instantNow); // 2024-01-14T09:01:00.878577Z
+				</div>
+				<div class="content">
+					<ul>
+						<li>Instant represents an instantaneous point on the time-line.</li>
+						<li>Instant stores date and time information in UTC (Coordinated Universal Time) format.</li>
+						<li>Instant doesn't contain any information about time zones and doesn't take daylight saving time into account.</li>
+						<li>Instant is useful for applications requiring a high degree of time precision.</li>
+						<li>You can easily convert Instant to DateTime, LocalDateTime, ZonedDate ZonedDateTime, but to convert to Instant, you need to specify time zone. </li>
+					</ul>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val instantNow = Instant.now() // 2024-01-14T09:01:00.878577Z
 
-						LocalDateTime localDateTime = LocalDateTime.now();
-						System.out.println(localDateTime); // 2024-01-14T10:01:00.896618
+							val localDateTime = LocalDateTime.now() // 2024-01-14T10:01:00.896618
 
-						ZoneId zone = ZoneId.of("Asia/Bangkok");
-						ZoneOffset zoneOffset = zone.getRules().getOffset(localDateTime);
-
-						Instant instant = localDateTime.toInstant(zoneOffset);
-						System.out.println(instant); // 2024-01-14T03:01:00.896618Z
-					</code>
-				</pre>
-				<pre>
-					Or you can use hard-coded offset, which will however possibly not reflect daylight saving time.
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-        				System.out.println(localDateTime.toInstant(ZoneOffset.ofHours(6))); // 2024-01-14T04:01:00.896618Z
-					</code>
-				</pre>
+							val zone = ZoneId.of("Asia/Bangkok")
+							val zoneOffset = zone.rules.getOffset(localDateTime)
+							val instant = localDateTime.toInstant(zoneOffset) // 2024-01-14T03:01:00.896618Z
+						</code>
+					</pre>
+					<p>Or you can use hard-coded offset, which will however possibly not reflect daylight saving time.</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							localDateTime.toInstant(ZoneOffset.ofHours(6)) // 2024-01-14T04:01:00.896618Z
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -460,21 +363,330 @@
 			</section>
 			<section>
 				<h3>Duration</h3>
-				<p>
-					Helps us measure time amount between instants.<br />
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						ZonedDateTime from = ZonedDateTime.parse("2024-01-14T09:44:26.147022+01:00[Europe/Prague]");
-						ZonedDateTime to = ZonedDateTime.now();
+				<div class="summary">
+					Duration helps us measure time amount between instants.<br />
+				</div>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val from = ZonedDateTime.parse("2024-01-14T09:44:26.147022+01:00[Europe/Prague]")
+							val to = ZonedDateTime.now()
 
-						Duration duration = Duration.between(from, to);
+							val duration = Duration.between(from, to)
 
-						System.out.println(duration); // PT21M15.740325S
-						System.out.println(duration.getSeconds()); //1275
-						System.out.println(duration.getNano()); // 740325000
-					</code>
-				</pre>
+							println(duration) // PT21M15.740325S
+							println(duration.seconds) //1275
+							println(duration.nano) // 740325000
+						</code>
+					</pre>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Kotlin Math</h2>
+				<em>kotlin.math</em>
+			</section>
+			<section>
+				<h3>Math</h3>
+				<div class="summary">
+					The <code class="inline">kotlin.math</code> package provides a set of mathematical functions
+					and constants that are useful for performing various mathematical operations.
+				</div>
+				<div class="content" style="font-size: 70%">
+					<p>
+						Compared to Java Math, Kotlin Math provides more functions and constants.
+						Here are some key features and functions:
+					</p>
+					<div class="row">
+						<div class="column">
+							<h4>Constants</h4>
+							<ul>
+								<li><strong class="highlight">PI</strong>: The value of π (pi).</li>
+								<li><strong class="highlight">E</strong>: The base of the natural logarithms.</li>
+							</ul>
+							<br />
+							<br />
+							<h4>Functions</h4>
+							<ul>
+								<li>
+									<strong class="highlight">Absolute Value</strong>
+									<ul>
+										<li><code class="inline">abs(x: Double): Double</code></li>
+										<li><code class="inline">abs(x: Float): Float</code></li>
+										<li><code class="inline">abs(x: Int): Int</code></li>
+										<li><code class="inline">abs(x: Long): Long</code></li>
+									</ul>
+								</li>
+								<li>
+									<strong class="highlight">Min/Max Functions</strong>
+									<ul>
+										<li><code class="inline">max(x: Double, y: Double): Double</code></li>
+										<li><code class="inline">min(x: Double, y: Double): Double</code></li>
+									</ul>
+								</li>
+								<li>
+									<strong class="highlight">Random Number Generation</strong>
+									<ul>
+										<li><code class="inline">random(): Double</code></li>
+										<li><code class="inline">random(seed: Int): Double</code></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<div class="column">
+							<ul>
+								<li>
+									<strong class="highlight">Trigonometric Functions</strong>
+									<ul>
+										<li><code class="inline">sin(x: Double): Double</code></li>
+										<li><code class="inline">cos(x: Double): Double</code></li>
+										<li><code class="inline">tan(x: Double): Double</code></li>
+										<li><code class="inline">asin(x: Double): Double</code></li>
+										<li><code class="inline">acos(x: Double): Double</code></li>
+										<li><code class="inline">atan(x: Double): Double</code></li>
+										<li><code class="inline">atan2(y: Double, x: Double): Double</code></li>
+									</ul>
+								</li>
+							</ul>
+							<ul>
+								<li>
+									<strong class="highlight">Exponential and Logarithmic Functions</strong>
+									<ul>
+										<li><code class="inline">exp(x: Double): Double</code></li>
+										<li><code class="inline">ln(x: Double): Double</code></li>
+										<li><code class="inline">log(x: Double): Double</code></li>
+										<li><code class="inline">log10(x: Double): Double</code></li>
+									</ul>
+								</li>
+								<li>
+									<strong class="highlight">Power Functions</strong>
+									<ul>
+										<li><code class="inline">pow(x: Double, y: Double): Double</code></li>
+										<li><code class="inline">sqrt(x: Double): Double</code></li>
+										<li><code class="inline">cbrt(x: Double): Double</code></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>BigDecimal</h2>
+				<em>java.math</em>
+			</section>
+			<section>
+				<h3>BigDecimal</h3>
+				<div class="summary">
+					<strong class="highlight">BigDecimal</strong> is a <strong class="highlight">Java</strong> class which is part of the <strong>java.math</strong> package
+					and provides arbitrary-precision signed decimal numbers.
+				</div>
+				<div class="content">
+					<p>
+						So far we used <strong class="highlight">Double</strong> and <strong class="highlight">Float</strong> to represent floating point numbers,
+						but these types have limitations in terms of precision and rounding errors.
+					</p>
+					<p>
+						<strong class="highlight">BigDecimal</strong> is better choice when we need to represent numbers with high precision,
+						such as when working with very large or very small numbers.
+					</p>
+					<p>
+						Also, as it stands, you will likely be working with <strong class="highlight">Java</strong>
+						libraries which may use <strong class="highlight">BigDecimal</strong>.
+					</p>
+					<p>
+						It's use, however, comes with a cost of performance and memory consumption,
+						so it should be used only when necessary.
+					</p>
+					<p>
+						It has methods such as
+						<code class="inline">add()</code>,
+						<code class="inline">subtract()</code>,
+						<code class="inline">multiply()</code>,
+						<code class="inline">divide()</code>,
+						<code class="inline">pow()</code>,
+						<code class="inline">sqrt()</code>
+						and <code class="inline">cbrt()</code>.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							// parse big decimal from string
+							val radius = BigDecimal("987654321.12345678901234567890")
+
+							// get big decimal value from other types
+							val two = BigDecimal.valueOf(2)
+
+							// get big decimal representation of pi
+							val pi = BigDecimal.valueOf(Math.PI)
+
+							val circleCircumference = two.multiply(pi).multiply(radius)
+
+							println(circleCircumference) // 6205615119.05533231868504652218099103339093540
+						</code>
+					</pre>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Exercise: Date and Time</h2>
+				<em>java.time</em>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="summary">
+					Warmup
+				</div>
+				<div class="content">
+					<ol>
+						<li>Create a program that will get current date and time as ZonedDateTime (at local time zone).</li>
+						<li>Print the zone and zone offset.</li>
+						<li>
+							From the date and time, get the same instant, but in different time zone. You may choose any time zones you like. Here are some ideas:
+							<ul>
+								<li><code class="inline">ZoneId.of("Asia/Tokyo")</code></li>
+								<li><code class="inline">ZoneId.of("Europe/Prague")</code></li>
+								<li><code class="inline">ZoneId.of("Europe/London")</code></li>
+								<li><code class="inline">ZoneId.of("America/New_York")</code></li>
+								<li><code class="inline">ZoneId.of("America/Los_Angeles")</code></li>
+								<li><code class="inline">ZoneId.of("UTC")</code></li>
+							</ul>
+						</li>
+						<li>Print the zone id and zone offset for this new time zone.</li>
+						<li>Calculate the time difference between the local time zone and the other time zone.</li>
+					</ol>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="summary">
+					Serious stuff
+				</div>
+				<div class="content">
+					<ol>
+						<li>
+							You are given a <a href="../docs/data/meteodata.csv" target="_blank"><strong>meteodata.csv</strong></a> file which contains measurements of temperature, humidity and precipitation with time (in UTC).
+							<br />
+							<br />
+						</li>
+						<li>
+							Your job is to write a program which will calculate <strong class="highlight">daily average</strong> for temperature and humidity,
+							and daily sum of precipitation based on the data provided.
+							<br />
+							<em>
+								This means you will need to find all measurements for a given day,
+								calculate average temperature and humidity and sum of precipitation for that day.
+							</em>
+							<br />
+							<br />
+						</li>
+						<li>
+							The daily statistics should be calculated for a time zone that is given at the program input.
+							<br />
+							<em>
+								So for example if you want to return statistics for Bangkok, you need to calculate statistics based on <strong class="highlight">UTC+7</strong>,
+								which is <strong class="highlight">Asia/Bangkok</strong> zone ID.
+							</em>
+							<br />
+							<br />
+						</li>
+						<li>
+							It would be good to make sure that the results data are returned sorted by date, ascending.
+							It should also not contain duplicates.
+							<br />
+							<br />
+						</li>
+						<li>
+							Use collections, data classes, extension functions, kotlin.math, java.time and whatever else you have learned to solve this task.
+						</li>
+						<li>
+							If you load your data into a data class, you can actually use the same data class to return the statistics.
+						</li>
+						<li>
+							Don't forget to handle errors!
+						</li>
+					</ol>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Java Optional</h2>
+				<em>java.util</em>
+			</section>
+			<section>
+				<h3>Java Optional</h3>
+				<div class="summary">
+					<strong class="highlight">Optional</strong> is <strong class="highlight">Java</strong>
+					container object which may or may not contain a non-null value.
+				</div>
+				<div class="content">
+					<p>
+						Its purpose is to provide a type-level solution in <strong class="highlight">Java</strong>
+						for representing optional values instead of using <strong>null</strong>.
+					</p>
+					<p>
+						It forces the user to think about the possibility of a value being absent by requiring the user to explicitly unwrap the value.
+					</p>
+					<p>
+						This in contrast, null values can be accessed without any checks and therefore can lead to <strong>NullPointerException</strong>.
+					</p>
+					<p>
+						It was introduced in <strong>Java 8</strong> and resides in <code class="inline">java.util</code> package.
+					</p>
+				</div>
+				<br />
+				<br />
+				<div class="content content-100 content-center">
+					<h4>
+						Hold on this is a Kotlin class! Why do we need to know?
+					</h4>
+					<blockquote>
+						Because in real world you will be working with <strong class="highlight">Java</strong>  libraries and frameworks,
+						and you may come across <strong class="highlight">Optional</strong> in their APIs.
+					</blockquote>
+				</div>
+			</section>
+			<section>
+				<h3>Java Optional</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import java.util.Optional
+
+							fun main() {
+								// create an instance of Optional
+								val optional: Optional&lt;String&gt; = getRandomValue()
+
+								// check if the value is present
+								val isPresent = optional.isPresent
+								println("Value is present: $isPresent")
+
+								// you can also use orElse method to provide a default value
+								val result = optional.orElse("Optional is cool!")
+								println("Value: $result")
+
+								// or in a functional way
+								val result2 = optional.orElseGet { "Optional is cool!" }
+								println("Value: $result2")
+
+								try {
+									// or to throw an exception if the value is not present
+									optional.orElseThrow { RuntimeException("Value was not present") }
+								} catch (e: RuntimeException) {
+									println(e.message)
+								}
+							}
+
+							private fun getRandomValue(): Optional&lt;String&gt; {
+								return Optional.ofNullable(listOf(null, "Java is \"fun\"!").random())
+							}
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -483,11 +695,9 @@
 				<em>↓</em>
 			</section>
 			<section>
-				<h3>Practice</h3>
-				<div class="content">
-					Create a Match class
-					Create a MatchResult class
-					Create a fight function
+				<div style="font-size: 200%">
+					<em>Surprise!</em><br />
+					<em>Nothing today ㋡</em>
 				</div>
 			</section>
 		</section>
@@ -507,7 +717,7 @@
 
 		// Learn about plugins: https://revealjs.com/plugins/
 		plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-	});
+	})
 </script>
 </body>
 </html>

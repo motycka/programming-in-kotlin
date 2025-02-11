@@ -1,10 +1,14 @@
 package com.motycka.edu.game
 
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
 internal class Warrior(
     name: String,
     health: Int,
     attackPower: Int,
-    override var stamina: Int,
+    override val stamina: Int,
     override val defensePower: Int,
     override val level: CharacterLevel, // new
 ) : Character(
@@ -13,7 +17,7 @@ internal class Warrior(
     attackPower = attackPower
 ), Defender {
 
-    private val maxStamina = stamina
+    private var currentStamina = stamina
 
     // new
     init {
@@ -24,12 +28,12 @@ internal class Warrior(
 
     override fun attack(target: Character) {
         when {
-            health <= 0 -> println("$name is dead and cannot attack")
-            stamina <= 0 -> println("$name is too tired to attack")
+            health <= 0 -> logger.info { "$name is dead and cannot attack" }
+            stamina <= 0 -> logger.info { "$name is too tired to attack" }
             else -> {
-                println("$name swings a sword at ${target.name}")
+                logger.info { "$name swings a sword at ${target.name}" }
                 target.receiveAttack(attackPower)
-                stamina--
+                currentStamina--
             }
         }
     }
@@ -40,18 +44,18 @@ internal class Warrior(
 
     override fun defend(attackPower: Int): Int {
         return if (stamina > 0) {
-            println("$name raises shield and defends against $defensePower damage")
+            logger.info { "$name raises shield and defends against $defensePower damage" }
             attackPower - defensePower
         } else {
-            println("$name is too tired to defend")
+            logger.info { "$name is too tired to defend" }
             attackPower
         }
     }
 
     override fun beforeRound() {
-        if (stamina < maxStamina) {
-            println("$name regenerates 1 stamina")
-            stamina++
+        if (currentStamina < stamina) {
+            logger.info { "$name regenerates 1 stamina" }
+            currentStamina++
         }
     }
 

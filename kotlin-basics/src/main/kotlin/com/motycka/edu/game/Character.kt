@@ -1,9 +1,13 @@
 package com.motycka.edu.game
 
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
 internal abstract class Character(
     val name: String,
     val health: Int,
-    val attackPower: Int,
+    val attackPower: Int
 ): Recoverable { // new
 
     protected var currentHealth: Int = health // new
@@ -17,12 +21,12 @@ internal abstract class Character(
         when {
             currentHealth - attackPower > 0 -> {
                 currentHealth -= attackPower
-                println("$name has $currentHealth health remaining.")
+                logger.info { "$name has $currentHealth health remaining." }
             }
 
             else -> {
                 currentHealth = 0
-                println("$name has been defeated")
+                logger.info { "$name has been defeated" }
             }
         }
     }
