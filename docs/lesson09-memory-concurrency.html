@@ -41,7 +41,7 @@
 							that is independent of the underlying hardware and operating system.
 						</li>
 						<li>
-							Other programming languages that can run on JVM include <strong>Kotlin</strong>, <strong>Scala</strong>, <strong>Groovy</strong> and <strong>Clojure</strong>.
+							Other programming languages that can run on JVM include <strong class="highlight">Kotlin</strong>, <strong class="highlight">Scala</strong>, <strong class="highlight">Groovy</strong> and <strong class="highlight">Clojure</strong>.
 						</li>
 						<li>
 							JVM also provides tools for runtime performance optimization, memory management (garbage collection), monitoring, and other.
@@ -60,15 +60,15 @@
 				<div class="content">
 					<ul>
 						<li>
-							<strong>Specification</strong><br />
+							<strong class="highlight">Specification</strong><br />
 							Defines how the JVM should be implemented.
 						</li>
 						<li>
-							<strong>Implementation</strong><br />
+							<strong class="highlight">Implementation</strong><br />
 							The actual JVM implementation.
 						</li>
 						<li>
-							<strong>Instance</strong><br />
+							<strong class="highlight">Instance</strong><br />
 							A running JVM process (create every time you start a Java program).
 						</li>
 					</ul>
@@ -105,7 +105,7 @@
 					</p>
 					<p>
 						<strong class="highlight">Java Compiler</strong><br />
-						Java source code is compiled into <strong>bytecode</strong>, which is then executed by JVM. To do so, you need a Java compiler.
+						Java source code is compiled into <strong class="highlight">bytecode</strong>, which is then executed by JVM. To do so, you need a Java compiler.
 					</p>
 					<p>
 						<strong class="highlight">Java Bytecode</strong><br />
@@ -187,7 +187,7 @@
 						and the process responsible for it is called the <span class="highlight">garbage collector</span>.
 					</p>
 					<p>
-						<strong>There are two types of memory in Java:</strong>
+						<strong class="highlight">There are two types of memory in Java:</strong>
 					</p>
 					<ul>
 						<li><span class="highlight">Heap Memory</span></li>
@@ -329,7 +329,7 @@
 				</div>
 				<div class="content">
 					<p>
-						Generally, there is always at least one thread running in a Java program - the <strong>main</strong> thread.
+						Generally, there is always at least one thread running in a Java program - the <strong class="highlight">main</strong> thread.
 					</p>
 					<p>
 						To create a new thread, need to create new instance <code class="inline">Thread</code> class.
@@ -339,7 +339,7 @@
 						Another way to create a thread is by implementing the <code class="inline">Runnable</code> interface and passing an instance of it to a new thread.
 					</p>
 					<p>
-						Alternatively, we can use the <strong>Executor Framework</strong> provided by <code class="inline">java.util.concurrent</code>.
+						Alternatively, we can use the <strong class="highlight">Executor Framework</strong> provided by <code class="inline">java.util.concurrent</code>.
 					</p>
 					<p>
 						Synchronization in Java / Kotlin is an important feature that allows only one thread to have access to the shared resource.
@@ -509,7 +509,7 @@
 						<li>
 							<code class="inline">@Synchronized</code><br />
 							<p>
-								If <strong>method</strong> is synchronized, only one thread can access the method or block at a time.
+								If <strong class="highlight">method</strong> is synchronized, only one thread can access the method or block at a time.
 								This ensures that the changes made by one thread to the shared data are visible to other threads.
 							</p>
 							<pre>
@@ -595,8 +595,8 @@
 
 							fun main() {
 
-								val thread1 = Thread(::incrementCounter)
-								val thread2 = Thread(::incrementCounter)
+								val thread1 = thread { incrementCounter() }
+								val thread2 = thread { incrementCounter() }
 
 								thread1.start()
 								thread2.start()
@@ -631,8 +631,8 @@
 
 							fun main() {
 
-								val thread1 = Thread(::incrementCounter)
-								val thread2 = Thread(::incrementCounter)
+								val thread1 = thread { incrementCounter() }
+								val thread2 = thread { incrementCounter() }
 
 									thread1.start()
 									thread2.start()
@@ -659,396 +659,434 @@
 			</section>
 			<section>
 				<h3>java.util.concurrent</h3>
-				<p>
+				<div class="summary">
 					Besides the low-level synchronization mechanisms such as <code class="inline">volatile</code> and <code class="inline">synchronized</code> keywords,
-					Java provides a number of classes and interfaces in the <strong>java.util.concurrent</strong> package to help with multithreading.
-				</p>
-				<hr />
-				<p>
-					The package includes:
-				</p>
-				<ul>
-					<li><strong>Atomic Variables</strong></li>
-					<li><strong>Synchronizers</strong></li>
-					<li>Concurrent Collections</li>
-					<li>Locks</li>
-					<li>Callable and Future</li>
-					<li>Executor Framework</li>
-				</ul>
+					Java provides a number of classes and interfaces in the <code class="inline">java.util.concurrent</code> package to help with multithreading.
+				</div>
+				<div class="content">
+					<p>
+						The package includes:
+					</p>
+					<ul>
+						<li><strong class="highlight">Atomic Variables</strong></li>
+						<li><strong class="highlight">Synchronizers</strong></li>
+						<li>Concurrent Collections</li>
+						<li>Locks</li>
+						<li>Callable and Future</li>
+						<li>Executor Framework</li>
+					</ul>
+				</div>
+
 			</section>
 			<section>
 				<h3>Atomic Variables</h3>
-				<p>
-					The <strong>java.util.concurrent.atomic</strong> package defines classes that support atomic operations on single variables.
+				<div class="summary">
+					The <code class="inline">java.util.concurrent</code> package defines classes that support atomic operations on single variables.
 					All atomic operations are thread-safe.
-				</p>
-				<p>
-					There are several classes in this package, for example <strong>AtomicBoolean</strong>,
-					<strong>AtomicInteger</strong>, <strong>AtomicLong</strong>, etc.
-				</p>
-				<hr />
-				<p>
-					Here is what you can do with atomic variables ...
-				</p>
-			</section>
-			<section>
-				<h4>Atomic Variables</h4>
-				<p>
-					<strong>Atomic Read and Write</strong><br />
-					You can read or write the value of atomic variables in a thread-safe manner. When you update an atomic variable, it ensures that the new value is immediately visible to other threads.
-				<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							AtomicInteger atomicInteger = new AtomicInteger(0);
-							atomicInteger.set(78);
-							int value = atomicInteger.get();
-						</code>
-					</pre>
-				</p>
-				<p>
-					<strong>Atomic Update</strong><br />
-					This allows you to atomically update the value of atomic variables. For Atomic integers and longs, it includes methods to increment, decrement, and add a certain value atomically.
-				<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							AtomicInteger atomicInteger = new AtomicInteger(0);
-							atomicInteger.incrementAndGet();
-							atomicInteger.addAndGet(46);
-						</code>
-					</pre>
-				</p>
-			</section>
-			<section>
-				<h4>Atomic Variables</h4>
-				<p>
-					<strong>Compare and Set/Swap (CAS)</strong><br />
-					It enables you to update the value of a variable only when it has a certain expected value. It’s a way of managing concurrency, without traditional lock-based synchronization.
-					For example, to atomically update a value only if it's currently equal to 10, you can use:
-				<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							AtomicInteger atomicInteger = new AtomicInteger(10);
-							boolean updated = atomicInteger.compareAndSet(10, 78);
-						</code>
-					</pre>
-				</p>
-				<p>
-					<strong>getAndIncrement, getAndDecrement, getAndAdd</strong><br />
-					These are atomic operations that atomically increment, decrement, or add the value and return the old value.
-				<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							AtomicInteger atomicInteger = new AtomicInteger(0);
-							int oldValue = atomicInteger.getAndIncrement();
-						</code>
-					</pre>
-				</p>
-			</section>
-			<section>
-				<h4>Atomic Variables</h4>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class AtomicVariablesExample {
-
-							private static final AtomicInteger counter = new AtomicInteger(10);
-
-							public static void main(String[] args) {
-								new Thread(new MyRunnable()).start();
-								new Thread(new MyRunnable()).start();
-							}
-
-							static class MyRunnable implements Runnable {
-								@Override
-								public void run() {
-									while (counter.getAndDecrement() > 0) {
-										System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
-									}
-								}
-							}
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h3>Synchronizers</h3>
-				<div style="font-size: 90%">
+				</div>
+				<div class="content">
 					<p>
-						<strong>Semaphore</strong><br />
-						It controls the access to a shared resource through the use of a counter. If the counter is greater than zero, the access is allowed, otherwise the access is denied. This is often used to limit the number of threads that can access a particular resource.
+						There are several classes in this package, for example <strong class="highlight">AtomicBoolean</strong>,
+						<strong class="highlight">AtomicInteger</strong>, <strong class="highlight">AtomicLong</strong>, etc.
 					</p>
 					<p>
-						<strong>CountDownLatch</strong><br />
-						It allows one or more threads to wait until a set of operations being performed in other threads completes. Once the count is zero, all waiting threads proceed. It's a one-time phenomenon, once the latch reaches zero it cannot be reset.
-					</p>
-					<p>
-						<strong>CyclicBarrier</strong><br />
-						It's used when multiple threads carry out different sub tasks and the output of these sub tasks need to be combined to form the final output. It's called cyclic because it can be reused after waiting threads are released.
-					</p>
-					<p>
-						<strong>Phaser</strong><br />
-						It's more flexible than both CountDownLatch and CyclicBarrier. It's called Phaser because it phases all the threads into stages of execution.
-					</p>
-					<p>
-						<strong>Exchanger</strong><br />
-						It's used to exchange data between two threads. It waits for both the threads to reach the exchange point. If the threads do not appear simultaneously to exchange their objects, they'll be paused until the arrival of the other thread.
+						Here is what you can do with atomic variables ...
 					</p>
 				</div>
 			</section>
 			<section>
-				<h4>Semaphore</h4>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class SemaphoreExample {
-
-							private static final Semaphore semaphore = new Semaphore(1);
-
-							public static void main(String[] args) {
-								new Thread(new MyRunnable(semaphore), "A").start();
-								new Thread(new MyRunnable(semaphore), "B").start();
-							}
-
-							static class MyRunnable implements Runnable {
-
-								private final Semaphore semaphore;
-
-								public MyRunnable(Semaphore semaphore) {
-									this.semaphore = semaphore;
-								}
-
-								@Override
-								public void run() {
-									try {
-										semaphore.acquire();
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' acquired the semaphore");
-									} catch (InterruptedException e) {
-										throw new RuntimeException(e);
-									} finally {
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' is releasing the semaphore");
-										semaphore.release();
-									}
-								}
-							}
-						}
-					</code>
-				</pre>
+				<h3>Atomic Variables</h3>
+				<div class="content">
+					<p>
+						<strong class="highlight">Atomic Read and Write</strong><br />
+						You can read or write the value of atomic variables in a thread-safe manner. When you update an atomic variable, it ensures that the new value is immediately visible to other threads.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val atomicInteger = AtomicInteger(0)
+							atomicInteger.set(78)
+							val value = atomicInteger.get()
+						</code>
+					</pre>
+					<p>
+						<strong class="highlight">Atomic Update</strong><br />
+						This allows you to atomically update the value of atomic variables. For Atomic integers and longs, it includes methods to increment, decrement, and add a certain value atomically.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val atomicInteger = AtomicInteger(0)
+							atomicInteger.incrementAndGet()
+							atomicInteger.addAndGet(46)
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
-				<h4>CountDownLatch</h4>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class CountDownLatchExample {
-
-							private static final CountDownLatch latch = new CountDownLatch(3);
-
-							public static void main(String[] args) {
-								var waitingThread = new Thread(() -> {
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
-									try {
-										latch.await();
-									} catch (InterruptedException e) {
-										throw new RuntimeException(e);
-									}
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
-								}, "WAITING");
-
-
-								var countingThread = new Thread(() -> {
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
-									while (latch.getCount() > 0) {
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' counting down " + latch.getCount() + "...");
-										latch.countDown();
-									}
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
-								}, "COUNTING");
-
-								waitingThread.start();
-								countingThread.start();
-							}
-
-						}
-					</code>
-				</pre>
+				<h3>Atomic Variables</h3>
+				<div class="content">
+					<p>
+						<strong class="highlight">Compare and Set/Swap (CAS)</strong><br />
+						It enables you to update the value of a variable only when it has a certain expected value. It’s a way of managing concurrency, without traditional lock-based synchronization.
+						For example, to atomically update a value only if it's currently equal to 10, you can use:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val atomicInteger = AtomicInteger(10)
+							val updated = atomicInteger.compareAndSet(10, 78)
+						</code>
+					</pre>
+					<p>
+						<strong class="highlight">getAndIncrement, getAndDecrement, getAndAdd</strong><br />
+						These are atomic operations that atomically increment, decrement, or add the value and return the old value.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val atomicInteger = AtomicInteger(0)
+							val oldValue = atomicInteger.getAndIncrement()
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
-				<h4>CyclicBarrier</h4>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class CyclicBarrierExample {
+				<h3>Atomic Variables</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import java.util.concurrent.atomic.AtomicInteger
+							import kotlin.concurrent.thread
 
-							public static void main(String[] args) {
-								var barrier = new CyclicBarrier(3, () -> System.out.println("Barrier reached"));
+							private val counter = AtomicInteger(10)
 
-								new Thread(new MyRunnable(barrier), "A").start();
-								new Thread(new MyRunnable(barrier), "B").start();
-								new Thread(new MyRunnable(barrier), "C").start();
-							}
+							fun main() {
 
-							static class MyRunnable implements Runnable {
-								private final CyclicBarrier barrier;
-
-								public MyRunnable(CyclicBarrier barrier) {
-									this.barrier = barrier;
+								thread(name = "thread-1") {
+									while (counter.getAndDecrement() > 0) {
+										println("Hello from '" + Thread.currentThread().name + "' thread. Counter = ${counter.get()}");
+									}
 								}
 
-								@Override
-								public void run() {
+								thread(name = "thread-2") {
+									while (counter.getAndDecrement() > 0) {
+										println("Hello from '" + Thread.currentThread().name + "' thread. Counter = ${counter.get()}");
+									}
+								}
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Hello from 'thread-1' thread. Counter = 9
+							Hello from 'thread-1' thread. Counter = 7
+							Hello from 'thread-1' thread. Counter = 6
+							Hello from 'thread-2' thread. Counter = 8
+							Hello from 'thread-1' thread. Counter = 5
+							Hello from 'thread-1' thread. Counter = 3
+							Hello from 'thread-1' thread. Counter = 2
+							Hello from 'thread-1' thread. Counter = 1
+							Hello from 'thread-1' thread. Counter = 0
+							Hello from 'thread-2' thread. Counter = 4
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Synchronizers</h3>
+				<div class="content">
+					<ul>
+						<li>
+							<strong class="highlight">Semaphore</strong><br />
+							It controls the access to a shared resource through the use of a counter. If the counter is greater than zero, the access is allowed, otherwise the access is denied. This is often used to limit the number of threads that can access a particular resource.
+						</li>
+						<li>
+							<strong class="highlight">CountDownLatch</strong><br />
+							It allows one or more threads to wait until a set of operations being performed in other threads completes. Once the count is zero, all waiting threads proceed. It's a one-time phenomenon, once the latch reaches zero it cannot be reset.
+						</li>
+						<li>
+							<strong class="highlight">CyclicBarrier</strong><br />
+							It's used when multiple threads carry out different sub tasks and the output of these sub tasks need to be combined to form the final output. It's called cyclic because it can be reused after waiting threads are released.
+						</li>
+						<li>
+							<strong class="highlight">Phaser</strong><br />
+							It's more flexible than both CountDownLatch and CyclicBarrier. It's called Phaser because it phases all the threads into stages of execution.
+						</li>
+						<li>
+							<strong class="highlight">Exchanger</strong><br />
+							It's used to exchange data between two threads. It waits for both the threads to reach the exchange point. If the threads do not appear simultaneously to exchange their objects, they'll be paused until the arrival of the other thread.
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Semaphore</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import java.util.concurrent.Semaphore
+							import kotlin.concurrent.thread
+
+							private val semaphore = Semaphore(1)
+
+							fun main() {
+								thread(name = "A") { execute(semaphore) }
+								thread(name = "B") { execute(semaphore) }
+							}
+
+							fun execute(semaphore: Semaphore) {
+								try {
+									semaphore.acquire()
+									println("Thread '" + Thread.currentThread().name + "' acquired the semaphore")
+								} catch (e: InterruptedException) {
+									throw RuntimeException(e)
+								} finally {
+									println("Thread '" + Thread.currentThread().name + "' is releasing the semaphore")
+									semaphore.release()
+								}
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Thread 'A' acquired the semaphore
+							Thread 'A' is releasing the semaphore
+							Thread 'B' acquired the semaphore
+							Thread 'B' is releasing the semaphore
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>CountDownLatch</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							public class CountDownLatchExample {
+
+								private static final CountDownLatch latch = new CountDownLatch(3);
+
+								public static void main(String[] args) {
+									var waitingThread = new Thread(() -> {
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
+										try {
+											latch.await();
+										} catch (InterruptedException e) {
+											throw new RuntimeException(e);
+										}
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
+									}, "WAITING");
+
+
+									var countingThread = new Thread(() -> {
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
+										while (latch.getCount() > 0) {
+											System.out.println("Thread '" + Thread.currentThread().getName() + "' counting down " + latch.getCount() + "...");
+											latch.countDown();
+										}
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
+									}, "COUNTING");
+
+									waitingThread.start();
+									countingThread.start();
+								}
+
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>CyclicBarrier</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							public class CyclicBarrierExample {
+
+								public static void main(String[] args) {
+									var barrier = new CyclicBarrier(3, () -> System.out.println("Barrier reached"));
+
+									new Thread(new MyRunnable(barrier), "A").start();
+									new Thread(new MyRunnable(barrier), "B").start();
+									new Thread(new MyRunnable(barrier), "C").start();
+								}
+
+								static class MyRunnable implements Runnable {
+									private final CyclicBarrier barrier;
+
+									public MyRunnable(CyclicBarrier barrier) {
+										this.barrier = barrier;
+									}
+
+									@Override
+									public void run() {
+										try {
+											System.out.println("Thread '" + Thread.currentThread().getName() + "' is waiting on the barrier");
+											barrier.await();
+											System.out.println("Thread '" + Thread.currentThread().getName() + "' has passed the barrier");
+										} catch (Exception e) {
+											throw new RuntimeException(e);
+										}
+									}
+								}
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Phaser</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							public class PhaserExample {
+
+								private static final Phaser phaser = new Phaser(2);
+
+								public static void main(String[] args) {
+									new Thread(new PreProcessor(phaser), "PRE-PROCESSOR").start();
+									new Thread(new PostProcessor(phaser), "POST-PROCESSOR").start();
+								}
+
+								static class PostProcessor implements Runnable {
+									private final Phaser phaser;
+
+									public PostProcessor(Phaser phaser) {
+										this.phaser = phaser;
+									}
+
+									@Override
+									public void run() {
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' has arriver. Waiting for others...");
+										phaser.arriveAndAwaitAdvance();
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
+									}
+								}
+
+								static class PreProcessor implements Runnable {
+									private final Phaser phaser;
+
+									public PreProcessor(Phaser phaser) {
+										this.phaser = phaser;
+									}
+
+									@Override
+									public void run() {
+										try {
+											Thread.sleep(1000);
+										} catch (InterruptedException e) {
+											throw new RuntimeException(e);
+										}
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' has arrived.");
+										phaser.arriveAndDeregister();
+										System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
+									}
+								}
+
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Exchanger</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							public class ExchangerExample {
+
+								private static final Exchanger&lt;String&gt; exchanger = new Exchanger<>();
+
+								public static void main(String[] args) {
+									new Thread(new MyRunnable(exchanger), "A").start();
+									new Thread(new MyRunnable(exchanger), "B").start();
+								}
+
+								static class MyRunnable implements Runnable {
+									private final Exchanger&lt;String&gt; exchanger;
+
+									public MyRunnable(Exchanger&lt;String&gt; exchanger) {
+										this.exchanger = exchanger;
+									}
+
+									@Override
+									public void run() {
+										try {
+											String message = exchanger.exchange("Hello from " + Thread.currentThread().getName());
+											System.out.println("Thread '" + Thread.currentThread().getName() + "' received message: " + message);
+										} catch (InterruptedException e) {
+											throw new RuntimeException(e);
+										}
+									}
+								}
+
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>java.util.concurrent</h3>
+				<div class="content">
+					<p>
+						<strong class="highlight">Concurrent Collections</strong><br />
+						This includes thread-safe collection classes used in place of synchronized wrappers such as Hashtable or Collections.synchronizedMap(Map).
+					</p>
+					<p>
+						<strong class="highlight">Locks</strong><br />
+						More advanced and flexible locking mechanism compared to intrinsic locking.
+					</p>
+					<p>
+						<strong class="highlight">Callable and Future</strong><br />
+						Callable tasks are similar to Runnable tasks but they can return a result and are capable of throwing checked exceptions. Futures represent result of an asynchronous computation - a way to handle the results of callable tasks.
+					</p>
+					<p>
+						<strong class="highlight">Executor Framework</strong><br />
+						This is a higher-level replacement for working with threads directly. Executors are capable of managing a pool of threads, so we do not need to manually create new threads and run tasks in an asynchronous fashion.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Future example</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							public class FutureExample {
+
+								public static void main(String[] args) {
+
+									Messenger messenger = new Messenger();
+
+									Future&lt;String&gt; message = messenger.receiveMessage();
+
+									while (!message.isDone()) {
+										System.out.println("Waiting for message...");
+										try {
+											Thread.sleep(500);
+										} catch (InterruptedException e) {
+											throw new RuntimeException(e);
+										}
+									}
+
 									try {
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' is waiting on the barrier");
-										barrier.await();
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' has passed the barrier");
+										System.out.println("Received message: " + message.get());
 									} catch (Exception e) {
 										throw new RuntimeException(e);
 									}
 								}
-							}
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h4>Phaser</h4>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class PhaserExample {
 
-							private static final Phaser phaser = new Phaser(2);
+								static class Messenger {
 
-							public static void main(String[] args) {
-								new Thread(new PreProcessor(phaser), "PRE-PROCESSOR").start();
-								new Thread(new PostProcessor(phaser), "POST-PROCESSOR").start();
-							}
+									private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-							static class PostProcessor implements Runnable {
-								private final Phaser phaser;
-
-								public PostProcessor(Phaser phaser) {
-									this.phaser = phaser;
-								}
-
-								@Override
-								public void run() {
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' has arriver. Waiting for others...");
-									phaser.arriveAndAwaitAdvance();
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
-								}
-							}
-
-							static class PreProcessor implements Runnable {
-								private final Phaser phaser;
-
-								public PreProcessor(Phaser phaser) {
-									this.phaser = phaser;
-								}
-
-								@Override
-								public void run() {
-									try {
-										Thread.sleep(1000);
-									} catch (InterruptedException e) {
-										throw new RuntimeException(e);
-									}
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' has arrived.");
-									phaser.arriveAndDeregister();
-									System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
-								}
-							}
-
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h4>Exchanger</h4>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class ExchangerExample {
-
-							private static final Exchanger&lt;String&gt; exchanger = new Exchanger<>();
-
-							public static void main(String[] args) {
-								new Thread(new MyRunnable(exchanger), "A").start();
-								new Thread(new MyRunnable(exchanger), "B").start();
-							}
-
-							static class MyRunnable implements Runnable {
-								private final Exchanger&lt;String&gt; exchanger;
-
-								public MyRunnable(Exchanger&lt;String&gt; exchanger) {
-									this.exchanger = exchanger;
-								}
-
-								@Override
-								public void run() {
-									try {
-										String message = exchanger.exchange("Hello from " + Thread.currentThread().getName());
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' received message: " + message);
-									} catch (InterruptedException e) {
-										throw new RuntimeException(e);
+									public Future&lt;String&gt; receiveMessage() {
+										return executor.submit(() -> {
+											Thread.sleep(3000);
+											return "Hello from future!";
+										});
 									}
 								}
 							}
-
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h3>java.util.concurrent</h3>
-				<p>
-					<strong>Concurrent Collections</strong><br />
-					This includes thread-safe collection classes used in place of synchronized wrappers such as Hashtable or Collections.synchronizedMap(Map).
-				</p>
-				<p>
-					<strong>Locks</strong><br />
-					More advanced and flexible locking mechanism compared to intrinsic locking.
-				</p>
-				<p>
-					<strong>Callable and Future</strong><br />
-					Callable tasks are similar to Runnable tasks but they can return a result and are capable of throwing checked exceptions. Futures represent result of an asynchronous computation - a way to handle the results of callable tasks.
-				</p>
-				<p>
-					<strong>Executor Framework</strong><br />
-					This is a higher-level replacement for working with threads directly. Executors are capable of managing a pool of threads, so we do not need to manually create new threads and run tasks in an asynchronous fashion.
-				</p>
-			</section>
-			<section>
-				<h4>Future example</h4>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class FutureExample {
-
-							public static void main(String[] args) {
-
-								Messenger messenger = new Messenger();
-
-								Future&lt;String&gt; message = messenger.receiveMessage();
-
-								while (!message.isDone()) {
-									System.out.println("Waiting for message...");
-									try {
-										Thread.sleep(500);
-									} catch (InterruptedException e) {
-										throw new RuntimeException(e);
-									}
-								}
-
-								try {
-									System.out.println("Received message: " + message.get());
-								} catch (Exception e) {
-									throw new RuntimeException(e);
-								}
-							}
-
-							static class Messenger {
-
-								private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-								public Future&lt;String&gt; receiveMessage() {
-									return executor.submit(() -> {
-										Thread.sleep(3000);
-										return "Hello from future!";
-									});
-								}
-							}
-						}
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
