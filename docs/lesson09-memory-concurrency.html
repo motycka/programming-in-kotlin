@@ -22,7 +22,7 @@
 			<em>JVM, JRE, JDK, compiler</em><br />
 			<em>Memory management</em><br />
 			<em>Multithreading</em><br />
-			<em>Coroutines</em>
+			<em>Coroutines ♡</em>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
@@ -95,20 +95,20 @@
 				<h3>JRE, JDK, compiler</h3>
 				<div class="content">
 					<p>
-						<h4>JRE - Java Runtime Environment</h4>
+						<strong class="highlight">JRE - Java Runtime Environment</strong><br />
 						JRE is the part of Java required to run Java applications. It includes JVM, core libraries, and other components.
 						If you only want to run Java applications, you only need JRE.
 					</p>
 					<p>
-						<h4>JDK - Java Development Kit</h4>
+						<strong class="highlight">JDK - Java Development Kit</strong><br />
 						You need JDK if you want to develop Java applications. It includes JRE, compiler, and other development tools.
 					</p>
 					<p>
-						<h4>Java Compiler</h4>
+						<strong class="highlight">Java Compiler</strong><br />
 						Java source code is compiled into <strong>bytecode</strong>, which is then executed by JVM. To do so, you need a Java compiler.
 					</p>
 					<p>
-						<h4>Java Bytecode</h4>
+						<strong class="highlight">Java Bytecode</strong><br />
 						Java bytecode is the instruction set for the Java Virtual Machine.
 					</p>
 				</div>
@@ -323,7 +323,6 @@
 			</section>
 			<section>
 				<h3>Multithreading</h3>
-<!--				<em>What is multithreading?</em>-->
 				<div class="summary">
 					Multithreading allows execution of multiple parts of a program concurrently,
 					using lightweight processes called threads. It aims to maximize the use of CPU time.
@@ -333,230 +332,335 @@
 						Generally, there is always at least one thread running in a Java program - the <strong>main</strong> thread.
 					</p>
 					<p>
-						To create a new thread, need to create new instance <strong><code>Thread</code></strong> class.
-						To start a thread, need to call its <strong><code>start()</code></strong> method of the <strong><code>Thread</code></strong> class instance.
+						To create a new thread, need to create new instance <code class="inline">Thread</code> class.
+						To start a thread, need to call its <code class="inline">start()</code> method of the <code class="inline">Thread</code> class instance.
 					</p>
 					<p>
-						Another way to create a thread is by implementing the <strong><code>Runnable</code></strong> interface and passing an instance of it to a new thread.
+						Another way to create a thread is by implementing the <code class="inline">Runnable</code> interface and passing an instance of it to a new thread.
 					</p>
 					<p>
-						Alternatively, we can use the <strong>Executor Framework</strong> provided by <strong>java.util.concurrent</strong>.
+						Alternatively, we can use the <strong>Executor Framework</strong> provided by <code class="inline">java.util.concurrent</code>.
 					</p>
-					<hr />
 					<p>
-						Synchronization in Java is an important feature that allows only one thread to have access to the shared resource.
+						Synchronization in Java / Kotlin is an important feature that allows only one thread to have access to the shared resource.
 					</p>
 				</div>
 			</section>
 			<section>
 				<h3>Thread</h3>
-				<p>
-					<strong><code>Thread</code></strong> is a class in Java that allows you to create and manage threads.
-					You can create thread directly, or by extending the <strong><code>Thread</code></strong> class and overriding the <strong><code>run()</code></strong> method.
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class SimplestThreadExample {
+				<div class="summary">
+					The Java way.
+				</div>
+				<div class="content">
+					<p>
+						<code class="inline">Thread</code>> is a class in Java that allows you to create and manage threads.
+						You can create thread directly, or by extending the <code class="inline">Thread</code>
+						class and overriding the <code class="inline">run()</code>> method.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() {
 
-							public static void main(String[] args) {
+								val thread = Thread {
+									println("Hello from '${Thread.currentThread().name}' thread")
+								}
 
-								var thread = new Thread(() -> {
-									System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
-								});
+								thread.start()
 
-								thread.start();
-
-								System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+								println("Hello from '" + Thread.currentThread().name + "' thread")
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() {
+									MyThread().start()
 							}
 
-						}
-					</code>
-				</pre>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class ExtendingThreadExample {
-
-							public static void main(String[] args) {
-
-								new MyThread().start();
-
-								System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
-							}
-
-							static class MyThread extends Thread {
-								@Override
-								public void run() {
-									System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
+							class MyThread : Thread() {
+								override fun run() {
+									println("Hello from '${currentThread().name}' thread");
 								}
 							}
-
-						}
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
 				<h3>Thread</h3>
-				<p>
-					Thread is started by calling the <strong><code>start()</code></strong> method.
-					When the <strong><code>start()</code></strong> method is called, the JVM calls the <strong><code>run()</code></strong> method of the thread.
-				</p>
-				<p>
-					When the <strong><code>run()</code></strong> method finishes, the thread is considered to be terminated.
-				</p>
-				<p>
-					If at any time you want to stop a thread, you can call the <strong><code>interrupt()</code></strong> method.
-				</p>
-				<p>
-					To wait for a thread to finish, you can call the <strong><code>join()</code></strong> method.
-					However, beware that this will block the current thread until the other thread finishes.
-				</p>
+				<div class="content">
+					<p>
+						Thread is started by calling the <code class="inline">start()</code> method.
+						When the <code class="inline">start()</code> method is called, the JVM calls the <code class="inline">run()</code> method of the thread.
+					</p>
+					<p>
+						When the <code class="inline">run()</code> method finishes, the thread is considered to be terminated.
+					</p>
+					<p>
+						If at any time you want to stop a thread, you can call the <code class="inline">interrupt()</code> method.
+					</p>
+					<p>
+						To wait for a thread to finish, you can call the <code class="inline">join()</code> method.
+						However, beware that this will block the current thread until the other thread finishes.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Thread</h3>
+				<div class="summary">
+					The Kotlin way
+				</div>
+				<div class="content">
+					<p>
+						While we use Java <code class="inline">Thread</code> class in Kotlin, as usual, Kotlin
+						provides a more concise way to create and manage threads.
+					</p>
+					<p>
+						You can use the <code class="inline">thread</code> function to create a new thread.
+					</p>
+					<p>
+						The function simplifies the creation of a new thread by allowing you to configure the thread properties in a more concise way.
+						The arguments available are:
+					</p>
+					<ul>
+						<li><code class="inline">start: Boolean = true</code> - start the thread immediately</li>
+						<li><code class="inline">isDaemon: Boolean = false</code> - create a daemon thread</li>
+						<li><code class="inline">contextClassLoader: ClassLoader? = null,</code> - class loader to use for loading classes and resources</li>
+						<li><code class="inline">name: String? = null,</code> - name of the thread</li>
+						<li><code class="inline">priority: Int = -1,</code> - priority of the thread</li>
+						<li><code class="inline">block: () -> Unit</code> - code to be executed in the thread</li>
+					</ul>
+
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() {
+								thread(start = true, isDaemon = true, name = "my-thread", priority = "999") {
+									println("Hello from '${Thread.currentThread().name}' thread")
+								}
+
+								println("Hello from '" + Thread.currentThread().name + "' thread")
+							}
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
 				<h3>Runnable</h3>
-				<p>
-					Runnable is an interface in Java that allows you to create and manage threads.
-				</p>
-				<p>
-					To use Runnable, you pass an instance of Runnable to a new Thread.
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class RunnableExample {
+				<div class="summary">
+					<strong class="highlight">Runnable</strong> is an interface in Java that allows you to create and manage threads.
+				</div>
+				<div class="content">
+					<p>
+						To use <strong class="highlight">Runnable</strong>, you pass an instance of <strong class="highlight">Runnable</strong> to a new <strong class="highlight">Thread</strong>.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							class MyRunnable : Runnable {
+								override fun run() {
+									println("Hello from '${Thread.currentThread().name}' thread")
+								}
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() {
+    							val thread = Thread(MyRunnable(), "Runner 1")
 
-							public static void main(String[] args) {
-								var thread = new Thread(new MyRunnable(), "Runner 1");
+								println("Starting thread '${thread.name}'")
 
-								System.out.println("Starting thread '" + thread.getName() + "'");
-
-								thread.start();
+								thread.start()
 
 								try {
 									// this will block the main thread until the other thread finishes
-									thread.join();
-								} catch (InterruptedException e) {
-									throw new RuntimeException(e);
+									thread.join()
+								} catch (e: InterruptedException) {
+									throw RuntimeException(e)
 								}
 
-								System.out.println("Thread '" + thread.getName() + "' finished");
-
+								println("Thread '${thread.name}' finished")
 							}
-
-							static class MyRunnable implements Runnable {
-								@Override
-								public void run() {
-									System.out.println("Hello from '" + Thread.currentThread().getName() + "' thread");
-								}
-							}
-
-						}
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
 				<h3>Memory Synchronization</h3>
-				<p>
+				<div class="summary">
 					Memory synchronization ensures that the changes made by one thread to the shared data are visible to other threads.
-				</p>
-				<hr />
-				<ul>
-					<li>
-						<strong><code>volatile</code></strong><br />
-						If a <strong>field</strong> is declared as <code>volatile</code>, the Java memory model ensures that all reads of a volatile
-						variable are read directly from main memory, and all writes to a volatile variable are written
-						directly to main memory.
-
-						<pre>
-							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								private volatile boolean flag = true;
-							</code>
-						</pre>
-					</li>
-					<li>
-						<strong><code>synchronized</code></strong><br />
-						If <strong>method</strong> is synchronized, only one thread can access the method or block at a time.
-						<pre>
-							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								public synchronized void someMethod() {
-									// ...
-								}
-							</code>
-						</pre>
-					</li>
-				</ul>
-				<hr />
-				<p>
-					Remember that incorrect synchronization can lead to issues like race conditions, deadlocks or even data inconsistency.
-					It advised to avoid shared mutable data for threads and use thread confinement or immutability.
-				</p>
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							<code class="inline">@Volatile</code><br />
+							<p>
+								Used to mark a field as volatile to the JVM.
+								It ensures that all reads of a volatile variable are read directly from main memory,
+								and all writes to a volatile variable are written directly to main memory.
+								By itself, volatile does not provide atomicity, but it ensures visibility.
+							</p>
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									@Volatile
+									private var flag: Boolean = true
+								</code>
+							</pre>
+						</li>
+						<li>
+							<code class="inline">@Synchronized</code><br />
+							<p>
+								If <strong>method</strong> is synchronized, only one thread can access the method or block at a time.
+								This ensures that the changes made by one thread to the shared data are visible to other threads.
+							</p>
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									@Synchronized
+									fun someMethod() {
+										// ...
+									}
+								</code>
+							</pre>
+						</li>
+						<li>
+							<code class="inline">synchronized</code> block<br />
+							<p>
+								You can also use synchronized block to synchronize access to shared data within a block of code.
+							</p>
+							<p>
+								<em>
+									The difference between <code class="inline">@Synchronized</code>
+									and <code class="inline">synchronized</code> block is that the former is used to synchronize a method,
+									while the latter is used to synchronize a block of code.
+									Synchronizing on method level can be more efficient than synchronizing on block level, especially if the code is called frequently,
+									because <code class="inline">synchronized</code> needs to acquire and release the lock every time the method is called.
+								</em>
+							</p>
+						</li>
+					</ul>
+				</div>
 			</section>
 			<section>
 				<h3>Memory Synchronization</h3>
-				<em>No synchronization - NOT thread safe!</em>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class MemorySyncExample {
-
-							private static int sharedCounter = 0;
-
-							public static void main(String[] args) throws InterruptedException {
-								Thread thread1 = new Thread(MemorySyncExample::incrementCounter);
-								Thread thread2 = new Thread(MemorySyncExample::incrementCounter);
-
-								thread1.start();
-								thread2.start();
-
-								// wait for both threads to finish
-								thread1.join();
-								thread2.join();
-
-								System.out.println("Final Counter Value: " + sharedCounter);
-							}
-
-							private static void incrementCounter() {
-								for (int i = 0; i < 10000; i++) {
-									sharedCounter++;
-								}
-							}
-						}
-					</code>
-				</pre>
+				<div class="content">
+					<blockquote class="warning">
+						Remember that incorrect synchronization can lead to issues like race conditions, deadlocks or even data inconsistency.
+						It advised to avoid shared mutable data for threads and use thread confinement or immutability.
+					</blockquote>
+				</div>
 			</section>
 			<section>
 				<h3>Memory Synchronization</h3>
-				<em>With synchronization - thread safe.</em>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public class MemorySyncExample {
+				<div class="summary">
+					No synchronization - NOT thread safe!
+				</div>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							var sharedCounter = 0
 
-							private static volatile int sharedCounter = 0;
+							fun main() {
 
-							public static void main(String[] args) throws InterruptedException {
-								Thread thread1 = new Thread(MemorySyncExample::incrementCounter);
-								Thread thread2 = new Thread(MemorySyncExample::incrementCounter);
+								val thread1 = Thread(::incrementCounter)
+								val thread2 = Thread(::incrementCounter)
 
-								thread1.start();
-								thread2.start();
+								thread1.start()
+								thread2.start()
 
 								// wait for both threads to finish
-								thread1.join();
-								thread2.join();
+								thread1.join()
+								thread2.join()
 
-								System.out.println("Final Counter Value: " + sharedCounter);
+								println("Final Counter Value: $sharedCounter")
 							}
 
-							private static synchronized void incrementCounter() {
-								for (int i = 0; i < 10000; i++) {
-									sharedCounter++;
+							fun incrementCounter() {
+								repeat(1000) {
+									sharedCounter++
 								}
 							}
-						}
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Memory Synchronization</h3>
+				<div class="summary">
+					With synchronization using <code class="inline">@Synchronized</code> - thread safe.
+				</div>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Volatile // doesn't ensure atomicity, but ensures visibility
+							var sharedCounter = 0
+
+							fun main() {
+
+								val thread1 = Thread(::incrementCounter)
+								val thread2 = Thread(::incrementCounter)
+
+								thread1.start()
+								thread2.start()
+
+								// wait for both threads to finish
+								thread1.join()
+								thread2.join()
+
+								println("Final Counter Value: $sharedCounter")
+							}
+
+							@Synchronized // ensures that only one thread can execute this function at a time, acquire lock on whole function
+							fun incrementCounter() {
+								repeat(1000) {
+									sharedCounter++
+								}
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Memory Synchronization</h3>
+				<div class="summary">
+					With synchronization with <code class="inline">synchronized</code> function - thread safe.
+				</div>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Volatile // doesn't ensure atomicity, but ensures visibility
+							var sharedCounter = 0
+
+							fun main() {
+
+								val thread1 = Thread(::incrementCounter)
+								val thread2 = Thread(::incrementCounter)
+
+									thread1.start()
+									thread2.start()
+
+									// wait for both threads to finish
+									thread1.join()
+									thread2.join()
+
+								println("Final Counter Value: $sharedCounter")
+							}
+
+							private val lock = Any() // because incrementCounter is a top-level function, we need and container object to lock on
+
+							fun incrementCounter() {
+								repeat(1000) {
+									synchronized(lock) { // ensures atomicity, acquire lock on this object
+										sharedCounter++
+									}
+								}
+							}
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
 				<h3>java.util.concurrent</h3>
 				<p>
-					Besides the low-level synchronization mechanisms such as <code>volatile</code> and <code>synchronized</code> keywords,
+					Besides the low-level synchronization mechanisms such as <code class="inline">volatile</code> and <code class="inline">synchronized</code> keywords,
 					Java provides a number of classes and interfaces in the <strong>java.util.concurrent</strong> package to help with multithreading.
 				</p>
 				<hr />
