@@ -17,7 +17,7 @@
 <div class="reveal">
 	<div class="slides">
 		<section data-background-gradient="var(--kotlin-gradient)">
-			<i>Week 2 | Lesson 9</i>
+			<i>Week 2 | Lesson 10</i>
 			<h1>The SOLID Principle</h1>
 			<em>Object Oriented Design Patterns</em><br />
 			<em>Functional programming principles</em><br />
@@ -428,137 +428,136 @@
 				</div>
 			</section>
 		</section>
+<!--		<section>-->
+<!--			<section data-background-gradient="var(&#45;&#45;kotlin-gradient)">-->
+<!--				<h2>Generics</h2>-->
+<!--			</section>-->
+<!--			<section>-->
+<!--				<h3>Generics</h3>-->
+<!--				<div class="summary">-->
+<!--					Generics allow us to create classes, interfaces, and methods that take types as parameters.-->
+<!--				</div>-->
+<!--				<div class="content">-->
+<!--					<p>-->
+<!--						They are a way to make our code more reusable by allowing us to use the same code with different types.-->
+<!--					</p>-->
+<!--					<p>-->
+<!--						Many of the classes, functions, and interfaces in the Kotlin standard library,-->
+<!--						which we have already used, use generics.-->
 
-		<section>
-			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Generics</h2>
-			</section>
-			<section>
-				<h3>Generics</h3>
-				<div class="summary">
-					Generics allow us to create classes, interfaces, and methods that take types as parameters.
-				</div>
-				<div class="content">
-					<p>
-						They are a way to make our code more reusable by allowing us to use the same code with different types.
-					</p>
-					<p>
-						Many of the classes, functions, and interfaces in the Kotlin standard library,
-						which we have already used, use generics.
+<!--					</p>-->
+<!--					<p>-->
+<!--						For example, the <code class="inline">listOf</code> or <code class="inline">mapOf</code> functions,-->
+<!--						which we have used, are generic functions:-->
+<!--					</p>-->
+<!--					<pre>-->
+<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--								val list = mutableListOf&lt;Int&gt;()-->
+<!--						</code>-->
+<!--					</pre>-->
+<!--					<pre>-->
+<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--								val map = mutableMapOf&lt;String, Boolean&gt;()-->
+<!--						</code>-->
+<!--					</pre>-->
+<!--				</div>-->
+<!--			</section>-->
+<!--			<section>-->
+<!--				<h3>How to Define Generics</h3>-->
+<!--				<div class="summary">-->
+<!--					To use generics, we need to define them in the class, interface ot function declaration.-->
+<!--				</div>-->
+<!--				<div class="content">-->
+<!--					<p>-->
+<!--						This is done by using angle brackets and the type parameter name, in this case, <code class="inline">T</code>.-->
+<!--						<br />-->
+<!--						We can use any name for the type parameter, but it is common to use single uppercase letters.-->
+<!--					</p>-->
+<!--						<p>-->
+<!--							Here is an example of class with a generic type parameter containing a function that takes a generic type as a parameter.-->
+<!--						</p>-->
+<!--						<pre>-->
+<!--							<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--								class MyClass&lt;T&gt;(val value1: T) {-->
 
-					</p>
-					<p>
-						For example, the <code class="inline">listOf</code> or <code class="inline">mapOf</code> functions,
-						which we have used, are generic functions:
-					</p>
-					<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								val list = mutableListOf&lt;Int&gt;()
-						</code>
-					</pre>
-					<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								val map = mutableMapOf&lt;String, Boolean&gt;()
-						</code>
-					</pre>
-				</div>
-			</section>
-			<section>
-				<h3>How to Define Generics</h3>
-				<div class="summary">
-					To use generics, we need to define them in the class, interface ot function declaration.
-				</div>
-				<div class="content">
-					<p>
-						This is done by using angle brackets and the type parameter name, in this case, <code class="inline">T</code>.
-						<br />
-						We can use any name for the type parameter, but it is common to use single uppercase letters.
-					</p>
-						<p>
-							Here is an example of class with a generic type parameter containing a function that takes a generic type as a parameter.
-						</p>
-						<pre>
-							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								class MyClass&lt;T&gt;(val value1: T) {
+<!--									fun valueEquals(value2: T): Boolean {-->
+<!--										return value1 == value2-->
+<!--									}-->
 
-									fun valueEquals(value2: T): Boolean {
-										return value1 == value2
-									}
+<!--								}-->
+<!--							</code>-->
+<!--						</pre>-->
+<!--						We can then create instances of the class with different types.-->
+<!--						<pre>-->
+<!--							<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--								val myClass1 = MyClass("ABC")-->
+<!--								myClass1.valueEquals("ABC")-->
 
-								}
-							</code>
-						</pre>
-						We can then create instances of the class with different types.
-						<pre>
-							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								val myClass1 = MyClass("ABC")
-								myClass1.valueEquals("ABC")
+<!--								val myClass2 = MyClass(123)-->
+<!--								myClass2.valueEquals(123)-->
+<!--							</code>-->
+<!--						</pre>-->
+<!--						But this would not work, because the compiler would not know what type to use.-->
+<!--						<pre>-->
+<!--							<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--								val myClass3 = MyClass(123)-->
+<!--								myClass3.valueEquals("123")-->
+<!--							</code>-->
+<!--						</pre>-->
+<!--				</div>-->
+<!--			</section>-->
+<!--			<section>-->
+<!--				<h3>Generics</h3>-->
+<!--&lt;!&ndash;				<div class="summary"></div>&ndash;&gt;-->
+<!--				<div class="content">-->
+<!--					<p>-->
+<!--						You can also define generics with multiple type parameters.-->
+<!--					</p>-->
+<!--					<pre>-->
+<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--							class MyClassEnhanced&lt;T1, T2&gt;(value1: T1) {-->
 
-								val myClass2 = MyClass(123)
-								myClass2.valueEquals(123)
-							</code>
-						</pre>
-						But this would not work, because the compiler would not know what type to use.
-						<pre>
-							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								val myClass3 = MyClass(123)
-								myClass3.valueEquals("123")
-							</code>
-						</pre>
-				</div>
-			</section>
-			<section>
-				<h3>Generics</h3>
-<!--				<div class="summary"></div>-->
-				<div class="content">
-					<p>
-						You can also define generics with multiple type parameters.
-					</p>
-					<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							class MyClassEnhanced&lt;T1, T2&gt;(value1: T1) {
+<!--								fun valueEquals(value2: T2): Boolean {-->
+<!--									return value1 == value2-->
+<!--								}-->
 
-								fun valueEquals(value2: T2): Boolean {
-									return value1 == value2
-								}
+<!--							}-->
+<!--						</code>-->
+<!--					</pre>-->
+<!--					<pre>-->
+<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--							val myClassEnhanced = MyClassEnhanced&lt;Int, Double&gt;(123)-->
 
-							}
-						</code>
-					</pre>
-					<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							val myClassEnhanced = MyClassEnhanced&lt;Int, Double&gt;(123)
-
-							myClassEnhanced.valueEquals(123.0)
-						</code>
-					</pre>
-					<p>
-						And you can define generics for functions outside of classes as well,
-						but you need to define the type parameter before the function name.
-					</p>
-					<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							fun &lt;T1, T2&gt; valueEquals(value1: T1, value2: T2): Boolean {
-								return value1 == value2
-							}
-						</code>
-					</pre>
-					<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							valueEquals&lt;Int, Double&gt;(123, 123.0)
-						</code>
-					</pre>
-					<p>
-						You don't have to define the type parameter if the compiler can infer it.
-					</p>
-					<pre>
-						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							valueEquals(123, 123.0)
-						</code>
-					</pre>
-				</div>
-			</section>
-		</section>
+<!--							myClassEnhanced.valueEquals(123.0)-->
+<!--						</code>-->
+<!--					</pre>-->
+<!--					<p>-->
+<!--						And you can define generics for functions outside of classes as well,-->
+<!--						but you need to define the type parameter before the function name.-->
+<!--					</p>-->
+<!--					<pre>-->
+<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--							fun &lt;T1, T2&gt; valueEquals(value1: T1, value2: T2): Boolean {-->
+<!--								return value1 == value2-->
+<!--							}-->
+<!--						</code>-->
+<!--					</pre>-->
+<!--					<pre>-->
+<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--							valueEquals&lt;Int, Double&gt;(123, 123.0)-->
+<!--						</code>-->
+<!--					</pre>-->
+<!--					<p>-->
+<!--						You don't have to define the type parameter if the compiler can infer it.-->
+<!--					</p>-->
+<!--					<pre>-->
+<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
+<!--							valueEquals(123, 123.0)-->
+<!--						</code>-->
+<!--					</pre>-->
+<!--				</div>-->
+<!--			</section>-->
+<!--		</section>-->
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Functional Programming</h2>
@@ -758,6 +757,24 @@
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Practice</h2>
+			</section>
+			<section>
+				<h3>Practice</h3>
+				<div class="summary">
+<!--					Now that we have covered the SOLID principle, Inversion of Control, Generics, and Functional Programming,-->
+<!--					we will practice these concepts in the next lesson.-->
+				</div>
+				<div class="content">
+<!--					<p>-->
+<!--						We will create a simple application that will demonstrate the use of these principles.-->
+<!--					</p>-->
+<!--					<p>-->
+<!--						We will create a simple application that will demonstrate the use of these principles.-->
+<!--					</p>-->
+<!--					<p>-->
+<!--						We will create a simple application that will demonstrate the use of these principles.-->
+<!--					</p>-->
+				</div>
 			</section>
 		</section>
 	</div>
