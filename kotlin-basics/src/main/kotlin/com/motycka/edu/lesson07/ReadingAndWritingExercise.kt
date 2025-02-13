@@ -1,7 +1,7 @@
 package com.motycka.edu.lesson07
 
 import com.motycka.edu.lesson06.*
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.File
 import java.io.IOException
 

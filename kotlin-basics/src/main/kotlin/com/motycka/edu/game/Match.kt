@@ -1,6 +1,6 @@
 package com.motycka.edu.game
 
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
@@ -13,29 +13,32 @@ internal data class Match(
 
     fun fight(): MatchResult {
         var round = 0
-        while (challenger.health > 0 && opponent.health > 0 && round < rounds) {
+
+        val (first, second) = getOrder()
+
+        while (first.health > 0 && second.health > 0 && round < rounds) {
             // new
-            challenger.beforeRound()
-            opponent.beforeRound()
+            first.beforeRound()
+            second.beforeRound()
 
             round++
             logger.info { "\nROUND $round" }
-            challenger.attack(opponent)
-            opponent.attack(challenger)
+            first.attack(first)
+            second.attack(second)
 
             // new
-            challenger.afterRound()
-            opponent.afterRound()
+            first.afterRound()
+            second.afterRound()
         }
 
         val victor = when {
-            challenger.health <= 0 && opponent.health > 0 -> {
-                logger.info { ("\n${opponent.name} is the victor in round $round!") }
-                opponent
+            first.health <= 0 && second.health > 0 -> {
+                logger.info { ("\n${second.name} is the victor in round $round!") }
+                second
             }
-            opponent.health <= 0 && challenger.health > 0 -> {
-                logger.info { "\n${challenger.name} is the victor in round $round!" }
-                challenger
+            second.health <= 0 && first.health > 0 -> {
+                logger.info { "\n${first.name} is the victor in round $round!" }
+                first
             }
             else -> {
                 logger.info { "\nIt's a draw!" }
@@ -49,6 +52,21 @@ internal data class Match(
             round = round,
             victor = victor
         )
+    }
+
+    private fun getOrder(): Pair<Character, Character> {
+        return when (challenger) {
+            is Sorcerer -> challenger to opponent
+            else -> opponent to challenger
+        }
+    }
+
+    private fun fightRound() {
+
+    }
+
+    private fun getResult() {
+
     }
 
 }

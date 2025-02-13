@@ -176,9 +176,9 @@
 				<h3>Java Memory Management</h3>
 				<div class="summary">
 					Java memory management is to a large extent automatic.
-<!--					As your program runs, the JVM automatically allocates and de-allocates memory for objects.-->
-<!--					The de-allocation process is known as <span class="highlight">garbage collection</span> (GC),-->
-<!--					and the process responsible for it is called the <span class="highlight">garbage collector</span>.-->
+					<!--					As your program runs, the JVM automatically allocates and de-allocates memory for objects.-->
+					<!--					The de-allocation process is known as <span class="highlight">garbage collection</span> (GC),-->
+					<!--					and the process responsible for it is called the <span class="highlight">garbage collector</span>.-->
 				</div>
 				<div class="content">
 					<p>
@@ -475,6 +475,7 @@
 									// this will block the main thread until the other thread finishes
 									thread.join()
 								} catch (e: InterruptedException) {
+									Thread.currentThread().interrupt()
 									throw RuntimeException(e)
 								}
 
@@ -836,6 +837,7 @@
 									semaphore.acquire()
 									println("Thread '" + Thread.currentThread().name + "' acquired the semaphore")
 								} catch (e: InterruptedException) {
+									Thread.currentThread().interrupt()
 									throw RuntimeException(e)
 								} finally {
 									println("Thread '" + Thread.currentThread().name + "' is releasing the semaphore")
@@ -859,36 +861,39 @@
 				<div class="content">
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							public class CountDownLatchExample {
+							fun main() {
 
-								private static final CountDownLatch latch = new CountDownLatch(3);
-
-								public static void main(String[] args) {
-									var waitingThread = new Thread(() -> {
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
-										try {
-											latch.await();
-										} catch (InterruptedException e) {
-											throw new RuntimeException(e);
-										}
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
-									}, "WAITING");
-
-
-									var countingThread = new Thread(() -> {
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' started");
-										while (latch.getCount() > 0) {
-											System.out.println("Thread '" + Thread.currentThread().getName() + "' counting down " + latch.getCount() + "...");
-											latch.countDown();
-										}
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' finished");
-									}, "COUNTING");
-
-									waitingThread.start();
-									countingThread.start();
+								thread(name = "WAITING") {
+									println("Thread '${Thread.currentThread().name}' started")
+									try {
+										latch.await()
+									} catch (e: InterruptedException) {
+										Thread.currentThread().interrupt()
+										throw RuntimeException(e)
+									}
+									println("Thread '${Thread.currentThread().name}' finished")
 								}
 
+								thread(name = "COUNTING") {
+									println("Thread '${Thread.currentThread().name}' started")
+									while (latch.count > 0) {
+										println("Thread '${Thread.currentThread().name}' counting down ${latch.count}...")
+										latch.countDown()
+									}
+									println("Thread '${Thread.currentThread().name}' finished")
+								}
 							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Thread 'COUNTING' started
+							Thread 'WAITING' started
+							Thread 'COUNTING' counting down 3...
+							Thread 'COUNTING' counting down 2...
+							Thread 'COUNTING' counting down 1...
+							Thread 'COUNTING' finished
+							Thread 'WAITING' finished
 						</code>
 					</pre>
 				</div>
@@ -898,35 +903,37 @@
 				<div class="content">
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							public class CyclicBarrierExample {
+							import java.util.concurrent.CyclicBarrier
+							import kotlin.concurrent.thread
 
-								public static void main(String[] args) {
-									var barrier = new CyclicBarrier(3, () -> System.out.println("Barrier reached"));
+							private var barrier = CyclicBarrier(3) { println("Barrier reached") }
 
-									new Thread(new MyRunnable(barrier), "A").start();
-									new Thread(new MyRunnable(barrier), "B").start();
-									new Thread(new MyRunnable(barrier), "C").start();
-								}
+							fun main() {
+								thread(name = "A") { execute(barrier) }
+								thread(name = "B") { execute(barrier) }
+								thread(name = "C") { execute(barrier) }
+							}
 
-								static class MyRunnable implements Runnable {
-									private final CyclicBarrier barrier;
-
-									public MyRunnable(CyclicBarrier barrier) {
-										this.barrier = barrier;
-									}
-
-									@Override
-									public void run() {
-										try {
-											System.out.println("Thread '" + Thread.currentThread().getName() + "' is waiting on the barrier");
-											barrier.await();
-											System.out.println("Thread '" + Thread.currentThread().getName() + "' has passed the barrier");
-										} catch (Exception e) {
-											throw new RuntimeException(e);
-										}
-									}
+							fun execute(barrier: CyclicBarrier) {
+								try {
+									println("Thread '${Thread.currentThread().name}' is waiting on the barrier")
+									barrier.await()
+									println("Thread '${Thread.currentThread().name}' has passed the barrier")
+								} catch (e: Exception) {
+									throw RuntimeException(e)
 								}
 							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Thread 'C' is waiting on the barrier
+							Thread 'B' is waiting on the barrier
+							Thread 'A' is waiting on the barrier
+							Barrier reached
+							Thread 'A' has passed the barrier
+							Thread 'C' has passed the barrier
+							Thread 'B' has passed the barrier
 						</code>
 					</pre>
 				</div>
@@ -936,51 +943,41 @@
 				<div class="content">
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							public class PhaserExample {
+							import java.util.concurrent.Phaser
+							import kotlin.concurrent.thread
 
-								private static final Phaser phaser = new Phaser(2);
+							private val phaser = Phaser(2)
 
-								public static void main(String[] args) {
-									new Thread(new PreProcessor(phaser), "PRE-PROCESSOR").start();
-									new Thread(new PostProcessor(phaser), "POST-PROCESSOR").start();
-								}
-
-								static class PostProcessor implements Runnable {
-									private final Phaser phaser;
-
-									public PostProcessor(Phaser phaser) {
-										this.phaser = phaser;
-									}
-
-									@Override
-									public void run() {
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' has arriver. Waiting for others...");
-										phaser.arriveAndAwaitAdvance();
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
-									}
-								}
-
-								static class PreProcessor implements Runnable {
-									private final Phaser phaser;
-
-									public PreProcessor(Phaser phaser) {
-										this.phaser = phaser;
-									}
-
-									@Override
-									public void run() {
-										try {
-											Thread.sleep(1000);
-										} catch (InterruptedException e) {
-											throw new RuntimeException(e);
-										}
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' has arrived.");
-										phaser.arriveAndDeregister();
-										System.out.println("Thread '" + Thread.currentThread().getName() + "' has finished.");
-									}
-								}
-
+							fun main() {
+								thread(name = "PRE-PROCESSOR") { preProcessor(phaser) }
+								thread(name = "POST-PROCESSOR") { postProcessor(phaser) }
 							}
+
+							fun postProcessor(phaser: Phaser) {
+								println("Thread '${Thread.currentThread().name}' has arrived. Waiting for others...")
+								phaser.arriveAndAwaitAdvance()
+								println("Thread '${Thread.currentThread().name}' has finished.")
+							}
+
+							fun preProcessor(phaser: Phaser) {
+								try {
+									Thread.sleep(1000)
+								} catch (e: InterruptedException) {
+									Thread.currentThread().interrupt()
+									throw RuntimeException(e)
+								}
+								println("Thread '${Thread.currentThread().name}' has arrived.")
+								phaser.arriveAndDeregister()
+								println("Thread '${Thread.currentThread().name}' has finished.")
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Thread 'POST-PROCESSOR' has arrived. Waiting for others...
+							Thread 'PRE-PROCESSOR' has arrived.
+							Thread 'PRE-PROCESSOR' has finished.
+							Thread 'POST-PROCESSOR' has finished.
 						</code>
 					</pre>
 				</div>
@@ -990,34 +987,31 @@
 				<div class="content">
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							public class ExchangerExample {
+							import java.util.concurrent.Exchanger
+							import kotlin.concurrent.thread
 
-								private static final Exchanger&lt;String&gt; exchanger = new Exchanger<>();
+							private val exchanger = Exchanger&lt;String&gt;()
 
-								public static void main(String[] args) {
-									new Thread(new MyRunnable(exchanger), "A").start();
-									new Thread(new MyRunnable(exchanger), "B").start();
-								}
-
-								static class MyRunnable implements Runnable {
-									private final Exchanger&lt;String&gt; exchanger;
-
-									public MyRunnable(Exchanger&lt;String&gt; exchanger) {
-										this.exchanger = exchanger;
-									}
-
-									@Override
-									public void run() {
-										try {
-											String message = exchanger.exchange("Hello from " + Thread.currentThread().getName());
-											System.out.println("Thread '" + Thread.currentThread().getName() + "' received message: " + message);
-										} catch (InterruptedException e) {
-											throw new RuntimeException(e);
-										}
-									}
-								}
-
+							fun main() {
+								thread(name = "A") { exchange(exchanger) }
+								thread(name = "B") { exchange(exchanger) }
 							}
+
+							fun exchange(exchanger: Exchanger&lt;String&gt;) {
+								try {
+									val message = exchanger.exchange("Hello from ${Thread.currentThread().name}")
+									println("Thread '${Thread.currentThread().name}' received message: $message")
+								} catch (e: InterruptedException) {
+									Thread.currentThread().interrupt()
+									throw RuntimeException(e)
+								}
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Thread 'A' received message: Hello from B
+							Thread 'B' received message: Hello from A
 						</code>
 					</pre>
 				</div>
@@ -1046,46 +1040,909 @@
 			<section>
 				<h3>Future example</h3>
 				<div class="content">
+					<p>
+						Again, <strong class="highlight">Future</strong> is one of the objects you may encounter when working with Java libraries in Kotlin.
+					</p>
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							public class FutureExample {
+							import java.util.concurrent.Executors
+							import java.util.concurrent.Future
 
-								public static void main(String[] args) {
+							fun main() {
+								val messenger = Messenger()
+								val message: Future&lt;String&gt; = messenger.receiveMessage()
 
-									Messenger messenger = new Messenger();
-
-									Future&lt;String&gt; message = messenger.receiveMessage();
-
-									while (!message.isDone()) {
-										System.out.println("Waiting for message...");
-										try {
-											Thread.sleep(500);
-										} catch (InterruptedException e) {
-											throw new RuntimeException(e);
-										}
-									}
-
+								while (!message.isDone) {
+									println("Waiting for message...")
 									try {
-										System.out.println("Received message: " + message.get());
-									} catch (Exception e) {
-										throw new RuntimeException(e);
+										Thread.sleep(500)
+									} catch (e: InterruptedException) {
+										Thread.currentThread().interrupt()
+										throw RuntimeException(e)
 									}
 								}
 
-								static class Messenger {
+								try {
+									println("Received message: ${message.get()}")
+								} catch (e: Exception) {
+									throw RuntimeException(e)
+								}
+							}
 
-									private final ExecutorService executor = Executors.newSingleThreadExecutor();
+							class Messenger {
+								private val executor = Executors.newSingleThreadExecutor()
 
-									public Future&lt;String&gt; receiveMessage() {
-										return executor.submit(() -> {
-											Thread.sleep(3000);
-											return "Hello from future!";
-										});
+								fun receiveMessage(): Future&lt;String&gt; {
+									return executor.submit&lt;String&gt; {
+										Thread.sleep(3000)
+										"Hello from future!"
 									}
 								}
 							}
 						</code>
 					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Waiting for message...
+							Waiting for message...
+							Waiting for message...
+							Waiting for message...
+							Waiting for message...
+							Waiting for message...
+							Received message: Hello from future!
+						</code>
+					</pre>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Exercise</h2>
+			</section>
+			<section>
+				<h3>Exercise #1: Thread</h3>
+				<div class="content">
+					<p>
+						Write a simple program simulating a coffee bar:
+					</p>
+					<ol>
+						<li>Create a thread with a name of a barista.</li>
+						<li>Inside the thread log <code class="inline">"${Thread.currentThread().name} is making your coffee."</code> </li>
+						<li>Wait for 5 seconds</li>
+						<li>Print <code class="inline">"Your coffee is ready. Enjoy!"</code></li>
+						<li>Make sure to handle possible exceptions.</li>
+					</ol>
+				</div>
+			</section>
+			<!--			<section>-->
+			<!--				<h3>Exercise #2: Runnable</h3>-->
+			<!--				<div class="content">-->
+			<!--					Implement the same functionality as in Exercise #1, but this time create a class that implements Runnable interface.-->
+			<!--					Then use the clas for creating of new thread and perform the same actions as in Exercise #1.-->
+			<!--				</div>-->
+			<!--			</section>-->
+			<section>
+				<h3>Exercise #2: Atomic Operations</h3>
+				<div class="content">
+					Enhance your code to process multiple orders in parallel by multiple baristas:
+					<ol>
+						<li>
+							Create an <code class="inline">AtomicInteger</code> variable to hold a number of orders. Set it to non-zero initial value.
+						</li>
+						<li>
+							Move you coffe making code to a <code class="inline">makeCoffee</code> function.
+							The function should accept one argument <code class="inline">orders: AtomicInteger</code>
+							which is a reference to the number of orders waiting to be processed.
+						</li>
+						<li>
+							Use the <code class="inline">AtomicInteger</code> inside the <code class="inline">makeCoffee</code> function
+							to decrease the number of orders by 1 every time a coffee is made.
+						</li>
+						<li>
+							In your <code class="inline">main</code> function, create two threads with two barista names
+							to process the orders.
+						</li>
+					</ol>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise #3: Semaphore</h3>
+				<div class="content">
+					<p>
+						Enhance your code, so that the coffee shop can process only coffee 1 order at a time, as there is only 1 coffee machine.
+					</p>
+					<p>
+						<strong class="highlight">Hint:</strong> Use <code class="inline">Semaphore</code> to control access to the coffee machine.
+					</p>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Coroutines</h2>
+			</section>
+			<section>
+				<h3>Coroutines</h3>
+				<div class="summary">
+					Coroutines are light-weight alternative to threads, which are used for asynchronous programming.
+				</div>
+				<div class="content">
+					<p>
+						A coroutine is an instance of a suspendable computation.
+						It allows for asynchronous code executions, like threads, but they are not bound to any particular thread.
+						A coroutine may start executing in one thread, suspend its execution and resume in another one.
+
+						This makes coroutines more efficient than threads - by design, they are non-blocking and reuse threads.
+					</p>
+					<p>
+						Coroutines run in a context of a <strong class="highlight">CoroutineScope</strong>, which defines the lifecycle of the coroutine.
+						When the scope is cancelled, all coroutines started in that scope are cancelled.
+						CoroutineScope can only finish when all its inner coroutines are finished.
+					</p>
+					<blockquote>
+						Coroutines are one of the main features of Kotlin, and while working with them is straightforward,
+						I believe it is a topic for Kotlin Advanced course.
+					</blockquote>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutines Basics</h3>
+				<div class="summary">
+					There are several principles to work with coroutines.
+				</div>
+				<div class="content">
+					<p>
+						Let's explain with example:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+
+								launch {
+									delay(1000)
+									println("Kotlin Coroutines World!")
+								}
+
+								println("Hello")
+
+							}
+						</code>
+					</pre>
+					<ul>
+						<li>
+							<code class="inline">lunch</code> - is a coroutine builder.
+							It launches a new coroutine concurrently with the rest of the code, which continues to work independently.
+						</li>
+						<li>
+							<code class="inline">delay</code> - suspends the coroutine for a specific time.
+							Suspending a coroutine does not block the underlying thread, but allows other coroutines to run and use the underlying thread for their code.
+						</li>
+						<li>
+							<code class="inline">runBlocking</code> - is also a coroutine builder that bridges the non-coroutine world of a regular fun main()
+							and the code with coroutines inside of <code class="inline">runBlocking { ... }</code> curly braces.
+						</li>
+					</ul>
+					<p>
+						In this example, <code class="inline">Hello</code> is printed first, because the coroutine is suspended for 1 second.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine Scope</h3>
+				<div class="summary">
+					Coroutine scope is a way to manage the lifecycle of coroutines.
+				</div>
+				<div class="content">
+					<p>
+						Coroutines follow a principle of <strong class="highlight">structured concurrency</strong>
+						which means that new coroutines can only be launched in a specific coroutine scope which delimits the lifetime of the coroutine.
+					</p>
+					<ul>
+						<li>It ensures that all coroutines are properly managed and not leaking outside of their scope.</li>
+						<li>It also ensures that any errors in the code are properly reported and are never lost.</li>
+					</ul>
+					<p>
+						Besides coroutine scopes provided by builders such as <code class="inline">runBlocking</code> and <code class="inline">launch</code>,
+						you can also create your own coroutine scope using <code class="inline">coroutineScope</code> function.
+					</p>
+					<div class="row">
+						<div class="column">
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									fun main() = runBlocking {
+										launch {
+											task()
+										}
+										println("Hello")
+									}
+								</code>
+							</pre>
+						</div>
+						<div class="column">
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									suspend fun task() = coroutineScope {
+										delay(1000)
+										println("Kotlin Coroutines World!")
+									}
+								</code>
+							</pre>
+						</div>
+					</div>
+					<ul>
+						<li>
+							<code class="inline">coroutineScope</code> - a coroutine builder that creates a new coroutine scope.
+							<ul>
+								<li>It allows you to launch new coroutines in the scope of the current coroutine.</li>
+								<li>An outer scope cannot complete until all its children coroutines complete.</li>
+							</ul>
+
+						</li>
+						<li>
+							<code class="inline">suspend</code> - a modifier that marks a function as a suspend function.
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Suspendable Functions</h3>
+				<div class="summary">
+					<code class="inline">suspend</code> functions are the building blocks of coroutines.
+				</div>
+				<div class="content">
+					<p>
+						<code class="inline">suspend</code> functions ...
+					</p>
+					<ul>
+						<li>
+							can execute long-running operations without blocking the thread
+						</li>
+						<li>
+							can be paused (suspended) and resumed at a later time, without blocking the underlying thread
+						</li>
+						<li>
+							can only be called from other <code class="inline">suspend</code> functions or from coroutines scope.
+						</li>
+						<li>
+							suspended function may resume their operation in a different thread
+						</li>
+					</ul>
+					<p>
+						Calling any suspend function from a non-suspend function, you will get a compilation error. If you need to cross the asynchronous to synchronous boundary, you can use <code class="inline">runBlocking</code> function.
+					</p>
+					<p>
+						If you call multiple <code class="inline">suspend</code> functions like this, they will run in parallel.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+
+								val time = measureTimeMillis {
+									val result1 = task1()
+									val result2 = task2()
+								}
+
+								println("Milliseconds: $time")
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Suspendable Functions</h3>
+				<div class="summary">
+					Parallel execution of suspend functions.
+				</div>
+				<div class="content">
+					<p>
+						If you call multiple <code class="inline">suspend</code> functions, by default they will run in sequentionally.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+
+								val time = measureTimeMillis {
+									val result1 = task1()
+									val result2 = task2()
+									println("$result1 $result2")
+								}
+								println("It took $time ms")
+							}
+
+							suspend fun task1(): String {
+								delay(1000)
+								return "Hello"
+							}
+
+							suspend fun task2(): String {
+								delay(2000)
+								return "Coroutines"
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Hello Coroutines
+							It took 3037 ms
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Suspendable Functions</h3>
+				<div class="summary">
+					Parallel execution of suspend functions.
+				</div>
+				<div class="content">
+					<p>
+						To allow these functions to run in parallel, you can use <code class="inline">async</code> function with
+						<code class="inline">await</code> function to get the result.
+					</p>
+					<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						fun main() = runBlocking {
+
+							val time = measureTimeMillis {
+								val result1 = async { task1() }
+								val result2 = async { task2() }
+								println("Result: ${result1.await() + result2.await()}")
+							}
+
+							println("It took $time ms")
+						}
+
+						suspend fun task1(): String {
+							delay(1000)
+							return "Hello"
+						}
+
+						suspend fun task2(): String {
+							delay(2000)
+							return "Coroutines"
+						}
+					</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Result: HelloCoroutines
+							It took 2044 ms
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine Dispatchers</h3>
+				<div class="summary">
+					Coroutines are dispatched onto different threads using Dispatchers.
+				</div>
+				<div class="content">
+					<p>
+						The coroutine context includes a <strong class="highlight">CoroutineDispatcher</strong> that determines what thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined.
+					</p>
+					<p>
+						There are some predefined dispatcher types available for specific tasks in Kotlin:
+					</p>
+					<ul>
+						<li>
+							<code class="inline">Dispatchers.Unconfined</code> - starts in the context of the current thread, but it can be resumed in a different thread.
+						</li>
+						<li>
+							<code class="inline">Dispatchers.Default</code> - uses a shared background pool of threads.
+						</li>
+						<li>
+							<code class="inline">Dispatchers.IO</code> - uses a shared pool of threads for I/O-bound tasks.
+						</li>
+					</ul>
+					<p>
+						There is also a <code class="inline">newSingleThreadContext</code> function that creates a dispatcher with a single thread.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							launch { // context of the parent, main runBlocking coroutine
+								println("main runBlocking      : I'm working in thread ${Thread.currentThread().name}")
+							}
+							launch(Dispatchers.Unconfined) { // not confined -- will work with main thread
+								println("Unconfined            : I'm working in thread ${Thread.currentThread().name}")
+							}
+							launch(Dispatchers.Default) { // will get dispatched to DefaultDispatcher
+								println("Default               : I'm working in thread ${Thread.currentThread().name}")
+							}
+							launch(newSingleThreadContext("MyOwnThread")) { // will get its own new thread
+								println("newSingleThreadContext: I'm working in thread ${Thread.currentThread().name}")
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Unconfined            : I'm working in thread main
+							Default               : I'm working in thread DefaultDispatcher-worker-1
+							newSingleThreadContext: I'm working in thread MyOwnThread
+							main runBlocking      : I'm working in thread main
+						</code>
+					</pre>
+					<sub>
+						This example is taken directly from
+						<a href="https://kotlinlang.org/docs/coroutine-context-and-dispatchers.html#dispatchers-and-threads">Kotlin documentation</a>
+					</sub>
+				</div>
+			</section>
+			<section>
+				<h3>Shared mutable state and concurrency</h3>
+				<div class="content">
+					<p>
+						You can use the same principles for sharing state between coroutines as you would with threads.
+					</p>
+					<p>
+						There are some additional mechanisms to handle shared mutable state in coroutines provided by Kotlin such as ...
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">Thread-safe data structures</strong> - such as <code class="inline">AtomicInteger</code>, <code class="inline">Semaphore</code>, etc.
+						</li>
+						<li>
+							<strong class="highlight">Thread confinement</strong> - a way to ensure that a specific piece of code runs only in a specific thread.
+						</li>
+						<li>
+							<strong class="highlight">Mutex</strong> - a mutual exclusion lock that allows only one coroutine to access a shared resource at a time.
+						</li>
+					</ul>
+					<p>
+						Let's create an example fo a function that launches 100 coroutines and each coroutine repeats an action 1000 times ...
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							suspend fun massiveRun(action: suspend () -> Unit) {
+								val n = 100  // number of coroutines to launch
+								val k = 1000 // times an action is repeated by each coroutine
+								val time = measureTimeMillis {
+									coroutineScope { // scope for coroutines
+										repeat(n) {
+											launch {
+												repeat(k) { action() }
+											}
+										}
+									}
+								}
+								println("Completed ${n * k} actions in $time ms")
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Shared mutable state and concurrency</h3>
+				<div class="summary">
+					Thread-safe data structures
+				</div>
+				<div class="content">
+					<p>
+						This isn't much different from working with threads.
+						We control access to shared mutable state using thread-safe data structures such as <code class="inline">AtomicInteger</code>.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val counter = AtomicInteger()
+
+							fun main() = runBlocking {
+								withContext(Dispatchers.Default) {
+									massiveRun {
+										counter.incrementAndGet()
+									}
+								}
+								println("Counter = $counter")
+							}
+						</code>
+					</pre>
+					<sub>
+						This example is taken directly from
+						<a href="https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html#thread-safe-data-structures">Kotlin documentation</a>
+					</sub>
+				</div>
+			</section>
+			<section>
+				<h3>Shared mutable state and concurrency</h3>
+				<div class="summary">
+					Thread confinement
+				</div>
+				<div class="content">
+					<p>
+						Thread confinement is an approach to the problem of shared mutable state where all access to
+						the particular shared state is confined to a single thread.
+					</p>
+					<p>
+						<strong>B) </strong> With each increment confine to a single-threaded context ...
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val counterContext = newSingleThreadContext("CounterContext")
+							var counter = 0
+
+							fun main() = runBlocking {
+								withContext(Dispatchers.Default) {
+									massiveRun {
+										// confine each increment to a single-threaded context
+										withContext(counterContext) {
+											counter++
+										}
+									}
+								}
+								println("Counter = $counter")
+							}
+						</code>
+					</pre>
+					<p>
+						<strong>B) </strong> With everything confined to a single-threaded context ...
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val counterContext = newSingleThreadContext("CounterContext")
+							var counter = 0
+
+							fun main() = runBlocking {
+								// confine everything to a single-threaded context
+								withContext(counterContext) {
+									massiveRun {
+										counter++
+									}
+								}
+								println("Counter = $counter")
+							}
+						</code>
+					</pre>
+					<sub>
+						This example is taken directly from
+						<a href="https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html#thread-confinement-fine-grained">Kotlin documentation</a>
+					</sub>
+				</div>
+			</section>
+			<section>
+				<h3>Shared mutable state and concurrency</h3>
+				<div class="summary">
+					Mutex
+				</div>
+				<div class="content">
+					<p>
+						<code class="inline">Mutex</code> is a Kotlin mutual exclusion lock that allows only one coroutine to access a shared resource at a time.
+					</p>
+					<ul>
+						<li>It is a suspending function, so it does not block the underlying thread.</li>
+						<li>It has a <code class="inline">lock</code> and <code class="inline">unlock</code> functions to delimit a critical section.</li>
+						<li>You can also use <code class="inline">withLock</code> extension function to represent <code class="inline">lock(); try { ... } finally { unlock() }</code> pattern.</li>
+					</ul>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val mutex = Mutex()
+							var counter = 0
+
+							fun main() = runBlocking {
+								withContext(Dispatchers.Default) {
+									massiveRun {
+										// protect each increment with lock
+										mutex.withLock {
+											counter++
+										}
+									}
+								}
+								println("Counter = $counter")
+							}
+						</code>
+					</pre>
+					<sub>
+						This example is taken directly from
+						<a href="https://kotlinlang.org/docs/shared-mutable-state-and-concurrency.html#mutual-exclusion">Kotlin documentation</a>
+					</sub>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine and Channels</h3>
+				<div class="summary">
+					Channels are a way to communicate between coroutines.
+				</div>
+				<div class="content">
+					<p>
+						Kotlin's coroutine channels are a mechanism for communication between coroutines.
+						They allow multiple coroutines to send and receive data, much like blocking queues,
+						but in a non-blocking way.
+						Channels are especially useful in scenarios where coroutines need to share or process streams of data concurrently.
+					</p>
+					<p>
+						<strong class="highlight">Basic channel operations</strong>
+					</p>
+					<ul>
+						<li>
+							<code class="inline">send(value)</code>: Sends a value to the channel. This suspends the sender if the channel is full.
+						</li>
+						<li>
+							<code class="inline">receive()</code>: Receives a value from the channel. This suspends the receiver if the channel is empty.
+						</li>
+						<li>
+							<code class="inline">close()</code>: Closes the channel, signaling that no more values will be sent.
+						</li>
+					</ul>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+								val channel = Channel&lt;Int&gt;() // Create a channel of type Int
+
+								// Launch a coroutine to send values
+								launch {
+									for (i in 1..5) {
+										channel.send(i)  // Send values to the channel
+										println("Sent: $i")
+									}
+									channel.close()  // Close the channel after sending all values
+								}
+
+								// Receive values from the channel
+								for (value in channel) {
+									println("Received: $value")
+								}
+							}
+						</code>
+					</pre>
+					<p>
+						There, the sender coroutine sends values to the channel,
+						and the receiver iterates over the channel to receive values until the channel is closed.
+					</p>
+					<p>
+						Once a channel is closed, no more values can be sent, and the for loop over the channel will terminate gracefully.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Buffered Channels</h3>
+				<div class="content">
+					<p>
+						By default, channels are unbuffered, meaning the sender and receiver must synchronize before data is passed.
+						Buffered channels allow the sender to send multiple items before the receiver has to process them.
+
+					</p>
+				</div>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						val channel = Channel&lt;Int&gt;(capacity = 3) // A buffered channel with capacity 3
+					</code>
+				</pre>
+				<pre>
+					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+						fun main() = runBlocking {
+							val channel = Channel&lt;Int&gt;(3) // Buffer size is 3
+
+							launch {
+								repeat(5) {
+									channel.send(it)
+									println("Sent: $it")
+								}
+								channel.close()
+							}
+
+							for (value in channel) {
+								println("Received: $value")
+							}
+						}
+					</code>
+				</pre>
+			</section>
+			<section>
+				<h3>Conflated Channels</h3>
+				<div class="content">
+					<p>
+						Conflated channels retain only the latest sent value and discard previous ones if not yet received.
+						This is useful for scenarios like UI updates, where only the latest state matters.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val conflatedChannel = Channel&lt;Int&gt;(Channel.CONFLATED)
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+								val channel = Channel&lt;Int&gt;(Channel.CONFLATED)
+
+								launch {
+									channel.send(1)
+									channel.send(2)  // The first value is overwritten before it's received
+									channel.send(3)
+									channel.close()
+								}
+
+								println("Received: ${channel.receive()}")  // Only the latest value (3) is received
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>
+					Use Cases of Channels
+				</h3>
+				<div class="content">
+					<ul>
+						<li>
+							<h4>Producer-Consumer</h4>
+							<p>
+								Channels are often used to implement pipelines, where data flows through multiple stages, each represented by a coroutine.
+							</p>
+						</li>
+						<li>
+							<h4>Streaming Data</h4>
+							<p>
+								Channels are useful for processing real-time data feeds and event streams.
+							</p>
+						</li>
+						<li>
+							<h4>UI Updates</h4>
+							<p>
+								Channels can be used to propagate the latest state to UI components.
+							</p>
+						</li>
+						<li>
+							<h4>Work Distribution</h4>
+							<p>
+								Channels can be used to split tasks between multiple workers in a coroutine system.
+							</p>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine Cancellation, Timeouts and Exceptions</h3>
+				<div class="summary">
+					Coroutine Cancellation
+				</div>
+				<div class="content">
+					<p>Handling cancellation, timeouts, and exceptions properly is crucial for building reliable coroutine-based applications. Let’s break down how Kotlin coroutines handle each scenario.</p>
+					<p>
+						Coroutines in Kotlin are cooperative, meaning they need to actively check for cancellation and respond appropriately.
+					</p>
+					<p>
+						Coroutines can be cancelled by calling the <code class="inline">cancel()</code> function on a coroutine’s Job.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+								try {
+									repeat(1000) { i ->
+										println("Job: $i")
+										delay(500)  // Suspending function that checks for cancellation
+									}
+								} finally {
+									println("Cleanup")
+								}
+
+								delay(2000)  // Let the coroutine run for 2 seconds
+								println("Cancelling the job")
+								job.cancel()  // Cancel the coroutine
+								job.join()    // Wait for the coroutine to complete
+								println("Job cancelled")
+							}
+						</code>
+					</pre>
+					<p>
+						The coroutine checks for cancellation during the delay(500) call.
+						Without cooperative functions (e.g., delay, yield), the coroutine won’t be cancelled unless you manually handle it.
+					</p>
+					<p>
+						When a coroutine is cancelled, any cleanup operations (e.g., closing resources) should be performed in the finally block.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine Cancellation, Timeouts and Exceptions</h3>
+				<div class="summary">
+					Timeouts
+				</div>
+				<div class="content">
+					<p>
+						<code class="inline">withTimeout</code> allows you to automatically cancel a coroutine if it takes longer than a specified time.
+					</p>
+					<p>
+						<code class="inline">TimeoutCancellationException</code> is thrown if the timeout is reached.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+								try {
+									withTimeout(1500) {  // Timeout after 1.5 seconds
+										repeat(1000) { i ->
+											println("Task: $i")
+											delay(500)
+										}
+									}
+								} catch (e: TimeoutCancellationException) {
+									println("Coroutine timed out: ${e.message}")
+								}
+							}
+						</code>
+					</pre>
+					<p>
+						If you want to handle timeouts without throwing an exception, use <code class="inline">withTimeoutOrNull</code> , which returns null if the timeout is exceeded.
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine Cancellation, Timeouts and Exceptions</h3>
+				<div class="summary">
+					Handling Exceptions in Coroutines
+				</div>
+				<div class="content">
+					<p>
+						Exceptions in coroutines are handled differently depending on the coroutine builder (launch, async, etc.):
+					</p>
+					<ul>
+						<li><code class="inline">launch</code>: Exceptions are propagated to the parent and cause the coroutine to cancel.</li>
+						<li><code class="inline">async</code>: Exceptions are not thrown immediately but are propagated when calling  <code class="inline">await()</code>.</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine Cancellation, Timeouts and Exceptions</h3>
+				<div class="summary">
+					Supervisor Jobs and Exception Propagation
+				</div>
+				<div class="content">
+					<p>
+						<strong class="inline">SupervisorJob</strong> allows you to isolate the failure of one child coroutine from affecting other coroutines in the same scope.
+						In a <strong class="inline">SupervisorJob</strong>, exceptions from one coroutine do not cancel sibling coroutines.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() = runBlocking {
+								val supervisor = SupervisorJob()
+
+								val scope = CoroutineScope(coroutineContext + supervisor)
+
+								val job1 = scope.launch {
+									println("Job 1 started")
+									delay(1000)
+									throw Exception("Job 1 failed")
+								}
+
+								val job2 = scope.launch {
+									println("Job 2 started")
+									delay(2000)
+									println("Job 2 completed")
+								}
+
+								job1.join()
+								job2.join()  // Job 2 is not affected by Job 1's failure
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							Job 1 started
+							Job 2 started
+							Exception in thread "main" java.lang.Exception: Job 1 failed
+								at MainKt$main$1$job1$1.invokeSuspend(Main.kt:11)
+								at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+								...
+								at MainKt.main(Main.kt:3)
+								at MainKt.main(Main.kt)
+								Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [StandaloneCoroutine{Cancelling}@2aafb23c, BlockingEventLoop@2b80d80f]
+							Job 2 completed
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Coroutine Best Practices</h3>
+				<div class="content">
+					<ol>
+						<li>Always use <code class="inline">runBlocking</code> in a limited scope (typically only in main functions or tests).</li>
+						<li>Prefer <code class="inline">CoroutineScope</code> to manage coroutines in more complex applications.</li>
+						<li>Use <code class="inline">withContext(Dispatchers.IO)</code> for blocking I/O operations to prevent UI blocking.</li>
+						<li>Use structured concurrency principles to manage coroutine lifecycles (avoid orphaned coroutines).</li>
+					</ol>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise</h3>
+				<div class="content">
+					<p>
+						Take code from your previous exercise and rewrite it using coroutines.
+					</p>
 				</div>
 			</section>
 		</section>
@@ -1095,10 +1952,14 @@
 				<em>↓</em>
 			</section>
 			<section>
-				<h3>Practice</h3>
-				<div class="content">
-					Concurrent match
+				<div style="font-size: 200%">
+					<em>Enjoy some free time!</em><br />
+					<em>But be prepared for next lesson ㋡</em>
 				</div>
+				<br />
+				<em>
+					But make sure you catch up on all previous lessons and exercises!
+				</em>
 			</section>
 		</section>
 	</div>
