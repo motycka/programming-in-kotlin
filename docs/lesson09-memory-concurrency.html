@@ -1936,11 +1936,191 @@
 					</ol>
 				</div>
 			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Exercise</h2>
+				<em>↓</em>
+			</section>
 			<section>
-				<h3>Exercise</h3>
+				<h3>Exercise: Coffee Shop</h3>
+				<div class="summary">
+					In this assignment, you will implement a simulation of a coffee shop using Kotlin coroutines. The goal is to model a simple ordering and processing system where customers place coffee orders, and baristas prepare them in parallel.
+				</div>
+				<div class="content">
+					<ol>
+						<li>
+							<p>
+								Create an <code class="inline">MenuItem</code> enum with different coffee types time to prepare. You can use this example:
+							</p>
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									enum class MenuItem(val time: Long) {
+										AMERICANO(200),
+										ESPRESSO(100),
+										DOUBLE_ESPRESSO(200),
+										CAPUCCINO(400),
+										FLAT_WHITE(400),
+									}
+								</code>
+							</pre>
+						</li>
+						<li>
+							<p>Your task is to implement the simulation with two classes:</p>
+							<ul>
+								<li>
+									<code class="inline">CoffeeShop</code> - a class that represents the coffee shop and processes orders.
+								</li>
+								<li>
+									<code class="inline">OrderGenerator</code> - a class that generates coffee orders.
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							Create a main function that starts the simulation.
+						</li>
+					</ol>
+					<br />
+					<br />
+					<p>
+						<em>See next slide for details ↓</em>
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise: Coffee Shop</h3>
+				<div class="summary">
+					The simulation consists of the following key components
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							<strong class="highlight">Order Generation</strong>
+							<ol>
+								<li>Orders should be randomly generated at regular intervals while the coffee shop is open.</li>
+								<li>The shop should only accept orders if they can be completed before closing.</li>
+							</ol>
+						</li>
+						<li>
+							<strong class="highlight">Order Processing</strong>
+							<ol>
+								<li>The coffee shop has multiple baristas who process orders in parallel.</li>
+								<li>Each barista picks up one order at a time from a shared queue.</li>
+								<li>The barista must use a shared coffee machine, which only one person can use at a time.</li>
+								<li>Once an order is completed, the barista moves on to the next available order.</li>
+							</ol>
+						</li>
+						<li>
+							<strong class="highlight">Shop Closing Rules</strong>
+							<ol>
+								<li>The coffee shop operates for a fixed duration.</li>
+								<li>New orders should only be accepted if they can be completed before closing.</li>
+								<li>Once closed, the shop stops accepting new orders, but baristas finish any pending ones.</li>
+							</ol>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise: Coffee Shop</h3>
+				<div class="summary">
+					The <code class="inline">CoffeeShop</code>
+				</div>
+				<div class="content" style="font-size: 60%">
+					<p>
+						<ol>
+							<li>Manages the baristas and the coffee-making process.</li>
+							<li>Keeps track of the opening and closing times.</li>
+							<li>Uses a <code class="inline">Channel</code> to queue orders.</li>
+							<li>Launches multiple coroutines (one per barista) to process orders concurrently.</li>
+							<li>Ensures the coffee machine is accessed safely using a <code class="inline">Mutex</code>.</li>
+							<li>Stops accepting orders after closing but allows baristas to finish processing remaining ones.</li>
+						</ol>
+					</p>
+					<p>
+						<code class="inline">CoffeeShop</code> should have the following functions and properties:
+						<ul>
+							<li>
+								Constructor
+								<ul>
+									<li>
+										<code class="inline">val openDuration: Long</code> - the duration the shop is open in <code class="inline">unit</code> .
+									</li>
+									<li>
+										<code class="inline">val unit: ChronoUnit</code> - the time unit for the open duration.
+									</li>
+									<li>
+										<code class="inline">val baristas: List&lt;String&gt;</code> - list of barista names.
+									</li>
+								</ul>
+							</li>
+							<li>
+								<code class="inline">placeOrder</code> which function that takes MenuItem and puts it in the orders <code class="inline">Channel</code>.
+							</li>
+							<li><code class="inline">isOpen</code> method that returns true if the shop is open. It will be used by <code class="inline">OrderGenerator</code></li>
+							<li>
+								<code class="inline">processOrders</code> method that processes orders from the <code class="inline">Channel</code> (utilizing concurrency and spreading work across baristas).
+								<br />
+								<br />
+								Processing and order should take the following steps:
+								<ol>
+									<li>Barista waits for the coffee machine to be available.</li>
+									<li>Barista prepares the coffee - coffe preparation takes time based on the <code class="inline">MenuItem.time</code> + some time for barista to "recharge".</li>
+								</ol>
+							</li>
+							<li>
+								Once it is past closing time, the shop should stop accepting new orders. However, it should allow baristas to finish processing any pending orders.
+							</li>
+						</ul>
+					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise: Coffee Shop</h3>
+				<div class="summary">
+					The <code class="inline">OrderGenerator</code>
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							This class generates coffee orders randomly and places order with <code class="inline">CoffeeShop</code>
+							using the <code class="inline">placeOrder</code> function.
+						</li>
+						<li>
+							Orders should be placed at regular intervals (e.g., every 500ms).
+						</li>
+						<li>
+							The generator should stop creating new orders when the shop is about to close.
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Exercise: Coffee Shop</h3>
+				<div class="summary">
+					The <code class="inline">main</code> function
+				</div>
 				<div class="content">
 					<p>
-						Take code from your previous exercise and rewrite it using coroutines.
+						The main function should create and instance of <code class="inline">CoffeeShop</code> and <code class="inline">OrderGenerator</code> and start the simulation.
+						Use launch to start both the <code class="inline">OrderGenerator</code> and <code class="inline">CoffeeShop</code> coroutines.
+					</p>
+					<p>
+						<strong class="highlight">Ensure Proper Concurrency Handling</strong>
+						<ul>
+							<li>Use launch to start multiple coroutines for parallel order processing.</li>
+							<li>Use a Channel to distribute orders among baristas.</li>
+							<li>Use a Mutex to ensure only one barista uses the coffee machine at a time.</li>
+							<li>
+								Use logging (println or KotlinLogging) to
+								<ul>
+									<li>show when orders are placed, prepared, and completed</li>
+									<li>show when the shop opens and closes</li>
+									<li>show when baristas are waiting for the coffee machine</li>
+								</ul>
+							</li>
+						</ul>
 					</p>
 				</div>
 			</section>
@@ -1952,13 +2132,9 @@
 			</section>
 			<section>
 				<div style="font-size: 200%">
-					<em>Enjoy some free time!</em><br />
-					<em>But be prepared for next lesson ㋡</em>
+					<em>Catch up on all the lessons!</em><br />
+					<em>Remember to turn in you assignments.</em>
 				</div>
-				<br />
-				<em>
-					But make sure you catch up on all previous lessons and exercises!
-				</em>
 			</section>
 		</section>
 	</div>

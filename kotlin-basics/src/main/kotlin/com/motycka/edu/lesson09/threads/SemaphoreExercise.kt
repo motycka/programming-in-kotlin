@@ -38,7 +38,6 @@ private fun makeCoffee(orders: AtomicInteger, coffeeMachine: Semaphore) {
             }
         } else {
             logger.warn { "Coffee machine is busy. Please wait." }
-            Thread.sleep(1000)
         }
     }
 }
