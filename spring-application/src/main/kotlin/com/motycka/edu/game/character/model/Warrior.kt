@@ -72,8 +72,9 @@ class Warrior(
 
     override fun beforeRound() {
         if (currentStamina < stamina) {
-            logger.info { "$name regenerates 1 stamina" }
-            currentStamina++
+            val regenerates = (level.ordinal + 1)
+            logger.info { "$name regenerates $regenerates stamina" }
+            currentStamina += regenerates
         }
     }
 

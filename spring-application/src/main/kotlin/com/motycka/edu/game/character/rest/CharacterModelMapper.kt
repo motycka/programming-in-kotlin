@@ -1,5 +1,6 @@
 package com.motycka.edu.game.character.rest
 
+import com.motycka.edu.game.character.error.UnknownCharacterClassException
 import com.motycka.edu.game.character.model.Character
 import com.motycka.edu.game.character.model.CharacterLevel
 import com.motycka.edu.game.character.model.Sorcerer
@@ -87,7 +88,7 @@ fun CharacterUpdateRequest.toCharacter(id: CharacterId, existing: Character): Ch
     return when (existing) {
         is Warrior -> toWarrior(id, existing)
         is Sorcerer -> toSorcerer(id, existing)
-        else -> error("TODO") // TODO
+        else -> throw UnknownCharacterClassException()
     }
 }
 
@@ -114,3 +115,11 @@ fun CharacterUpdateRequest.toWarrior(id: CharacterId, existing: Character) = War
     level = existing.level,
     experience = existing.experience
 )
+
+fun Character.getClass(): CharacterClass {
+    return when (this) {
+        is Sorcerer -> CharacterClass.SORCERER
+        is Warrior -> CharacterClass.WARRIOR
+        else -> throw UnknownCharacterClassException()
+    }
+}

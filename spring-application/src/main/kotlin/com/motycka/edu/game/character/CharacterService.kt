@@ -17,8 +17,6 @@ class CharacterService(
 ) {
 
     fun createCharacter(character: Character): Character {
-        val accountId = accountService.getCurrentAccountId()
-
         return characterRepository.insertCharacters(
             accountId = accountService.getCurrentAccountId(),
             character = character
@@ -41,7 +39,6 @@ class CharacterService(
     }
 
     fun updateCharacter(character: Character): Character {
-        val accountId = accountService.getCurrentAccountId()
         return characterRepository.updateCharacter(character) ?: error(UPDATE_ERROR)
     }
 

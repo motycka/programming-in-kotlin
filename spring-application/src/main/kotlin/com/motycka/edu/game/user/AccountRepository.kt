@@ -28,7 +28,7 @@ class AccountRepository(
     }
 
     override fun insert(user: Account): Account? {
-        logger.debug { "Inserting new user: $user" }
+        logger.debug { "Inserting new user ${user.copy(password = "***")}" }
         return jdbcTemplate.query(
             "SELECT * FROM FINAL TABLE (INSERT INTO account (name, username, password) VALUES (?, ?, ?, ?))",
             ::rowMapper,

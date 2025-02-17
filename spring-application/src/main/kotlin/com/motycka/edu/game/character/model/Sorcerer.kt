@@ -74,8 +74,9 @@ class Sorcerer(
 
     override fun beforeRound() {
         if (currentMana < mana) {
-            logger.info { "$name regenerates 1 mana" }
-            currentMana++
+            val regenerates = (level.ordinal + 1)
+            logger.info { "$name regenerates $regenerates mana" }
+            currentMana += regenerates
         }
     }
 

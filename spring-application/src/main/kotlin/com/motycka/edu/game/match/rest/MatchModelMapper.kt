@@ -1,20 +1,13 @@
 package com.motycka.edu.game.match.rest
 
 import com.motycka.edu.game.character.model.Character
-import com.motycka.edu.game.character.rest.toCharacterResponse
+import com.motycka.edu.game.character.rest.getClass
 import com.motycka.edu.game.match.model.MatchResultWithCharacters
-import com.motycka.edu.game.user.model.AccountId
 
 fun MatchResultWithCharacters.toMatchResultTo() = MatchResponse(
     id = requireNotNull(match.id) { "Match id is required" },
-    challenger = challenger.toMatchCharacterTo(
-        isVictor = challenger.characterId == match.victorId,
-        currentAccountId = currentAccountId
-    ),
-    opponent = opponent.toMatchCharacterTo(
-        isVictor = opponent.characterId == match.victorId,
-        currentAccountId = currentAccountId
-    ),
+    challenger = challenger.toMatchCharacterTo(isVictor = challenger.characterId == match.victorId,),
+    opponent = opponent.toMatchCharacterTo(isVictor = opponent.characterId == match.victorId),
     rounds = rounds.map { round ->
         MatchRoundResponse(
             round = round.round,
@@ -30,8 +23,12 @@ fun List<MatchResultWithCharacters>.toMatchResultTos() = map {
     it.toMatchResultTo()
 }
 
-fun Character.toMatchCharacterTo(isVictor: Boolean, currentAccountId: AccountId) = MatchCharacterResponse(
-    character = toCharacterResponse(currentAccountId),
+fun Character.toMatchCharacterTo(isVictor: Boolean) = MatchCharacterResponse(
+    id = requireNotNull(id) { "Character id must not be null." },
+    name = name,
+    characterClass = getClass(),
+    level = level,
+    experience = experience,
     isVictor = isVictor
 )
 

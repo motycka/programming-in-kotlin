@@ -3,7 +3,10 @@ package com.motycka.edu.game.match
 import com.motycka.edu.game.character.CharacterService
 import com.motycka.edu.game.character.rest.CharactersFilter
 import com.motycka.edu.game.character.model.Character
+import com.motycka.edu.game.character.model.Sorcerer
+import com.motycka.edu.game.character.model.Warrior
 import com.motycka.edu.game.character.rest.CharacterId
+import com.motycka.edu.game.leaderboard.LeaderboardService
 import com.motycka.edu.game.match.model.MatchResult
 import com.motycka.edu.game.match.model.MatchResultWithCharacters
 import com.motycka.edu.game.match.model.MatchRoundResult
@@ -18,7 +21,8 @@ private val logger = KotlinLogging.logger {}
 class MatchService(
     private val matchRepository: MatchRepository,
     private val characterService: CharacterService,
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val leaderboardService: LeaderboardService
 ) {
 
     fun getMatches(): List<MatchResultWithCharacters> {
@@ -41,6 +45,7 @@ class MatchService(
         }
     }
 
+    @Transactional
     fun doMatch(
         rounds: Int,
         challengerId: CharacterId,
@@ -50,29 +55,24 @@ class MatchService(
             rounds = rounds,
             challenger = characterService.getCharacter(challengerId),
             opponent = characterService.getCharacter(opponentId)
-        ).also { matchResult ->
-            logger.info { "Match result: $matchResult" }
-            matchRepository.insertMatch(matchResult.match)
-        }
+        )
     }
 
-    @Transactional
-    fun match(
+    private fun match(
         rounds: Int,
         challenger: Character,
         opponent: Character
     ): MatchResultWithCharacters {
         var round = 0
 
-
-        // TODO collect while conditon is true
+        // TODO collect while condition is true
         val roundResults = (0 until rounds).mapNotNull {
             if (challenger.getStats().health > 0 && opponent.getStats().health > 0) {
                 round(round++, challenger, opponent)
-            } else null // TODO
+            } else null
         }.flatten()
 
-        val victor = when {
+        val victorId = when {
             challenger.getStats().health <= 0 && opponent.getStats().health > 0 -> {
                 logger.info { ("\n${opponent.name} is the victor in round $round!") }
                 opponent
@@ -85,19 +85,38 @@ class MatchService(
                 logger.info { "\nIt's a draw!" }
                 null
             }
-        }
+        }?.characterId
 
         val matchResult = matchRepository.insertMatch(
             MatchResult(
-                id = null,
                 challengerId = challenger.characterId,
                 opponentId = opponent.characterId,
-                victorId = victor?.characterId,
+                victorId = victorId,
             )
         )
 
         val rounds = roundResults.flatMap { roundResult ->
             matchRepository.insertRound(matchResult.id!!, roundResult)
+        }
+
+        // update stats
+        with (challenger) {
+            val isVictor = characterId == victorId
+            leaderboardService.updateLeaderboard(
+                characterId = characterId,
+                win = isVictor,
+                loss = !isVictor
+            )
+
+//            characterService.updateCharacter(copy(experience = experience + 1))
+        }
+        with (opponent) {
+            val isVictor = characterId == victorId
+            leaderboardService.updateLeaderboard(
+                characterId = characterId,
+                win = isVictor,
+                loss = !isVictor
+            )
         }
 
         return MatchResultWithCharacters(
@@ -116,7 +135,7 @@ class MatchService(
         challenger.beforeRound()
         opponent.beforeRound()
 
-        logger.info { "\nROUND $round" }
+
         challenger.attack(opponent)
         opponent.attack(challenger)
 
@@ -127,22 +146,23 @@ class MatchService(
         val challengerStatsAfter = challenger.getStats()
         val opponentStatsAfter = opponent.getStats()
 
+        logger.info { "[Round $round] Challenger: $challengerStatsBefore -> $challengerStatsAfter" }
+        logger.info { "[Round $round] Opponent: $opponentStatsBefore -> $opponentStatsAfter" }
+
         return listOf(
             MatchRoundResult(
-                id = null,
                 round = round,
                 characterId = challenger.characterId,
                 healthDelta = challengerStatsBefore.health - challengerStatsAfter.health,
-                staminaDelta = 0,
+                staminaDelta = challengerStatsBefore.stamina - challengerStatsAfter.stamina,
                 manaDelta = challengerStatsBefore.mana - challengerStatsAfter.mana
             ),
             MatchRoundResult(
-                id = null,
                 round = round,
                 characterId = opponent.characterId,
                 healthDelta = opponentStatsBefore.health - opponentStatsAfter.health,
                 staminaDelta = opponentStatsBefore.stamina - opponentStatsAfter.stamina,
-                manaDelta = 0
+                manaDelta = opponentStatsBefore.mana - opponentStatsAfter.mana
             )
         )
     }

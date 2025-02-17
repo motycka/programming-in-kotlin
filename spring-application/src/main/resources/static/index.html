@@ -189,9 +189,11 @@
                                     <h5 class="mb-0">Challenger</h5>
                                 </div>
                                 <div class="card-body">
+                                    <div class="character-select-container">
                                     <select id="challengerSelect" class="form-select mb-3">
                                         <option value="">Select challenger...</option>
                                     </select>
+                                    </div>
                                     <div id="challengerStats" class="character-properties mt-3">
                                     </div>
                                 </div>
@@ -216,6 +218,15 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <div class="d-flex align-items-center me-auto">
+                        <label for="roundsSelect" class="me-2">Rounds:</label>
+                        <select id="roundsSelect" class="form-select form-select-sm" style="width: auto;">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
                     <button id="randomMatchButton" class="btn btn-secondary">
                         <i class="fas fa-random"></i> Random Match
                     </button>

@@ -308,38 +308,54 @@ body {
 /* Match list styling */
 .match-item {
     cursor: pointer;
-    transition: transform 0.2s;
-    margin-bottom: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.match-item .card-body {
-    padding: 1.5rem;
+.match-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(107, 63, 160, 0.2);
 }
 
-.match-participants {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    margin-bottom: 1rem;
+.match-item .character-item {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: rgba(10, 5, 23, 0.7);
 }
 
-.match-participant {
-    flex: 1;
-    text-align: center;
-}
-
-.match-participant .class {
-    color: var(--nebula-glow);
+.match-item .character-stats {
     font-size: 0.9rem;
-    margin-top: 0.25rem;
 }
 
-.match-vs {
-    font-size: 1.2rem;
-    font-weight: bold;
+.match-item .stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(107, 63, 160, 0.1);
+    border-radius: 4px;
+}
+
+.match-item .stat-icon {
+    opacity: 0.8;
+}
+
+.match-item .match-vs {
+    font-size: 1rem;
     color: var(--nebula-glow);
-    text-shadow: 0 0 10px rgba(199, 143, 255, 0.3);
+    opacity: 0.7;
+}
+
+/* Class-specific match styling */
+.match-item .character-item[data-class="WARRIOR"] {
+    background: linear-gradient(160deg, rgba(45, 27, 78, 0.8), rgba(10, 5, 23, 0.9)),
+                linear-gradient(45deg, rgba(255, 215, 0, 0.1), transparent);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.match-item .character-item[data-class="SORCERER"] {
+    background: linear-gradient(160deg, rgba(45, 27, 78, 0.8), rgba(10, 5, 23, 0.9)),
+                linear-gradient(45deg, rgba(74, 144, 226, 0.1), transparent);
+    border: 1px solid rgba(74, 144, 226, 0.2);
 }
 
 /* Match result variations */
@@ -372,40 +388,54 @@ body {
 
 /* Round display styles */
 .round-item {
+    background: rgba(10, 5, 23, 0.7);
+    border: 1px solid rgba(107, 63, 160, 0.2);
+    border-radius: 8px;
     margin-bottom: 1rem;
     padding: 1rem;
-    background: rgba(107, 63, 160, 0.1);
-    border-radius: 8px;
 }
 
 .round-header {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
     color: var(--nebula-glow);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
-.round-actions {
+.round-content {
+    padding: 0.5rem;
+}
+
+.stats-row {
+    background: rgba(107, 63, 160, 0.1);
+    padding: 0.5rem;
+    border-radius: 6px;
+}
+
+.stat-item {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
 }
 
-.action {
-    padding: 0.5rem;
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.attack-action {
-    color: var(--danger);
-}
-
-.heal-action {
+.stat-item.positive .stat-value {
     color: var(--success);
 }
 
-.defend-action {
-    color: var(--warning);
+.stat-item.negative .stat-value {
+    color: var(--danger);
+}
+
+.round-vs {
+    color: var(--nebula-glow);
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+.no-action {
+    color: var(--nebula-glow);
+    opacity: 0.5;
+    text-align: center;
+    font-style: italic;
 }
 
 /* Points display styling */
@@ -593,4 +623,149 @@ body {
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-3px); }
+}
+
+/* Match result badges */
+.badge.bg-success {
+    background: linear-gradient(135deg, var(--success), #66bb6a);
+    box-shadow: 0 2px 8px rgba(80, 250, 123, 0.2);
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, var(--danger), #ff6b81);
+    box-shadow: 0 2px 8px rgba(255, 85, 85, 0.2);
+}
+
+/* Match result badges */
+.badge.bg-warning {
+    background: linear-gradient(135deg, var(--warning), #ffa94d);
+    box-shadow: 0 2px 8px rgba(255, 184, 108, 0.2);
+}
+
+/* Match character select styling */
+.character-select-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.character-select {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(10, 5, 23, 0.7);
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    border-radius: 8px;
+    color: var(--nebula-glow);
+    font-size: 1rem;
+}
+
+.character-select:focus {
+    border-color: var(--nebula-purple);
+    box-shadow: 0 0 0 0.25rem rgba(107, 63, 160, 0.25);
+    outline: none;
+}
+
+.character-select option {
+    background: rgba(10, 5, 23, 0.95);
+    color: #e0e0e0;
+    padding: 0.5rem;
+}
+
+.character-select option:first-child {
+    color: var(--nebula-glow);
+    font-style: italic;
+}
+
+/* Add class-specific colors to options */
+.character-select option[data-class="WARRIOR"] {
+    color: rgba(255, 215, 0, 0.9);
+}
+
+.character-select option[data-class="SORCERER"] {
+    color: rgba(74, 144, 226, 0.9);
+}
+
+/* Match result modal styling */
+.match-summary {
+    background: rgba(10, 5, 23, 0.7);
+    border: 1px solid rgba(107, 63, 160, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.match-summary .challenger,
+.match-summary .opponent {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 8px;
+    background: rgba(10, 5, 23, 0.7);
+    border: 1px solid rgba(107, 63, 160, 0.2);
+}
+
+/* Class-specific styling for match results */
+.match-summary .challenger[data-class="WARRIOR"],
+.match-summary .opponent[data-class="WARRIOR"] {
+    background: linear-gradient(160deg, rgba(45, 27, 78, 0.8), rgba(10, 5, 23, 0.9)),
+                linear-gradient(45deg, rgba(255, 215, 0, 0.1), transparent);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.match-summary .challenger[data-class="SORCERER"],
+.match-summary .opponent[data-class="SORCERER"] {
+    background: linear-gradient(160deg, rgba(45, 27, 78, 0.8), rgba(10, 5, 23, 0.9)),
+                linear-gradient(45deg, rgba(74, 144, 226, 0.1), transparent);
+    border: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.match-summary h5 {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.match-summary .text-muted {
+    color: var(--nebula-glow) !important;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.match-summary .experience-info {
+    color: var(--nebula-glow);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(107, 63, 160, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.match-summary .badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+}
+
+.match-vs {
+    font-size: 1.5rem;
+    color: var(--nebula-glow);
+    text-shadow: 0 0 10px rgba(199, 143, 255, 0.3);
+    padding: 0 2rem;
+}
+
+/* Class icon styling */
+.class-icon {
+    font-size: 1.2rem;
+    cursor: help;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.class-icon:hover {
+    opacity: 1;
+}
+
+/* Remove the old class name styles */
+.character-item[data-class="WARRIOR"] .character-name::before,
+.character-item[data-class="SORCERER"] .character-name::before {
+    content: none;
 }

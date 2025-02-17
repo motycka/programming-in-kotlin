@@ -27,7 +27,7 @@ class MatchRepository(
     }
 
     fun selectRounds(matchId: MatchId): List<MatchRoundResult> {
-        logger.debug { "Inserting matches: TODO" }
+        logger.debug { "Selecting match by id $matchId" }
         return jdbcTemplate.query(
             """
                 SELECT * FROM round WHERE match_id = ?;
@@ -38,7 +38,7 @@ class MatchRepository(
     }
 
     fun insertMatch(match: MatchResult): MatchResult {
-        logger.debug { "Inserting match: $match" }
+        logger.info { "Inserting match $match" }
         return jdbcTemplate.query(
             """
                 SELECT * FROM FINAL TABLE (INSERT INTO match (challenger_id, opponent_id, victor_id) VALUES (?, ?, ?)) LIMIT 1;
@@ -51,7 +51,7 @@ class MatchRepository(
     }
 
     fun insertRound(matchId: MatchId, round: MatchRoundResult): List<MatchRoundResult> {
-        logger.debug { "Inserting match round: $round" }
+        logger.debug { "Inserting match round $round" }
         return jdbcTemplate.query(
             """
                 SELECT * FROM FINAL TABLE (INSERT INTO round (match_id, round_number, character_id, health_delta, stamina_delta, mana_delta) VALUES (?, ?, ?, ?, ?, ?));
