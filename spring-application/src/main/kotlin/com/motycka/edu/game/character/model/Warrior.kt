@@ -8,6 +8,7 @@ private val logger = KotlinLogging.logger {}
 
 class Warrior(
     id: CharacterId?, // TODO new
+    accountId: AccountId?, // TODO new
     name: String,
     health: Int,
     attackPower: Int,
@@ -17,6 +18,7 @@ class Warrior(
     override val level: CharacterLevel, // new
 ) : Character(
     id = id, // TODO new
+    accountId = accountId, // TODO new
     name = name,
     health = health,
     attackPower = attackPower,

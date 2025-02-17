@@ -1,6 +1,6 @@
 package com.motycka.edu.game.match
 
-import com.motycka.edu.game.match.rest.MathResponse
+import com.motycka.edu.game.match.rest.MatchResponse
 import com.motycka.edu.game.match.rest.MatchRequest
 import com.motycka.edu.game.match.rest.toMatchResultTo
 import com.motycka.edu.game.match.rest.toMatchResultTos
@@ -12,18 +12,18 @@ private val logger = KotlinLogging.logger {}
 @RestController
 @RequestMapping("/api/matches")
 class MatchController(
-    private val matchService: MatchService
+    private val matchService: MatchService,
 ) {
 
     @GetMapping
-    fun getMatches(): List<MathResponse> {
+    fun getMatches(): List<MatchResponse> {
         return matchService.getMatches().toMatchResultTos()
     }
 
     @PostMapping
     fun postMatch(
         @RequestBody newMatchTo: MatchRequest
-    ): MathResponse {
+    ): MatchResponse {
         return matchService.doMatch(
             rounds = newMatchTo.rounds,
             challengerId = newMatchTo.challengerId,

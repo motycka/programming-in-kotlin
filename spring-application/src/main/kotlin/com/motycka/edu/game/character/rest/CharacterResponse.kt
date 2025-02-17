@@ -17,5 +17,5 @@ data class CharacterResponse(
     val level: CharacterLevel,
     val experience: Int,
     val shouldLevelUp: Boolean,
-    val thisAccount: Boolean
+    val isOwner: Boolean
 )

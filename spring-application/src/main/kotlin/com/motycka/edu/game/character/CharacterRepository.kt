@@ -111,6 +111,7 @@ class CharacterRepository(
         return when (characterClass) {
             CharacterClass.SORCERER -> Sorcerer(
                 id = id,
+                accountId = accountId,
                 name = name,
                 health = health,
                 attackPower = attackPower,
@@ -121,6 +122,7 @@ class CharacterRepository(
             )
             CharacterClass.WARRIOR -> Warrior(
                 id = id,
+                accountId = accountId,
                 name = name,
                 health = health,
                 attackPower = attackPower,

@@ -8,6 +8,7 @@ private val logger = KotlinLogging.logger {}
 
 class Sorcerer(
     id: CharacterId?, // TODO new
+    accountId: AccountId?, // TODO new
     name: String,
     health: Int,
     attackPower: Int,
@@ -17,6 +18,7 @@ class Sorcerer(
     override val level: CharacterLevel, // new
 ) : Character(
     id = id, // TODO new
+    accountId = accountId, // TODO new
     name = name,
     health = health,
     attackPower = attackPower,
@@ -26,11 +28,11 @@ class Sorcerer(
     private var currentMana: Int = mana
 
     // new
-    init {
+//    init {
 //        val pointsAssigned = health + attackPower + mana + healingPower
 //        require(pointsAssigned <= level.points) { "Character $name attributes can not exceed ${level.points} level points (assigned $pointsAssigned)" }
 //        require(pointsAssigned == level.points) { "All ${level.points} level points must be assigned to $name (assigned $pointsAssigned)." }
-    }
+//    }
 
     override fun attack(target: Character) {
         heal()

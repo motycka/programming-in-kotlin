@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Character Management</title>
+    <title>Fantasy.Space - Login</title>
     <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -26,10 +26,34 @@
             margin-top: 1rem;
             text-align: center;
         }
+        .brand-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .game-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #9370db, #4a90e2, #9370db);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(147, 112, 219, 0.3);
+            letter-spacing: 2px;
+        }
+        .game-subtitle {
+            color: #b19cd9;
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-top: -0.5rem;
+        }
     </style>
 </head>
 <body class="bg-light">
-    <div class="container">
+    <div class="container login-container">
+        <div class="brand-header">
+            <h1 class="game-title">Fantasy.Space</h1>
+            <p class="game-subtitle">Where Magic Meets the Cosmos</p>
+        </div>
         <div class="login-container">
             <div class="login-header">
                 <h2>Character Management</h2>

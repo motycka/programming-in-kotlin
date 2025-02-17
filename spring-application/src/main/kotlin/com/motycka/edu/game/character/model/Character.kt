@@ -1,17 +1,19 @@
 package com.motycka.edu.game.character.model
 
 import com.motycka.edu.game.character.rest.CharacterId
+import com.motycka.edu.game.user.model.AccountId
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
 abstract class Character(
     val id: CharacterId?, // TODO new
+    val accountId: AccountId?, // TODO new
     val name: String,
     val health: Int,
     val attackPower: Int,
     val experience: Int // TODO new
-): Recoverable { // new
+): Recoverable {
 
     protected var currentHealth: Int = health // new
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Character Management</title>
+    <title>Fantasy.Space - Character Management</title>
     <!-- Add Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Add Font Awesome -->
@@ -37,7 +37,10 @@
 <!--    </div>-->
 
     <div class="container mt-4">
-        <h1 class="mb-4">Character Management</h1>
+        <div class="brand-header mb-4">
+            <h1 class="game-title">Fantasy.Space</h1>
+            <p class="game-subtitle">Where Magic Meets the Cosmos</p>
+        </div>
 
         <!-- Tabs Navigation -->
         <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
@@ -88,31 +91,31 @@
             <!-- Matches Tab -->
             <div class="tab-pane fade" id="matches-content" role="tabpanel"
                  aria-labelledby="matches-tab">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2 class="card-title mb-0">Match History</h2>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMatchModal">
-                                <i class="fas fa-gamepad"></i> New Match
-                            </button>
-                        </div>
-                        <div id="matchesList" class="matches-list">
-                            <p class="text-muted text-center">Loading matches...</p>
-                        </div>
-                    </div>
+                <!-- Replace the card wrapper with direct content -->
+                <div class="matches-header d-flex justify-content-between align-items-center mb-4">
+                    <h2>Matches</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMatchModal">
+                        <i class="fas fa-gamepad"></i> New Match
+                    </button>
+                </div>
+                
+                <!-- Matches List -->
+                <div id="matchesList">
+                    <p class="text-muted text-center">Loading matches...</p>
                 </div>
             </div>
 
             <!-- Leaderboard Tab -->
             <div class="tab-pane fade" id="leaderboard-content" role="tabpanel"
                  aria-labelledby="leaderboard-tab">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title mb-4">Leaderboard</h2>
-                        <div id="leaderboardContent">
-                            <p class="text-muted text-center">Loading leaderboard...</p>
-                        </div>
+                <div class="leaderboard-header d-flex justify-content-between align-items-center mb-4">
+                    <h2>Leaderboard</h2>
+                    <div class="leaderboard-info">
+                        <i class="fas fa-info-circle"></i> Rankings are updated after each match
                     </div>
+                </div>
+                <div id="leaderboardContent">
+                    <!-- Content will be loaded dynamically -->
                 </div>
             </div>
         </div>
@@ -294,12 +297,18 @@
                 </div>
                 <form id="levelUpForm">
                     <div class="modal-body">
-                        <p>Distribute your new level points:</p>
+                        <div class="character-info mb-3">
+                            <h6 class="character-name mb-2"></h6>
+                            <div class="character-class text-muted"></div>
+                        </div>
+                        
                         <div id="levelUpProperties">
                             <!-- Properties will be added here dynamically -->
                         </div>
-                        <div id="remainingPoints" class="alert alert-info mt-3">
-                            Remaining points: <span id="pointsLeft">0</span>
+                        
+                        <div id="pointsDisplay" class="alert alert-info mt-3">
+                            Points: <span id="usedPoints">0</span>/<span id="totalPoints">0</span>
+                            (<span id="remainingPoints">0</span> remaining)
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -313,6 +322,6 @@
 
     <!-- Add Bootstrap JS and its dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

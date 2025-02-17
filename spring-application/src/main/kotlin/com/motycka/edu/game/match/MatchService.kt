@@ -7,6 +7,7 @@ import com.motycka.edu.game.character.rest.CharacterId
 import com.motycka.edu.game.match.model.MatchResult
 import com.motycka.edu.game.match.model.MatchResultWithCharacters
 import com.motycka.edu.game.match.model.MatchRoundResult
+import com.motycka.edu.game.user.AccountService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,7 +17,8 @@ private val logger = KotlinLogging.logger {}
 @Service
 class MatchService(
     private val matchRepository: MatchRepository,
-    private val characterService: CharacterService
+    private val characterService: CharacterService,
+    private val accountService: AccountService
 ) {
 
     fun getMatches(): List<MatchResultWithCharacters> {
@@ -30,10 +32,11 @@ class MatchService(
         )
         return matchRepository.selectMatches().map { match ->
             MatchResultWithCharacters(
-                challenger = characters.find { it.character.characterId == match.challengerId }!!.character, // TODO
-                opponent = characters.find { it.character.characterId == match.opponentId }!!.character, // TODO
+                challenger = characters.find { it.characterId == match.challengerId }!!, // TODO
+                opponent = characters.find { it.characterId == match.opponentId }!!, // TODO
                 match = match,
-                rounds = matchRepository.selectRounds(match.id!!) // TODO
+                rounds = matchRepository.selectRounds(match.id!!), // TODO
+                currentAccountId = accountService.getCurrentAccountId()
             )
         }
     }
@@ -45,8 +48,8 @@ class MatchService(
     ): MatchResultWithCharacters {
         return match(
             rounds = rounds,
-            challenger = characterService.getCharacter(challengerId).character,
-            opponent = characterService.getCharacter(opponentId).character
+            challenger = characterService.getCharacter(challengerId),
+            opponent = characterService.getCharacter(opponentId)
         ).also { matchResult ->
             logger.info { "Match result: $matchResult" }
             matchRepository.insertMatch(matchResult.match)
@@ -101,7 +104,8 @@ class MatchService(
             challenger = challenger,
             opponent = opponent,
             match = matchResult,
-            rounds = rounds
+            rounds = rounds,
+            currentAccountId = accountService.getCurrentAccountId()
         )
     }
 

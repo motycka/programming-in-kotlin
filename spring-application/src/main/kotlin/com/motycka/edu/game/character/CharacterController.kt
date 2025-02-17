@@ -8,6 +8,7 @@ import com.motycka.edu.game.character.rest.CharacterUpdateRequest
 import com.motycka.edu.game.character.rest.toCharacter
 import com.motycka.edu.game.character.rest.toCharacterResponse
 import com.motycka.edu.game.character.rest.toCharacterResponses
+import com.motycka.edu.game.user.AccountService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,46 +20,55 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/characters")
 class CharacterController(
-    private val characterService: CharacterService
+    private val characterService: CharacterService,
+    private val accountService: AccountService
 ) {
 
     @PostMapping
     fun postCharacter(
         @RequestBody character: CharacterCreateRequest
     ): CharacterResponse {
+        val accountId = accountService.getCurrentAccountId()
         return characterService.createCharacter(
-            character = character.toCharacter()
-        ).toCharacterResponse()
+            character = character.toCharacter(
+                accountId = accountId
+            )
+        ).toCharacterResponse(accountId)
     }
 
     @GetMapping
     fun getCharacters(): List<CharacterResponse> {
-        return characterService.getCharacters(
-            filter = CharactersFilter.DEFAULT
-        ).toCharacterResponses()
+//        val accountId = accountService.getCurrentAccountId()
+//        return characterService.getCharacters(
+//            filter = CharactersFilter.DEFAULT
+//        ).toCharacterResponses(accountId)
+        return emptyList()
     }
 
     @GetMapping("/challengers")
     fun getChallengers(): List<CharacterResponse> {
+        val accountId = accountService.getCurrentAccountId()
         return characterService.getCharacters(
             filter = CharactersFilter.CHALLENGERS
-        ).toCharacterResponses()
+        ).toCharacterResponses(accountId)
     }
 
     @GetMapping("/opponents")
     fun getOpponents(): List<CharacterResponse> {
+        val accountId = accountService.getCurrentAccountId()
         return characterService.getCharacters(
             filter = CharactersFilter.OPPONENTS
-        ).toCharacterResponses()
+        ).toCharacterResponses(accountId)
     }
 
     @GetMapping("/{$CHARACTER_ID}")
     fun getCharacter(
         @PathVariable(CHARACTER_ID) characterId: CharacterId
     ): CharacterResponse {
+        val accountId = accountService.getCurrentAccountId()
         return characterService.getCharacter(
             characterId = characterId
-        ).toCharacterResponse()
+        ).toCharacterResponse(accountId)
     }
 
     @PutMapping("/{$CHARACTER_ID}")
@@ -70,9 +80,11 @@ class CharacterController(
         return characterService.updateCharacter(
             character = character.toCharacter(
                 id = characterId,
-                existing = existing.character
+                existing = existing
             )
-        ).toCharacterResponse()
+        ).toCharacterResponse(
+            currentAccountId = requireNotNull(existing.accountId)
+        )
     }
 
     companion object {

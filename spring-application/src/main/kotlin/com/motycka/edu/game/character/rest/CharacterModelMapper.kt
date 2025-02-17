@@ -1,22 +1,19 @@
 package com.motycka.edu.game.character.rest
 
-import com.motycka.edu.game.character.AccountCharacter
 import com.motycka.edu.game.character.model.Character
 import com.motycka.edu.game.character.model.CharacterLevel
 import com.motycka.edu.game.character.model.Sorcerer
 import com.motycka.edu.game.character.model.Warrior
 import com.motycka.edu.game.user.model.AccountId
 
-fun List<AccountCharacter>.toCharacterResponses() = map { it.toCharacterResponse() }
-
-fun AccountCharacter.toCharacterResponse(): CharacterResponse {
-    return character.toCharacterResponse()
+fun List<Character>.toCharacterResponses(currentAccountId: AccountId) = map {
+    it.toCharacterResponse(currentAccountId)
 }
 
-fun Character.toCharacterResponse(): CharacterResponse {
+fun Character.toCharacterResponse(currentAccountId: AccountId): CharacterResponse {
     return when (this) {
-        is Sorcerer -> toCharacterResponse()
-        is Warrior -> toCharacterResponse()
+        is Sorcerer -> toCharacterResponse(currentAccountId)
+        is Warrior -> toCharacterResponse(currentAccountId)
         else -> {
             throw error("Unknown character class")
         }
@@ -36,10 +33,10 @@ fun Sorcerer.toCharacterResponse(currentAccountId: AccountId) = CharacterRespons
     level = level,
     experience = experience,
     shouldLevelUp = getPoints() < level.points,
-    thisAccount = true //accountId == currentAccountId
+    isOwner = accountId == currentAccountId
 )
 
-fun Warrior.toCharacterResponse() = CharacterResponse(
+fun Warrior.toCharacterResponse(currentAccountId: AccountId) = CharacterResponse(
     id = requireNotNull(id) { "Character id must not be null." },
     name = name,
     health = health,
@@ -52,18 +49,19 @@ fun Warrior.toCharacterResponse() = CharacterResponse(
     level = level,
     experience = experience,
     shouldLevelUp = getPoints() < level.points,
-    thisAccount = false
+    isOwner = accountId == currentAccountId
 )
 
-fun CharacterCreateRequest.toCharacter(): Character {
+fun CharacterCreateRequest.toCharacter(accountId: AccountId): Character {
     return when (characterClass) {
-        CharacterClass.WARRIOR -> toWarrior()
-        CharacterClass.SORCERER -> toSorcerer()
+        CharacterClass.WARRIOR -> toWarrior(accountId)
+        CharacterClass.SORCERER -> toSorcerer(accountId)
     }
 }
 
-private fun CharacterCreateRequest.toSorcerer() = Sorcerer(
+private fun CharacterCreateRequest.toSorcerer(accountId: AccountId) = Sorcerer(
     id = null,
+    accountId = accountId,
     name = name,
     health = health,
     attackPower = attackPower,
@@ -73,8 +71,9 @@ private fun CharacterCreateRequest.toSorcerer() = Sorcerer(
     experience = 0
 )
 
-private fun CharacterCreateRequest.toWarrior() = Warrior(
+private fun CharacterCreateRequest.toWarrior(accountId: AccountId) = Warrior(
     id = null,
+    accountId = accountId,
     name = name,
     health = health,
     attackPower = attackPower,
@@ -94,6 +93,7 @@ fun CharacterUpdateRequest.toCharacter(id: CharacterId, existing: Character): Ch
 
 fun CharacterUpdateRequest.toSorcerer(id: CharacterId, existing: Character) = Sorcerer(
     id = id,
+    accountId = existing.accountId,
     name = name,
     health = health,
     attackPower = attackPower,
@@ -105,6 +105,7 @@ fun CharacterUpdateRequest.toSorcerer(id: CharacterId, existing: Character) = So
 
 fun CharacterUpdateRequest.toWarrior(id: CharacterId, existing: Character) = Warrior(
     id = id,
+    accountId = existing.accountId,
     name = name,
     health = health,
     attackPower = attackPower,

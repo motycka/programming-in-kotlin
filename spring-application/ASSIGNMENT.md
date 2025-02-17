@@ -4,7 +4,7 @@ It is a fantasy game simulation where players can create characters and fight wi
 
 It should implement the following REST interface
 
-Characters API
+## Characters API
 ```
 GET /api/characters
 GET /api/characters/{id}
@@ -14,27 +14,57 @@ GET /api/characters/opponents
 PUT /api/characters/{id}
 ```
 
-These are the models used in the API
+### Model
 ```
 ```
 
-Matches API
+### Requirements
+
+---
+## Matches API
 ``` 
 GET /api/matches
 POST /api/matches
 ```
 
-These are the models used in the API
+### Model
 ```
 ```
 
-Leaderboard API
+### Requirements
+
+---
+## Leaderboard API
 ```
-GET /api/leaderboard
+GET /api/leaderboard?class=(WARRIOR|SORCERER)
+```
+### Model
+```
 ```
 
+### Requirements
 
+---
+## User Management API
 They already have user management available, they can register new user ...
 ```
 POST /api/accounts
 ```
+### Model
+```
+```
+
+Authentication is done using Basic Auth. 
+The user is authenticated using the username and password.
+
+
+There is a simple UI available at /index.html where they can interact with the API, 
+if the API is written according to the specification.
+
+---
+## Database
+
+Database should be in-memory H2 database. 
+Basic model is provided, but they are free to update it.
+
+They can use other database if they want.
