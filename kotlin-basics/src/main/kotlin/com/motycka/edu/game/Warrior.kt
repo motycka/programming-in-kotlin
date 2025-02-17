@@ -10,7 +10,7 @@ internal class Warrior(
     attackPower: Int,
     override val stamina: Int,
     override val defensePower: Int,
-    override val level: CharacterLevel, // new
+    override val level: CharacterLevel,
 ) : Character(
     name = name,
     health = health,
@@ -19,7 +19,6 @@ internal class Warrior(
 
     private var currentStamina = stamina
 
-    // new
     init {
         val pointsAssigned = health + attackPower + stamina + defensePower
         require(pointsAssigned <= level.points) { "Attributes can not exceed ${level.points} level points (assigned $pointsAssigned)" }

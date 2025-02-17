@@ -10,7 +10,7 @@ internal class Sorcerer(
     attackPower: Int,
     override val mana: Int,
     override val healingPower: Int,
-    override val level: CharacterLevel, // new
+    override val level: CharacterLevel,
 ) : Character(
     name = name,
     health = health,
@@ -19,7 +19,6 @@ internal class Sorcerer(
 
     private var currentMana: Int = mana
 
-    // new
     init {
         val pointsAssigned = health + attackPower + mana + healingPower
         require(pointsAssigned <= level.points) { "Attributes can not exceed ${level.points} level points (assigned $pointsAssigned)" }

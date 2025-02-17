@@ -8,11 +8,10 @@ internal abstract class Character(
     val name: String,
     val health: Int,
     val attackPower: Int
-): Recoverable { // new
+): Recoverable {
 
-    protected var currentHealth: Int = health // new
+    protected var currentHealth: Int = health
 
-    // new
     abstract val level: CharacterLevel
 
     abstract fun attack(target: Character)
