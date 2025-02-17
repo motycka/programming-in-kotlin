@@ -162,15 +162,10 @@
                             <label for="name" class="form-label">Character Name</label>
                             <input type="text" id="name" class="form-control" required>
                         </div>
-
-                        <!-- Dynamic Properties Container -->
-                        <div id="dynamicProperties">
-                            <!-- Properties will be added here based on selected class -->
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create Character</button>
+                        <button type="button" class="btn btn-primary" id="continueButton" disabled>Continue</button>
                     </div>
                 </form>
             </div>
@@ -296,9 +291,8 @@
                             <!-- Properties will be added here dynamically -->
                         </div>
                         
-                        <div id="pointsDisplay" class="alert alert-info mt-3">
-                            Points: <span id="usedPoints">0</span>/<span id="totalPoints">0</span>
-                            (<span id="remainingPoints">0</span> remaining)
+                        <div id="pointsDisplay">
+                            <!-- Points display will be added dynamically -->
                         </div>
                     </div>
                     <div class="modal-footer">

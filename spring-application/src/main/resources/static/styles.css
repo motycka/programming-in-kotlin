@@ -411,48 +411,22 @@ body {
 /* Points display styling */
 .points-summary {
     margin-top: 1.5rem;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(107, 63, 160, 0.2);
-}
-
-.points-header {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--nebula-glow);
-    text-align: center;
-}
-
-.points-details {
-    display: grid;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
 }
 
 .points-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.25rem 0;
+    color: var(--nebula-glow);
 }
 
-.points-status {
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-}
-
-/* Points status variations */
 .points-valid {
     background: rgba(80, 250, 123, 0.1);
     border-color: rgba(80, 250, 123, 0.3);
-}
-
-.points-valid .points-status {
-    color: var(--success);
 }
 
 .points-exceeded {
@@ -460,17 +434,9 @@ body {
     border-color: rgba(255, 85, 85, 0.3);
 }
 
-.points-exceeded .points-status {
-    color: var(--danger);
-}
-
 .points-remaining {
     background: rgba(255, 184, 108, 0.1);
     border-color: rgba(255, 184, 108, 0.3);
-}
-
-.points-remaining .points-status {
-    color: var(--warning);
 }
 
 /* Empty state styling */
@@ -614,4 +580,17 @@ body {
     100% {
         box-shadow: 0 0 0 0 rgba(80, 250, 123, 0);
     }
+}
+
+.level-up-arrow {
+    color: var(--success);
+    font-weight: bold;
+    margin-left: 0.25rem;
+    display: inline-block;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
 }
