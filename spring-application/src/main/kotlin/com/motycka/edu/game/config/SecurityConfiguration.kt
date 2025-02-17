@@ -26,7 +26,15 @@ class SecurityConfiguration(private val userService: AccountService) {
             .authorizeHttpRequests { auth ->
                 auth.anyRequest().authenticated()
             }
-            .httpBasic(Customizer.withDefaults())
+            .formLogin { form ->
+                form.loginPage("/login.html").permitAll()
+            }
+            .logout { logout ->
+                logout.permitAll()
+            }
+//            .httpBasic { httpBasicCustomizer ->
+//                httpBasicCustomizer.realmName("Fantasy.Space")
+//            }
 
         return http.build()
     }

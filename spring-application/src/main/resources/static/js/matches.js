@@ -219,18 +219,25 @@ class MatchesTab {
                             </span>
                         </div>
                         <div class="character-stats d-flex gap-2 mt-2">
-                            <div class="stat-item" title="Health">
-                                <span class="stat-icon">❤️</span>
-                                <span class="stat-value">${match.challenger.health}</span>
-                            </div>
-                            <div class="stat-item" title="Stamina">
-                                <span class="stat-icon">⚡</span>
-                                <span class="stat-value">${match.challenger.stamina}</span>
-                            </div>
-                            <div class="stat-item" title="Mana">
-                                <span class="stat-icon">✨</span>
-                                <span class="stat-value">${match.challenger.mana}</span>
-                            </div>
+                            ${match.challenger.characterClass === 'WARRIOR' ? `
+                                <div class="stat-item" title="Stamina">
+                                    <span class="stat-icon">⚡</span>
+                                    <span class="stat-value">${match.challenger.stamina}</span>
+                                </div>
+                                <div class="stat-item" title="Defense">
+                                    <span class="stat-icon">🛡️</span>
+                                    <span class="stat-value">${match.challenger.defensePower}</span>
+                                </div>
+                            ` : `
+                                <div class="stat-item" title="Mana">
+                                    <span class="stat-icon">✨</span>
+                                    <span class="stat-value">${match.challenger.mana}</span>
+                                </div>
+                                <div class="stat-item" title="Healing">
+                                    <span class="stat-icon">💚</span>
+                                    <span class="stat-value">${match.challenger.healingPower}</span>
+                                </div>
+                            `}
                             <div class="stat-item" title="Experience Gained">
                                 <span class="stat-icon">🌟</span>
                                 <span class="stat-value">+${match.challenger.experienceGained}</span>
@@ -253,18 +260,25 @@ class MatchesTab {
                             </span>
                         </div>
                         <div class="character-stats d-flex gap-2 mt-2">
-                            <div class="stat-item" title="Health">
-                                <span class="stat-icon">❤️</span>
-                                <span class="stat-value">${match.opponent.health}</span>
-                            </div>
-                            <div class="stat-item" title="Stamina">
-                                <span class="stat-icon">⚡</span>
-                                <span class="stat-value">${match.opponent.stamina}</span>
-                            </div>
-                            <div class="stat-item" title="Mana">
-                                <span class="stat-icon">✨</span>
-                                <span class="stat-value">${match.opponent.mana}</span>
-                            </div>
+                            ${match.opponent.characterClass === 'WARRIOR' ? `
+                                <div class="stat-item" title="Stamina">
+                                    <span class="stat-icon">⚡</span>
+                                    <span class="stat-value">${match.opponent.stamina}</span>
+                                </div>
+                                <div class="stat-item" title="Defense">
+                                    <span class="stat-icon">🛡️</span>
+                                    <span class="stat-value">${match.opponent.defensePower}</span>
+                                </div>
+                            ` : `
+                                <div class="stat-item" title="Mana">
+                                    <span class="stat-icon">✨</span>
+                                    <span class="stat-value">${match.opponent.mana}</span>
+                                </div>
+                                <div class="stat-item" title="Healing">
+                                    <span class="stat-icon">💚</span>
+                                    <span class="stat-value">${match.opponent.healingPower}</span>
+                                </div>
+                            `}
                             <div class="stat-item" title="Experience Gained">
                                 <span class="stat-icon">🌟</span>
                                 <span class="stat-value">+${match.opponent.experienceGained}</span>
@@ -272,8 +286,11 @@ class MatchesTab {
                         </div>
                     </div>
                 </div>
-                <div class="match-footer mt-2 text-center">
-                    <small class="text-muted">${match.rounds.length} rounds</small>
+
+                <div class="match-rounds mt-3 text-center">
+                    <span class="rounds-info">
+                        <i class="fas fa-clock"></i> ${match.rounds.length} Rounds
+                    </span>
                 </div>
             </div>
         `;
@@ -283,6 +300,7 @@ class MatchesTab {
         tooltips.forEach(el => new bootstrap.Tooltip(el));
 
         div.addEventListener('click', () => this.displayMatchResult(match));
+
         return div;
     }
 

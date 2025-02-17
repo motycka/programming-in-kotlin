@@ -990,138 +990,73 @@ body {
     transition: width 0.3s ease;
 }
 
-/* Navigation styling */
-.cosmic-nav {
-    background: rgba(10, 5, 23, 0.95);
-    border-bottom: 1px solid rgba(107, 63, 160, 0.2);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
+/* Login page specific styles */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--space-dark), var(--space-purple));
+    padding: 2rem 0;
 }
 
-.cosmic-nav .game-title {
-    font-size: 2rem;
-    margin-bottom: 0.25rem;
-}
-
-.cosmic-nav .game-subtitle {
-    font-size: 1rem;
-}
-
-/* Adjust the main container margin */
-.container {
-    margin-top: 1rem;
-}
-
-/* Logout button specific styles */
-.cosmic-nav .btn-cosmic-outline {
-    padding: 0.5rem 1.25rem;
-    font-size: 0.9rem;
-}
-
-.cosmic-nav .btn-cosmic-outline i {
-    margin-right: 0.5rem;
-    transition: transform 0.3s ease;
-}
-
-.cosmic-nav .btn-cosmic-outline:hover i {
-    transform: translateX(2px);
-}
-
-/* Auto level button styling */
-.btn-cosmic-outline[onclick="autoLevelUp()"] {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-cosmic-outline[onclick="autoLevelUp()"]::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent,
-        rgba(199, 143, 255, 0.1),
-        transparent
-    );
-    transform: rotate(45deg);
-    animation: shimmer 2s infinite;
-    pointer-events: none;
-}
-
-@keyframes shimmer {
-    0% {
-        transform: translateX(-100%) rotate(45deg);
-    }
-    100% {
-        transform: translateX(100%) rotate(45deg);
-    }
-}
-
-.btn-cosmic-outline[onclick="autoLevelUp()"] i {
-    margin-right: 0.5rem;
-    animation: sparkle 1.5s infinite;
-}
-
-@keyframes sparkle {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 0.8;
-    }
-    50% {
-        transform: scale(1.2);
-        opacity: 1;
-    }
-}
-
-/* Logout button in brand header */
-.btn-logout {
+.login-page .container {
     background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
     border: none;
+}
+
+.login-page .game-title {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.login-page .game-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.login-container {
+    background: rgba(45, 27, 78, 0.4);
+    border-radius: 15px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(107, 63, 160, 0.2);
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cosmic-form .input-group {
+    margin-bottom: 1.5rem;
+}
+
+.cosmic-form .input-group-text {
+    background: rgba(10, 5, 23, 0.7);
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    border-right: none;
     color: var(--nebula-glow);
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    padding: 0.75rem 1rem;
 }
 
-.btn-logout::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-        circle at center,
-        rgba(199, 143, 255, 0.1) 0%,
-        transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
+.cosmic-form .form-control {
+    background: rgba(10, 5, 23, 0.7);
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    border-left: none;
+    color: #e0e0e0;
+    padding: 0.75rem 1rem;
 }
 
-.btn-logout:hover {
-    color: #ffffff;
-    transform: scale(1.1);
-}
-
-.btn-logout:hover::before {
-    opacity: 1;
-}
-
-.btn-logout i {
-    filter: drop-shadow(0 0 10px rgba(199, 143, 255, 0.3));
-    transition: transform 0.3s ease;
-}
-
-.btn-logout:hover i {
-    transform: rotate(180deg);
-    filter: drop-shadow(0 0 15px rgba(199, 143, 255, 0.5));
+.cosmic-form .form-control::placeholder {
+    color: rgba(199, 143, 255, 0.5);
 }
