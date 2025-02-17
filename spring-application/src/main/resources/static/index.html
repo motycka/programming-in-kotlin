@@ -72,9 +72,7 @@
             <!-- Characters Tab -->
             <div class="tab-pane fade show active" id="characters-content" role="tabpanel"
                  aria-labelledby="characters-tab">
-                <!-- Replace the form-container with a button -->
-                <div class="characters-header d-flex justify-content-between align-items-center mb-4">
-                    <h2>Characters</h2>
+                <div class="tab-actions d-flex justify-content-end mb-4">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCharacterModal">
                         <i class="fas fa-plus"></i> Create Character
                     </button>
@@ -91,9 +89,7 @@
             <!-- Matches Tab -->
             <div class="tab-pane fade" id="matches-content" role="tabpanel"
                  aria-labelledby="matches-tab">
-                <!-- Replace the card wrapper with direct content -->
-                <div class="matches-header d-flex justify-content-between align-items-center mb-4">
-                    <h2>Matches</h2>
+                <div class="tab-actions d-flex justify-content-end mb-4">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMatchModal">
                         <i class="fas fa-gamepad"></i> New Match
                     </button>
@@ -108,11 +104,10 @@
             <!-- Leaderboard Tab -->
             <div class="tab-pane fade" id="leaderboard-content" role="tabpanel"
                  aria-labelledby="leaderboard-tab">
-                <div class="leaderboard-header d-flex justify-content-between align-items-center mb-4">
-                    <h2>Leaderboard</h2>
-                    <div class="leaderboard-info">
+                <div class="tab-actions d-flex justify-content-end mb-4">
+                    <span class="info-text">
                         <i class="fas fa-info-circle"></i> Rankings are updated after each match
-                    </div>
+                    </span>
                 </div>
                 <div id="leaderboardContent">
                     <!-- Content will be loaded dynamically -->

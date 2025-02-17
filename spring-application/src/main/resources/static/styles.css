@@ -306,10 +306,6 @@ body {
 }
 
 /* Match list styling */
-.matches-header {
-    margin-bottom: 2rem;
-}
-
 .match-item {
     cursor: pointer;
     transition: transform 0.2s;
@@ -503,15 +499,6 @@ body {
 }
 
 /* Leaderboard styles */
-.leaderboard-header {
-    margin-bottom: 2rem;
-}
-
-.leaderboard-info {
-    color: var(--nebula-glow);
-    font-size: 0.9rem;
-}
-
 .leaderboard-table {
     background: rgba(10, 5, 23, 0.7);
     border-radius: 8px;
@@ -574,4 +561,13 @@ body {
 
 .leaderboard-error {
     color: var(--danger);
+}
+
+.tab-actions {
+    margin-bottom: 2rem;
+}
+
+.info-text {
+    color: var(--nebula-glow);
+    font-size: 0.9rem;
 }
