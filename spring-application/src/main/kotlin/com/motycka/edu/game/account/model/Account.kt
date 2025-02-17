@@ -1,4 +1,4 @@
-package com.motycka.edu.game.user.model
+package com.motycka.edu.game.account.model
 
 
 data class Account(

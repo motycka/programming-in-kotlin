@@ -582,6 +582,37 @@ class CharactersTab {
                 });
             });
             
+            // Add auto-level button to the modal footer
+            const modalFooter = modal.querySelector('.modal-footer');
+            modalFooter.innerHTML = `
+                <button type="button" class="btn btn-cosmic-outline" onclick="autoLevelUp()">
+                    <i class="fas fa-magic"></i> Auto Level
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Confirm Level Up</button>
+            `;
+
+            // Add the auto level up function
+            window.autoLevelUp = () => {
+                const inputs = form.querySelectorAll('input[type="number"]');
+                const availablePoints = character.availablePoints;
+                const inputCount = inputs.length;
+                
+                // Calculate base points per property
+                const basePoints = Math.floor(availablePoints / inputCount);
+                let remainingPoints = availablePoints % inputCount;
+                
+                // Distribute points evenly
+                inputs.forEach(input => {
+                    const extraPoint = remainingPoints > 0 ? 1 : 0;
+                    input.value = basePoints + extraPoint;
+                    remainingPoints--;
+                    
+                    // Trigger change event to update available points display
+                    input.dispatchEvent(new Event('change'));
+                });
+            };
+            
         } catch (error) {
             console.error('Error showing level up modal:', error);
             showToast(error.message, true);

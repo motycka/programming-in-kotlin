@@ -8,7 +8,7 @@ import com.motycka.edu.game.leaderboard.LeaderboardService
 import com.motycka.edu.game.match.model.MatchResult
 import com.motycka.edu.game.match.model.MatchResultWithCharacters
 import com.motycka.edu.game.match.model.MatchRoundResult
-import com.motycka.edu.game.user.AccountService
+import com.motycka.edu.game.account.AccountService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

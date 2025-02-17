@@ -4,7 +4,7 @@ import com.motycka.edu.game.character.rest.CharacterCreateRequest
 import com.motycka.edu.game.character.rest.CharacterResponse
 import com.motycka.edu.game.character.rest.CharacterUpdateRequest
 import com.motycka.edu.game.character.rest.CharactersFilter
-import com.motycka.edu.game.user.AccountService
+import com.motycka.edu.game.account.AccountService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

@@ -1,7 +1,7 @@
 package com.motycka.edu.game.character.model
 
 import com.motycka.edu.game.character.rest.CharacterId
-import com.motycka.edu.game.user.model.AccountId
+import com.motycka.edu.game.account.model.AccountId
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}

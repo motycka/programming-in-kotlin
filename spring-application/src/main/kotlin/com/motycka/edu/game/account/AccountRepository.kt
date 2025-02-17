@@ -1,6 +1,6 @@
-package com.motycka.edu.game.user
+package com.motycka.edu.game.account
 
-import com.motycka.edu.game.user.model.Account
+import com.motycka.edu.game.account.model.Account
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository

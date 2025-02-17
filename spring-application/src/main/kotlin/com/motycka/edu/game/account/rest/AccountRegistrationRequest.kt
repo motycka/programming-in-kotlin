@@ -1,4 +1,4 @@
-package com.motycka.edu.game.user.rest
+package com.motycka.edu.game.account.rest
 
 data class AccountRegistrationRequest(
     val name: String,

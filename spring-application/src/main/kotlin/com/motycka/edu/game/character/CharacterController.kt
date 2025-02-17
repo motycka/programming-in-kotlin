@@ -8,7 +8,7 @@ import com.motycka.edu.game.character.rest.CharacterUpdateRequest
 import com.motycka.edu.game.character.rest.toCharacter
 import com.motycka.edu.game.character.rest.toCharacterResponse
 import com.motycka.edu.game.character.rest.toCharacterResponses
-import com.motycka.edu.game.user.AccountService
+import com.motycka.edu.game.account.AccountService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping

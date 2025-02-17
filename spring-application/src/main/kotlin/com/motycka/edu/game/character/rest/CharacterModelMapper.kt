@@ -5,7 +5,7 @@ import com.motycka.edu.game.character.model.Character
 import com.motycka.edu.game.character.model.CharacterLevel
 import com.motycka.edu.game.character.model.Sorcerer
 import com.motycka.edu.game.character.model.Warrior
-import com.motycka.edu.game.user.model.AccountId
+import com.motycka.edu.game.account.model.AccountId
 
 fun List<Character>.toCharacterResponses(currentAccountId: AccountId) = map {
     it.toCharacterResponse(currentAccountId)

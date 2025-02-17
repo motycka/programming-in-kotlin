@@ -1,6 +1,6 @@
 package com.motycka.edu.game.config
 
-import com.motycka.edu.game.user.AccountService
+import com.motycka.edu.game.account.AccountService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer

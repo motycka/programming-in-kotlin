@@ -4,7 +4,7 @@ import com.motycka.edu.game.character.model.Character
 import com.motycka.edu.game.character.rest.CharacterId
 import com.motycka.edu.game.character.rest.CharactersFilter
 import com.motycka.edu.game.error.NotFoundException
-import com.motycka.edu.game.user.AccountService
+import com.motycka.edu.game.account.AccountService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 

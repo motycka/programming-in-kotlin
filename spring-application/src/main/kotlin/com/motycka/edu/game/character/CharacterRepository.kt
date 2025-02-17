@@ -7,7 +7,7 @@ import com.motycka.edu.game.character.model.Warrior
 import com.motycka.edu.game.character.rest.CharacterClass
 import com.motycka.edu.game.character.rest.CharacterId
 import com.motycka.edu.game.character.rest.CharactersFilter
-import com.motycka.edu.game.user.model.AccountId
+import com.motycka.edu.game.account.model.AccountId
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository

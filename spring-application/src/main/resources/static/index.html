@@ -36,10 +36,28 @@
 <!--        </div>-->
 <!--    </div>-->
 
+    <!-- Add this right after the opening <body> tag, before the container -->
+    <nav class="cosmic-nav">
+        <div class="container d-flex justify-content-between align-items-center py-3">
+            <div class="game-brand">
+                <h1 class="game-title mb-0">Cosmic Combat</h1>
+                <div class="game-subtitle">Battle Among the Stars</div>
+            </div>
+            <button class="btn btn-cosmic-outline" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </nav>
+
     <div class="container mt-4">
-        <div class="brand-header mb-4">
-            <h1 class="game-title">Fantasy.Space</h1>
-            <p class="game-subtitle">Where Magic Meets the Cosmos</p>
+        <div class="brand-header mb-4 d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="game-title">Fantasy.Space</h1>
+                <p class="game-subtitle">Where Magic Meets the Cosmos</p>
+            </div>
+            <button class="btn-logout" onclick="handleLogout()" title="Logout">
+                <i class="fas fa-power-off"></i>
+            </button>
         </div>
 
         <!-- Tabs Navigation -->

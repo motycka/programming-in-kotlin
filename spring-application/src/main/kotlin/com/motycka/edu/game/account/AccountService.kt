@@ -1,7 +1,7 @@
-package com.motycka.edu.game.user
+package com.motycka.edu.game.account
 
-import com.motycka.edu.game.user.model.Account
-import com.motycka.edu.game.user.model.AccountId
+import com.motycka.edu.game.account.model.Account
+import com.motycka.edu.game.account.model.AccountId
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails

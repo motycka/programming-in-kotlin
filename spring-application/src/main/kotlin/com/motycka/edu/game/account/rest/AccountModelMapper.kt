@@ -1,6 +1,6 @@
-package com.motycka.edu.game.user.rest
+package com.motycka.edu.game.account.rest
 
-import com.motycka.edu.game.user.model.Account
+import com.motycka.edu.game.account.model.Account
 
 fun AccountRegistrationRequest.toAccount() = Account(
     id = null,

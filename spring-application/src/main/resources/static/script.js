@@ -128,3 +128,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         showToast('Failed to initialize application', true);
     }
 });
+
+function handleLogout() {
+    // Clear the token
+    localStorage.removeItem('token');
+    // Redirect to login page
+    window.location.href = '/login.html';
+}

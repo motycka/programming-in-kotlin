@@ -44,7 +44,7 @@ class LeaderboardRepository(
 
     private fun rowMapper(rs: ResultSet, index: Int): Leaderboard {
         return Leaderboard(
-            position = index,
+            position = index + 1,
             characterId = rs.getLong("character_id"),
             wins = rs.getInt("wins"),
             losses = rs.getInt("losses"),

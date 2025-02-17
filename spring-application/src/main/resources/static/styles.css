@@ -26,7 +26,7 @@ body {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(4px);
     border: 1px solid rgba(107, 63, 160, 0.2);
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 /* Branding */
@@ -920,4 +920,208 @@ body {
 
 .leaderboard-filters .btn-group {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Leaderboard statistics styling */
+.stats-group {
+    display: inline-flex;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(10, 5, 23, 0.3);
+    border-radius: 4px;
+}
+
+.stat-win {
+    color: var(--success);
+}
+
+.stat-loss {
+    color: var(--danger);
+}
+
+.stat-draw {
+    color: var(--warning);
+}
+
+.position-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    background: rgba(107, 63, 160, 0.1);
+}
+
+.position-badge.top-1 {
+    background: linear-gradient(45deg, #ffd700, #ffa500);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.position-badge.top-2 {
+    background: linear-gradient(45deg, #c0c0c0, #a0a0a0);
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
+}
+
+.position-badge.top-3 {
+    background: linear-gradient(45deg, #cd7f32, #a0522d);
+    box-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
+}
+
+.win-rate {
+    width: 100px;
+}
+
+.win-rate .progress {
+    height: 1.5rem;
+    background: rgba(10, 5, 23, 0.3);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.win-rate .progress-bar {
+    background: linear-gradient(45deg, var(--success), var(--nebula-blue));
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    line-height: 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: width 0.3s ease;
+}
+
+/* Navigation styling */
+.cosmic-nav {
+    background: rgba(10, 5, 23, 0.95);
+    border-bottom: 1px solid rgba(107, 63, 160, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.cosmic-nav .game-title {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.cosmic-nav .game-subtitle {
+    font-size: 1rem;
+}
+
+/* Adjust the main container margin */
+.container {
+    margin-top: 1rem;
+}
+
+/* Logout button specific styles */
+.cosmic-nav .btn-cosmic-outline {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9rem;
+}
+
+.cosmic-nav .btn-cosmic-outline i {
+    margin-right: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.cosmic-nav .btn-cosmic-outline:hover i {
+    transform: translateX(2px);
+}
+
+/* Auto level button styling */
+.btn-cosmic-outline[onclick="autoLevelUp()"] {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-cosmic-outline[onclick="autoLevelUp()"]::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(199, 143, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: shimmer 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) rotate(45deg);
+    }
+}
+
+.btn-cosmic-outline[onclick="autoLevelUp()"] i {
+    margin-right: 0.5rem;
+    animation: sparkle 1.5s infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Logout button in brand header */
+.btn-logout {
+    background: transparent;
+    border: none;
+    color: var(--nebula-glow);
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-logout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at center,
+        rgba(199, 143, 255, 0.1) 0%,
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-logout:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.btn-logout:hover::before {
+    opacity: 1;
+}
+
+.btn-logout i {
+    filter: drop-shadow(0 0 10px rgba(199, 143, 255, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.btn-logout:hover i {
+    transform: rotate(180deg);
+    filter: drop-shadow(0 0 15px rgba(199, 143, 255, 0.5));
 }

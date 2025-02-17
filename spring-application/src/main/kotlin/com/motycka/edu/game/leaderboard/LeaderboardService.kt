@@ -6,7 +6,7 @@ import com.motycka.edu.game.character.rest.CharacterId
 import com.motycka.edu.game.character.rest.CharactersFilter
 import com.motycka.edu.game.character.rest.toCharacterResponse
 import com.motycka.edu.game.leaderboard.rest.LeaderboardResponse
-import com.motycka.edu.game.user.AccountService
+import com.motycka.edu.game.account.AccountService
 import org.springframework.stereotype.Service
 
 @Service

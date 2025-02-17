@@ -2,7 +2,7 @@ package com.motycka.edu.game.character
 
 import com.motycka.edu.game.character.model.Character
 import com.motycka.edu.game.character.rest.CharactersFilter
-import com.motycka.edu.game.user.AccountService
+import com.motycka.edu.game.account.AccountService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
