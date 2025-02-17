@@ -1,65 +1,50 @@
-drop table if exists exercise;
-drop table if exists activity;
-drop table if exists users;
-
-create table if not exists users
+create table if not exists account
 (
     id bigint auto_increment primary key,
     name text not null,
-    role text not null
+    username text not null,
+    password text not null -- plain text, for simplicity, but we all know this is not good for production
 );
-
-create table if not exists activity
-(
-    id bigint auto_increment primary key,
-    user_id bigserial references users(id) on delete cascade,
-    name text not null,
-    kcal_per_minute decimal not null,
-    unique (user_id, name)
-);
-
-create table if not exists exercise
-(
-    id bigint auto_increment primary key,
-    user_id bigint not null references users(id) on delete cascade,
-    activity_id bigint not null references activity(id),
-    start_time timestamp not null,
-    duration bigint not null
-);
-
-drop table if exists character_attributes;
-drop table if exists character;
 
 create table if not exists character
 (
-    id pg_catalog.uuid primary key,
-    user_id bigint not null references users(id) on delete cascade,
+    id bigint auto_increment primary key,
+    account_id bigint not null references account(id) on delete cascade,
     name text not null,
-    class text not null
+    class text not null,
+    health int not null,
+    attack int not null,
+    experience int not null,
+    defense int,
+    stamina int,
+    healing int,
+    mana int
 );
 
-create table if not exists character_attributes
+create table if not exists leaderboard
 (
-    character_id pg_catalog.uuid not null references character(id) on delete cascade,
-    level bigint not null,
-    experience bigint not null,
-    health bigint not null,
-    attack bigint not null,
-    speed bigint not null,
-    stamina bigint not null,
-    mana text not null
+    character_id bigint not null references character(id) on delete cascade,
+    wins int not null,
+    losses int not null,
+    draws int not null
 );
 
-create table match
+create table if not exists match
 (
-    id bigint pg_catalog.uuid primary key,
-    rounds bigint not null
+    id bigint auto_increment primary key,
+    challenger_id bigint not null references character(id) on delete cascade,
+    opponent_id bigint not null references character(id) on delete cascade,
+    victor_id bigint
 );
 
-create table match_character
+create table if not exists round
 (
+    id bigint auto_increment primary key,
     match_id bigint not null references match(id) on delete cascade,
-    character_id pg_catalog.uuid not null references character(id) on delete cascade,
-    health_lost bigint not null,
-    is_winner boolean not null
+    round_number int not null,
+    character_id bigint not null references character(id) on delete cascade,
+    health_delta int not null,
+    stamina_delta int not null,
+    mana_delta int not null
 );
+

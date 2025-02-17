@@ -1,15 +1,14 @@
 package com.motycka.edu.game.character.model
 
-// new
-internal enum class CharacterLevel(val points: Int) {
-    LEVEL_1(200),
-    LEVEL_2(210), // +10
-    LEVEL_3(230), // +20
-    LEVEL_4(260), // +30
-    LEVEL_5(300), // +40
-    LEVEL_6(350), // +50
-    LEVEL_7(410), // +60
-    LEVEL_8(480), // +70
-    LEVEL_9(560), // +80
-    LEVEL_10(650); // +90
+enum class CharacterLevel(val points: Int, val experience: Long) {
+    LEVEL_1(200, 0),
+    LEVEL_2(210, 1000), // +1000
+    LEVEL_3(230, 3000), // +2000
+    LEVEL_4(260, 6000), // +3000
+    LEVEL_5(300, 10000), // +4000
+    LEVEL_6(350, 15000), // +5000
+    LEVEL_7(410, 21000), // +6000
+    LEVEL_8(480, 28000), // +7000
+    LEVEL_9(560, 36000), // +8000
+    LEVEL_10(650, 45000); // +9000
 }

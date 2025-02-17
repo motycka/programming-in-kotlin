@@ -8,7 +8,7 @@ pluginManagement {
         id("org.springframework.boot") version "3.2.2"
         id("io.spring.dependency-management") version "1.1.6"
         id("io.kotest") version "0.4.11"
-//        id("org.jetbrains.kotlinx.kover") version "0.6.1"
+        id("org.jetbrains.kotlinx.kover") version "0.6.1"
     }
 
     repositories {
@@ -19,3 +19,4 @@ pluginManagement {
 rootProject.name = "programming-in-kotlin"
 include("kotlin-basics")
 include("spring-application")
+include("spring-application-db")

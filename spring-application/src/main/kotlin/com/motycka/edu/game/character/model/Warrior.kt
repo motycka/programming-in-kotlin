@@ -1,38 +1,58 @@
 package com.motycka.edu.game.character.model
 
-internal class Warrior(
+import com.motycka.edu.game.character.rest.CharacterId
+import com.motycka.edu.game.user.model.AccountId
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
+class Warrior(
+    id: CharacterId?, // TODO new
     name: String,
     health: Int,
     attackPower: Int,
-    override var stamina: Int,
+    experience: Int, // TODO new
+    override val stamina: Int,
     override val defensePower: Int,
     override val level: CharacterLevel, // new
 ) : Character(
+    id = id, // TODO new
     name = name,
     health = health,
-    attackPower = attackPower
+    attackPower = attackPower,
+    experience = experience // TODO new
 ), Defender {
 
-    private val maxStamina = stamina
+    private var currentStamina = stamina
 
     // new
     init {
-        val pointsAssigned = health + attackPower + stamina + defensePower
-        require(pointsAssigned <= level.points) { "Attributes can not exceed ${level.points} level points (assigned $pointsAssigned)" }
-        require(pointsAssigned == level.points) { "All ${level.points} level points must be assigned (assigned $pointsAssigned)." }
+//        val pointsAssigned = health + attackPower + stamina + defensePower
+//        require(pointsAssigned <= level.points) { "Attributes can not exceed ${level.points} level points (assigned $pointsAssigned)" }
+//        require(pointsAssigned == level.points) { "All ${level.points} level points must be assigned (assigned $pointsAssigned)." }
     }
 
     override fun attack(target: Character) {
         when {
-            health <= 0 -> println("$name is dead and cannot attack")
-            stamina <= 0 -> println("$name is too tired to attack")
+            health <= 0 -> logger.info { "$name is dead and cannot attack" }
+            stamina <= 0 -> logger.info { "$name is too tired to attack" }
             else -> {
-                println("$name swings a sword at ${target.name}")
+                logger.info { "$name swings a sword at ${target.name}" }
                 target.receiveAttack(attackPower)
-                stamina--
+                currentStamina--
             }
         }
     }
+
+    override fun getStats(): CharacterStats {
+        return CharacterStats(
+            health = currentHealth,
+            stamina = currentStamina,
+            mana = 0
+        )
+    }
+
+    override fun getPoints() = health + attackPower + stamina + defensePower
 
     override fun receiveAttack(attackPower: Int) {
         super.receiveAttack(defend(health - attackPower))
@@ -40,18 +60,18 @@ internal class Warrior(
 
     override fun defend(attackPower: Int): Int {
         return if (stamina > 0) {
-            println("$name raises shield and defends against $defensePower damage")
+            logger.info { "$name raises shield and defends against $defensePower damage" }
             attackPower - defensePower
         } else {
-            println("$name is too tired to defend")
+            logger.info { "$name is too tired to defend" }
             attackPower
         }
     }
 
     override fun beforeRound() {
-        if (stamina < maxStamina) {
-            println("$name regenerates 1 stamina")
-            stamina++
+        if (currentStamina < stamina) {
+            logger.info { "$name regenerates 1 stamina" }
+            currentStamina++
         }
     }
 

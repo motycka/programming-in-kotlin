@@ -1,50 +1,69 @@
 package com.motycka.edu.game.character.model
 
-internal class Sorcerer(
+import com.motycka.edu.game.character.rest.CharacterId
+import com.motycka.edu.game.user.model.AccountId
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
+class Sorcerer(
+    id: CharacterId?, // TODO new
     name: String,
     health: Int,
     attackPower: Int,
-    override var mana: Int,
+    experience: Int, // TODO new
+    override val mana: Int,
     override val healingPower: Int,
     override val level: CharacterLevel, // new
 ) : Character(
+    id = id, // TODO new
     name = name,
     health = health,
     attackPower = attackPower,
+    experience = experience // TODO new
 ), Healer {
 
-    private val maxHealth = health
-    private val maxMana = mana
+    private var currentMana: Int = mana
 
     // new
     init {
-        val pointsAssigned = health + attackPower + mana + healingPower
-        require(pointsAssigned <= level.points) { "Attributes can not exceed ${level.points} level points (assigned $pointsAssigned)" }
-        require(pointsAssigned == level.points) { "All ${level.points} level points must be assigned (assigned $pointsAssigned)." }
+//        val pointsAssigned = health + attackPower + mana + healingPower
+//        require(pointsAssigned <= level.points) { "Character $name attributes can not exceed ${level.points} level points (assigned $pointsAssigned)" }
+//        require(pointsAssigned == level.points) { "All ${level.points} level points must be assigned to $name (assigned $pointsAssigned)." }
     }
 
     override fun attack(target: Character) {
         heal()
         when {
-            health <= 0 -> println("$name is dead and cannot attack")
-            mana <= 0 -> println("$name out of mana")
+            health <= 0 -> logger.info { "$name is dead and cannot attack" }
+            mana <= 0 -> logger.info { "$name out of mana" }
             else -> {
-                println("$name casts a spell at ${target.name}")
+                logger.info { "$name casts a spell at ${target.name}" }
                 target.receiveAttack(attackPower)
-                mana--
+                currentMana--
             }
         }
     }
 
+    override fun getStats(): CharacterStats {
+        return CharacterStats(
+            health = currentHealth,
+            stamina = 0,
+            mana = currentMana
+        )
+    }
+
+    override fun getPoints() = health + attackPower + mana + healingPower
+
     override fun heal() {
         when {
-            health <= 0 -> println("$name is dead and cannot heal")
-            mana <= 0 -> println("$name is out of mana")
+            health <= 0 -> logger.info { "$name is dead and cannot heal"}
+            mana <= 0 -> logger.info { "$name is out of mana" }
             else -> {
-                if (health + healingPower > maxHealth) {
-                    health = maxHealth
+                if (health + healingPower > health) {
+                    currentHealth = health
                 } else {
-                    health += healingPower
+                    currentHealth += healingPower
                 }
                 println("$name heals self to $health health")
             }
@@ -52,9 +71,9 @@ internal class Sorcerer(
     }
 
     override fun beforeRound() {
-        if (mana < maxMana) {
-            println("$name regenerates 1 mana")
-            mana++
+        if (currentMana < mana) {
+            logger.info { "$name regenerates 1 mana" }
+            currentMana++
         }
     }
 

@@ -75,6 +75,8 @@
 							<br />
 							<br />
 							Example of this would be extending class with methods to handle new requirements without modifying the existing ones.</sub>
+							<br />
+							<br />
 						</li>
 						<li>
 							<span class="highlight">Closed for modification</span><br />
@@ -83,6 +85,8 @@
 							<br />
 							Example of this would be that the class should not be modified to handle new requirements,<br />
 							but rather extended, as explained above.
+							<br />
+							<br />
 						</li>
 					</ul>
 				</div>
@@ -427,137 +431,210 @@
 					</pre>
 				</div>
 			</section>
+			<section>
+				<h3>Exercise: IoC</h3>
+				<div class="summary">
+					You will work with our fantasy game again (the one with warriors and sorcerers
+					This time, I want you to implement the game using <strong class="highlight">IoC</strong> principle.
+				</div>
+				<div class="content">
+					<p>
+						There will be the following components to our game:
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">CharacterService</strong> (interface) → Finds a challenger and an opponent using a given strategy.
+						</li>
+						<li>
+							<strong class="highlight">MatchService</strong> (interface) → Handles the battle logic.
+						</li>
+						<li>
+							<strong class="highlight">CharacterRepository</strong> (provided) → Contains a list of characters.
+						</li>
+						<li>
+							<strong class="highlight">CharacterMatchingStrategy</strong> (provided) → Contains the filtering strategy for matching characters.
+						</li>
+						<li>
+							<strong class="highlight">Game</strong> → Uses both services to run a match.
+						</li>
+					</ul>
+					<p>To get you started, you are given the following ...</p>
+				</div>
+				<br />
+				<br />
+				<br />
+				<br />
+				<em>Next ↓</em>
+			</section>
+			<section>
+				<h3>Exercise: IoC</h3>
+				<div class="summary">Character matching strategy</div>
+				<div class="content">
+					<p>
+						The <strong class="highlight">CharacterMatchingStrategy</strong> represents a strategy (filter) for matching characters.
+						The idea here is that you have an object that you can use to represent a predicate that can then be
+						differently implemented in a concrete service implementation.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							internal data class CharacterMatchingStrategy(
+								val name: String?,
+								val level: CharacterLevel?,
+								val characterClass: String?
+							) {
+								companion object {
+									val ANY = CharacterMatchingStrategy(null, null, null)
+								}
+							}
+						</code>
+					</pre>
+				</div>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<em>Next ↓</em>
+			</section>
+			<section>
+				<h3>Exercise: IoC</h3>
+				<div class="summary">Character repository</div>
+				<div class="content">
+					<p>
+						The <strong class="highlight">CharacterRepository</strong> is an object representing a database of characters.
+						In real application, we would have a database, but for this exercise, we will use a simple object.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							internal object CharacterRepository {
+
+								private val harryPotterCharacters = listOf(
+									Sorcerer(name = "Harry Potter", health = 100, attackPower = 40, mana = 30, healingPower = 30, level = CharacterLevel.LEVEL_1), // Balanced, more durable
+									Sorcerer(name = "Hermione Granger", health = 90, attackPower = 40, mana = 40, healingPower = 30, level = CharacterLevel.LEVEL_1), // High mana for tactical advantage
+									Sorcerer(name = "Ron Weasley", health = 120, attackPower = 50, mana = 20, healingPower = 10, level = CharacterLevel.LEVEL_1), // Higher health for tanking
+									Sorcerer(name = "Severus Snape", health = 80, attackPower = 60, mana = 30, healingPower = 30, level = CharacterLevel.LEVEL_1), // Strong attack, slightly higher health
+									Sorcerer(name = "Albus Dumbledore", health = 90, attackPower = 40, mana = 40, healingPower = 30, level = CharacterLevel.LEVEL_1), // Well-rounded, high healing power
+									Sorcerer(name = "Lord Voldemort", health = 80, attackPower = 80, mana = 10, healingPower = 30, level = CharacterLevel.LEVEL_1), // Powerful, but needs more survival
+									Sorcerer(name = "Minerva McGonagall", health = 100, attackPower = 40, mana = 30, healingPower = 30, level = CharacterLevel.LEVEL_1), // Balanced
+									Sorcerer(name = "Bellatrix Lestrange", health = 80, attackPower = 70, mana = 20, healingPower = 30, level = CharacterLevel.LEVEL_1), // Aggressive, but not overpowered
+									Sorcerer(name = "Draco Malfoy", health = 100, attackPower = 40, mana = 30, healingPower = 30, level = CharacterLevel.LEVEL_1), // Slightly more balanced
+									Sorcerer(name = "Neville Longbottom", health = 130, attackPower = 30, mana = 10, healingPower = 30, level = CharacterLevel.LEVEL_1), // Tanky with healing ability
+								)
+
+								private val starWarsCharacters = listOf(
+									Warrior(name = "Luke Skywalker", health = 110, attackPower = 40, stamina = 20, defensePower = 30, level = CharacterLevel.LEVEL_1), // Balanced, well-rounded
+									Warrior(name = "Yoda", health = 80, attackPower = 30, stamina = 50, defensePower = 40, level = CharacterLevel.LEVEL_1), // High mana, strategic healer
+									Warrior(name = "Han Solo", health = 120, attackPower = 40, stamina = 10, defensePower = 30, level = CharacterLevel.LEVEL_1), // Tanky and reliable
+									Warrior(name = "Darth Vader", health = 100, attackPower = 60, stamina = 10, defensePower = 30, level = CharacterLevel.LEVEL_1), // High health and power, needs healing
+									Warrior(name = "Obi-Wan Kenobi", health = 100, attackPower = 40, stamina = 30, defensePower = 30, level = CharacterLevel.LEVEL_1), // Strong defense and healing
+									Warrior(name = "Emperor Palpatine", health = 80, attackPower = 80, stamina = 10, defensePower = 30, level = CharacterLevel.LEVEL_1), // Strong attack, low healing
+									Warrior(name = "Mace Windu", health = 110, attackPower = 40, stamina = 20, defensePower = 30, level = CharacterLevel.LEVEL_1), // Well-rounded with decent attack
+									Warrior(name = "Darth Maul", health = 90, attackPower = 60, stamina = 20, defensePower = 30, level = CharacterLevel.LEVEL_1), // Fast and aggressive, needs support
+									Warrior(name = "Kylo Ren", health = 100, attackPower = 50, stamina = 20, defensePower = 30, level = CharacterLevel.LEVEL_1), // Balanced with raw power
+									Warrior(name = "Finn", health = 130, attackPower = 20, stamina = 10, defensePower = 40, level = CharacterLevel.LEVEL_1), // High health and resilience, strategic healing
+								)
+
+								fun getCharacters() = harryPotterCharacters + starWarsCharacters
+
+							}
+						</code>
+					</pre>
+				</div>
+				<em>Next ↓</em>
+			</section>
+			<section>
+				<h3>Exercise: IoC</h3>
+				<!--				<div class="summary">-->
+				<!--					These are the interfaces you need to implement ...-->
+				<!--				</div>-->
+				<div class="content">
+					<ol>
+						<li>
+							<strong class="highlight">Implement CharacterService interface:</strong>
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									internal interface CharacterService {
+										fun findChallenger(strategy: CharacterMatchingStrategy? = null): Character
+										fun findOpponent(challenger: Character, strategy: CharacterMatchingStrategy? = null): Character
+									}
+								</code>
+							</pre>
+							<ul style="font-size: 70%">
+								<li>Create a class that implements <code class="inline">CharacterService</code> (for example <code class="inline">RandomCharacterService</code>).</li>
+								<li>Use <code class="inline">findChallenger()</code> to select random characters.</li>
+								<li>Ensure that <code class="inline">findOpponent</code> does not return the same character as the challenger.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Implement MatchService interface:</strong>
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									internal interface MatchService {
+										fun match(rounds: Int, matchingStrategy: CharacterMatchingStrategy? = null): MatchResult
+									}
+								</code>
+							</pre>
+							<ul style="font-size: 70%">
+								<li>Create a class that implements <code class="inline">MatchService</code> (for example `RandomMatchService`).</li>
+								<li>It should take a <code class="inline">CharacterService</code> as a constructor parameter.</li>
+								<li>Call <code class="inline">CharacterService</code> to get a challenger and an opponent.</li>
+								<li>Simulate a match and return a <code class="inline">MatchResult</code>.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Create a main function:</strong>
+							<ul style="font-size: 70%">
+								<li>Instantiate your services and pass dependencies via constructors.</li>
+								<li>Run the match and get results.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Bonus Challenge: Implement the a factory class</strong>
+							<ul style="font-size: 70%">
+								<li>A factory class is a static class (object) that creates instances of other classes.</li>
+								<li>You can create a factory class to create a preset game with a specific <code class="inline">MatchService</code> and <code class="inline">CharacterService</code>.</li>
+								<li>The factory class should return a <code class="inline">MatchService</code> instance.</li>
+							</ul>
+						</li>
+					</ol>
+				</div>
+				<em>Next ↓</em>
+			</section>
+			<section>
+				<h3>Exercise: IoC</h3>
+				<div class="content">
+					<p>
+						After completing this exercise, your program should:
+					</p>
+					<ul>
+						<li>✅ Successfully match two characters for battle.</li>
+						<li>✅ Use <strong class="highlight">constructor injection</strong> to provide dependencies.</li>
+						<li>✅ Follow <strong class="highlight">IoC principles</strong>, where the <code class="inline">MatchService</code> does not directly create dependencies.</li>
+					</ul>
+					<p>
+						The main function can look something like this:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun main() {
+								val game = Game(
+									matchService = RandomMatchService(
+										characterService = RandomCharacterService()
+									)
+								)
+								game.playMatch(20)
+							}
+						</code>
+					</pre>
+					<p><strong class="highlight">Bonus Challenge:</strong></p>
+					<p>
+						Allow users to specify a <code class="inline">CharacterMatchingStrategy</code>
+						to filter characters based on their level or name.
+					</p>
+				</div>
+			</section>
 		</section>
-<!--		<section>-->
-<!--			<section data-background-gradient="var(&#45;&#45;kotlin-gradient)">-->
-<!--				<h2>Generics</h2>-->
-<!--			</section>-->
-<!--			<section>-->
-<!--				<h3>Generics</h3>-->
-<!--				<div class="summary">-->
-<!--					Generics allow us to create classes, interfaces, and methods that take types as parameters.-->
-<!--				</div>-->
-<!--				<div class="content">-->
-<!--					<p>-->
-<!--						They are a way to make our code more reusable by allowing us to use the same code with different types.-->
-<!--					</p>-->
-<!--					<p>-->
-<!--						Many of the classes, functions, and interfaces in the Kotlin standard library,-->
-<!--						which we have already used, use generics.-->
-
-<!--					</p>-->
-<!--					<p>-->
-<!--						For example, the <code class="inline">listOf</code> or <code class="inline">mapOf</code> functions,-->
-<!--						which we have used, are generic functions:-->
-<!--					</p>-->
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--								val list = mutableListOf&lt;Int&gt;()-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--								val map = mutableMapOf&lt;String, Boolean&gt;()-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--				</div>-->
-<!--			</section>-->
-<!--			<section>-->
-<!--				<h3>How to Define Generics</h3>-->
-<!--				<div class="summary">-->
-<!--					To use generics, we need to define them in the class, interface ot function declaration.-->
-<!--				</div>-->
-<!--				<div class="content">-->
-<!--					<p>-->
-<!--						This is done by using angle brackets and the type parameter name, in this case, <code class="inline">T</code>.-->
-<!--						<br />-->
-<!--						We can use any name for the type parameter, but it is common to use single uppercase letters.-->
-<!--					</p>-->
-<!--						<p>-->
-<!--							Here is an example of class with a generic type parameter containing a function that takes a generic type as a parameter.-->
-<!--						</p>-->
-<!--						<pre>-->
-<!--							<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--								class MyClass&lt;T&gt;(val value1: T) {-->
-
-<!--									fun valueEquals(value2: T): Boolean {-->
-<!--										return value1 == value2-->
-<!--									}-->
-
-<!--								}-->
-<!--							</code>-->
-<!--						</pre>-->
-<!--						We can then create instances of the class with different types.-->
-<!--						<pre>-->
-<!--							<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--								val myClass1 = MyClass("ABC")-->
-<!--								myClass1.valueEquals("ABC")-->
-
-<!--								val myClass2 = MyClass(123)-->
-<!--								myClass2.valueEquals(123)-->
-<!--							</code>-->
-<!--						</pre>-->
-<!--						But this would not work, because the compiler would not know what type to use.-->
-<!--						<pre>-->
-<!--							<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--								val myClass3 = MyClass(123)-->
-<!--								myClass3.valueEquals("123")-->
-<!--							</code>-->
-<!--						</pre>-->
-<!--				</div>-->
-<!--			</section>-->
-<!--			<section>-->
-<!--				<h3>Generics</h3>-->
-<!--&lt;!&ndash;				<div class="summary"></div>&ndash;&gt;-->
-<!--				<div class="content">-->
-<!--					<p>-->
-<!--						You can also define generics with multiple type parameters.-->
-<!--					</p>-->
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--							class MyClassEnhanced&lt;T1, T2&gt;(value1: T1) {-->
-
-<!--								fun valueEquals(value2: T2): Boolean {-->
-<!--									return value1 == value2-->
-<!--								}-->
-
-<!--							}-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--							val myClassEnhanced = MyClassEnhanced&lt;Int, Double&gt;(123)-->
-
-<!--							myClassEnhanced.valueEquals(123.0)-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--					<p>-->
-<!--						And you can define generics for functions outside of classes as well,-->
-<!--						but you need to define the type parameter before the function name.-->
-<!--					</p>-->
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--							fun &lt;T1, T2&gt; valueEquals(value1: T1, value2: T2): Boolean {-->
-<!--								return value1 == value2-->
-<!--							}-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--							valueEquals&lt;Int, Double&gt;(123, 123.0)-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--					<p>-->
-<!--						You don't have to define the type parameter if the compiler can infer it.-->
-<!--					</p>-->
-<!--					<pre>-->
-<!--						<code data-trim data-noescape data-line-numbers class="hljs kotlin">-->
-<!--							valueEquals(123, 123.0)-->
-<!--						</code>-->
-<!--					</pre>-->
-<!--				</div>-->
-<!--			</section>-->
-<!--		</section>-->
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Functional Programming</h2>
@@ -755,26 +832,17 @@
 			</section>
 		</section>
 		<section>
-			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Practice</h2>
-			</section>
 			<section>
-				<h3>Practice</h3>
-				<div class="summary">
-<!--					Now that we have covered the SOLID principle, Inversion of Control, Generics, and Functional Programming,-->
-<!--					we will practice these concepts in the next lesson.-->
-				</div>
-				<div class="content">
-<!--					<p>-->
-<!--						We will create a simple application that will demonstrate the use of these principles.-->
-<!--					</p>-->
-<!--					<p>-->
-<!--						We will create a simple application that will demonstrate the use of these principles.-->
-<!--					</p>-->
-<!--					<p>-->
-<!--						We will create a simple application that will demonstrate the use of these principles.-->
-<!--					</p>-->
-				</div>
+				<section data-background-gradient="var(--kotlin-gradient)">
+					<h2>Practice</h2>
+					<em>↓</em>
+				</section>
+				<section>
+					<div style="font-size: 200%">
+						<em>Catch up on all the lessons!</em><br />
+						<em>Make sure you have your fantasy game model ready for next lesson.</em>
+					</div>
+				</section>
 			</section>
 		</section>
 	</div>

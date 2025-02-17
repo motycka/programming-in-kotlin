@@ -1,10 +1,11 @@
 package com.motycka.edu.game.match.model
 
-import com.motycka.edu.game.character.model.Character
+import com.motycka.edu.game.character.rest.CharacterId
 
-internal data class MatchResult(
-    val character1: Character,
-    val character2: Character,
-    val round: Int,
-    val victor: Character?
+data class MatchResult(
+    val id: MatchId?,
+    val challengerId: CharacterId,
+    val opponentId: CharacterId,
+    val victorId: CharacterId?,
 )
+

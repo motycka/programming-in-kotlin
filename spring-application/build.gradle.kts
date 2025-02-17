@@ -3,7 +3,6 @@ plugins {
     kotlin("plugin.spring")
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-//    id("org.jetbrains.kotlinx.kover")
     id("idea")
 }
 
@@ -19,6 +18,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    // implementation("org.springframework.boot:spring-boot-starter-webflux:3.4.2")
+    // runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2")
     testImplementation(kotlin("test"))
 }

@@ -31,3 +31,4 @@ internal abstract class Character(
         }
     }
 }
+
