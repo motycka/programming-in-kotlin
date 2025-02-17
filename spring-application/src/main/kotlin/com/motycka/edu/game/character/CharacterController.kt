@@ -38,11 +38,10 @@ class CharacterController(
 
     @GetMapping
     fun getCharacters(): List<CharacterResponse> {
-//        val accountId = accountService.getCurrentAccountId()
-//        return characterService.getCharacters(
-//            filter = CharactersFilter.DEFAULT
-//        ).toCharacterResponses(accountId)
-        return emptyList()
+        val accountId = accountService.getCurrentAccountId()
+        return characterService.getCharacters(
+            filter = CharactersFilter.DEFAULT
+        ).toCharacterResponses(accountId)
     }
 
     @GetMapping("/challengers")
