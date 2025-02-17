@@ -19,9 +19,7 @@ class MatchRepository(
     fun selectMatches(): List<MatchResult> {
         logger.debug { "Inserting matches: TODO" }
         return jdbcTemplate.query(
-            """
-                SELECT * FROM match;
-            """.trimIndent(),
+            "SELECT * FROM match;",
             ::matchMapper
         )
     }
@@ -29,9 +27,7 @@ class MatchRepository(
     fun selectRounds(matchId: MatchId): List<MatchRoundResult> {
         logger.debug { "Selecting match by id $matchId" }
         return jdbcTemplate.query(
-            """
-                SELECT * FROM round WHERE match_id = ?;
-            """.trimIndent(),
+            "SELECT * FROM round WHERE match_id = ?;",
             ::roundMapper,
             matchId
         )
@@ -41,7 +37,10 @@ class MatchRepository(
         logger.info { "Inserting match $match" }
         return jdbcTemplate.query(
             """
-                SELECT * FROM FINAL TABLE (INSERT INTO match (challenger_id, opponent_id, victor_id, challenger_xp, opponent_xp) VALUES (?, ?, ?, ?, ?)) LIMIT 1;
+                SELECT * FROM FINAL TABLE (
+                    INSERT INTO match (challenger_id, opponent_id, victor_id, challenger_xp, opponent_xp) 
+                    VALUES (?, ?, ?, ?, ?)
+                ) LIMIT 1;
             """.trimIndent(),
             ::matchMapper,
             match.challengerId,
@@ -56,7 +55,10 @@ class MatchRepository(
         logger.debug { "Inserting match round $round" }
         return jdbcTemplate.query(
             """
-                SELECT * FROM FINAL TABLE (INSERT INTO round (match_id, round_number, character_id, health_delta, stamina_delta, mana_delta) VALUES (?, ?, ?, ?, ?, ?));
+                SELECT * FROM FINAL TABLE (
+                    INSERT INTO round (match_id, round_number, character_id, health_delta, stamina_delta, mana_delta) 
+                    VALUES (?, ?, ?, ?, ?, ?)
+                );
             """.trimIndent(),
             ::roundMapper,
             matchId,

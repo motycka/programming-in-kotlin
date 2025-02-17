@@ -2,12 +2,9 @@ package com.motycka.edu.game.match
 
 import com.motycka.edu.game.match.rest.MatchResponse
 import com.motycka.edu.game.match.rest.MatchRequest
-import com.motycka.edu.game.match.rest.toMatchResultTo
-import com.motycka.edu.game.match.rest.toMatchResultTos
-import io.github.oshai.kotlinlogging.KotlinLogging
+import com.motycka.edu.game.match.rest.toMatchResponse
+import com.motycka.edu.game.match.rest.toMatchResponseTos
 import org.springframework.web.bind.annotation.*
-
-private val logger = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping("/api/matches")
@@ -17,18 +14,18 @@ class MatchController(
 
     @GetMapping
     fun getMatches(): List<MatchResponse> {
-        return matchService.getMatches().toMatchResultTos()
+        return matchService.getMatches().toMatchResponseTos()
     }
 
     @PostMapping
     fun postMatch(
-        @RequestBody newMatchTo: MatchRequest
+        @RequestBody match: MatchRequest
     ): MatchResponse {
         return matchService.doMatch(
-            rounds = newMatchTo.rounds,
-            challengerId = newMatchTo.challengerId,
-            opponentId = newMatchTo.opponentId
-        ).toMatchResultTo()
+            rounds = match.rounds,
+            challengerId = match.challengerId,
+            opponentId = match.opponentId
+        ).toMatchResponse()
     }
 }
 

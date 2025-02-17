@@ -18,12 +18,28 @@ class LeaderboardRepository(
     }
 
     fun updateLeaderboard(characterId: CharacterId, win: Boolean, loss: Boolean) {
-        jdbcTemplate.update(
-            "UPDATE leaderboard SET wins = wins + ?, losses = losses + ? WHERE character_id = ?",
-            if (win) 1 else 0,
-            if (loss) 1 else 0,
+        val wins = if (win) 1 else 0
+        val losses = if (loss) 1 else 0
+        val draws = if (win.not() && loss.not()) 1 else 0
+
+        val updated = jdbcTemplate.update(
+            "UPDATE leaderboard SET wins = wins + ?, losses = losses + ?, draws = draws + ? WHERE character_id = ?;",
+            wins,
+            losses,
+            draws,
             characterId
         )
+
+        if (updated == 0) {
+            jdbcTemplate.update(
+                "INSERT INTO leaderboard (character_id, wins, losses, draws) VALUES (?, ?, ?, ?);",
+                characterId,
+                wins,
+                losses,
+                draws
+            )
+        }
+
     }
 
     private fun rowMapper(rs: ResultSet, index: Int): Leaderboard {

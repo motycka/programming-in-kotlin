@@ -359,62 +359,67 @@ class MatchesTab {
         const modal = document.getElementById('matchResultModal');
 
         modal.querySelector('.modal-body').innerHTML = `
-            <div class="d-flex justify-content-end mb-3">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="match-summary mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="challenger" data-class="${match.challenger.characterClass}">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="class-icon" title="${CHARACTER_CLASSES[match.challenger.characterClass].name}">
-                                ${match.challenger.characterClass === 'WARRIOR' ? '⚔️' : '🔮'}
-                            </span>
-                            <h5 class="mb-0">${match.challenger.name}</h5>
-                        </div>
-                        <div class="badge ${match.challenger.isVictor ? 'bg-success' : !match.opponent.isVictor ? 'bg-warning' : 'bg-danger'}">
-                            ${!match.challenger.isVictor && !match.opponent.isVictor ? 'DRAW' : match.challenger.isVictor ? 'WINNER' : 'DEFEATED'}
-                        </div>
-                        <div class="experience-info">
-                            <div class="d-flex align-items-center gap-2">
-                                <span title="Total Experience">
-                                    <i class="fas fa-star"></i> ${match.challenger.experienceTotal}
+            <div class="match-content">
+                <div class="match-summary mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="challenger" data-class="${match.challenger.characterClass}">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="class-icon" title="${CHARACTER_CLASSES[match.challenger.characterClass].name}">
+                                    ${match.challenger.characterClass === 'WARRIOR' ? '⚔️' : '🔮'}
                                 </span>
-                                <span class="text-success" title="Experience Gained">
-                                    <i class="fas fa-plus"></i>${match.challenger.experienceGained}
-                                </span>
+                                <h5 class="mb-0">${match.challenger.name}</h5>
+                            </div>
+                            <div class="badge ${match.challenger.isVictor ? 'bg-success' : !match.opponent.isVictor ? 'bg-warning' : 'bg-danger'}">
+                                ${!match.challenger.isVictor && !match.opponent.isVictor ? 'DRAW' : match.challenger.isVictor ? 'WINNER' : 'DEFEATED'}
+                            </div>
+                            <div class="experience-info">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span title="Total Experience">
+                                        <i class="fas fa-star"></i> ${match.challenger.experienceTotal}
+                                    </span>
+                                    <span class="text-success" title="Experience Gained">
+                                        <i class="fas fa-plus"></i>${match.challenger.experienceGained}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="match-vs">VS</div>
-                    
-                    <div class="opponent" data-class="${match.opponent.characterClass}">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="class-icon" title="${CHARACTER_CLASSES[match.opponent.characterClass].name}">
-                                ${match.opponent.characterClass === 'WARRIOR' ? '⚔️' : '🔮'}
-                            </span>
-                            <h5 class="mb-0">${match.opponent.name}</h5>
-                        </div>
-                        <div class="badge ${match.opponent.isVictor ? 'bg-success' : !match.challenger.isVictor ? 'bg-warning' : 'bg-danger'}">
-                            ${!match.challenger.isVictor && !match.opponent.isVictor ? 'DRAW' : match.opponent.isVictor ? 'WINNER' : 'DEFEATED'}
-                        </div>
-                        <div class="experience-info">
-                            <div class="d-flex align-items-center gap-2">
-                                <span title="Total Experience">
-                                    <i class="fas fa-star"></i> ${match.opponent.experienceTotal}
+                        
+                        <div class="match-vs">VS</div>
+                        
+                        <div class="opponent" data-class="${match.opponent.characterClass}">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="class-icon" title="${CHARACTER_CLASSES[match.opponent.characterClass].name}">
+                                    ${match.opponent.characterClass === 'WARRIOR' ? '⚔️' : '🔮'}
                                 </span>
-                                <span class="text-success" title="Experience Gained">
-                                    <i class="fas fa-plus"></i>${match.opponent.experienceGained}
-                                </span>
+                                <h5 class="mb-0">${match.opponent.name}</h5>
+                            </div>
+                            <div class="badge ${match.opponent.isVictor ? 'bg-success' : !match.challenger.isVictor ? 'bg-warning' : 'bg-danger'}">
+                                ${!match.challenger.isVictor && !match.opponent.isVictor ? 'DRAW' : match.opponent.isVictor ? 'WINNER' : 'DEFEATED'}
+                            </div>
+                            <div class="experience-info">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span title="Total Experience">
+                                        <i class="fas fa-star"></i> ${match.opponent.experienceTotal}
+                                    </span>
+                                    <span class="text-success" title="Experience Gained">
+                                        <i class="fas fa-plus"></i>${match.opponent.experienceGained}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="rounds-timeline">
+                    <h6 class="mb-3">Battle Timeline</h6>
+                    <div class="rounds-list"></div>
+                </div>
             </div>
 
-            <div class="rounds-timeline">
-                <h6 class="mb-3">Battle Timeline</h6>
-                <div class="rounds-list"></div>
+            <div class="match-footer">
+                <button type="button" class="btn btn-cosmic" data-bs-dismiss="modal">
+                    <i class="fas fa-portal-exit"></i> Return to the Cosmic Arena
+                </button>
             </div>
         `;
 

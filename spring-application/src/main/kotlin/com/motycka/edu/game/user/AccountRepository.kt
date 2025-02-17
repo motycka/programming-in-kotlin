@@ -16,9 +16,9 @@ private val logger = KotlinLogging.logger {}
 @Repository
 class AccountRepository(
     private val jdbcTemplate: JdbcTemplate
-) : IAccountRepository {
+) {
 
-    override fun selectByUsername(username: String): Account? {
+    fun selectByUsername(username: String): Account? {
         logger.debug { "Selecting user $username" }
         return jdbcTemplate.query(
             "SELECT * FROM account WHERE username = ? LIMIT 1",
@@ -27,10 +27,15 @@ class AccountRepository(
         ).firstOrNull()
     }
 
-    override fun insert(user: Account): Account? {
+    fun insert(user: Account): Account? {
         logger.debug { "Inserting new user ${user.copy(password = "***")}" }
         return jdbcTemplate.query(
-            "SELECT * FROM FINAL TABLE (INSERT INTO account (name, username, password) VALUES (?, ?, ?, ?))",
+            """
+                SELECT * FROM FINAL TABLE (
+                    INSERT INTO account (name, username, password) 
+                    VALUES (?, ?, ?, ?)
+                );
+            """.trimIndent(),
             ::rowMapper,
             user.name,
             user.username,

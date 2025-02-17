@@ -21,6 +21,10 @@ fun Character.toCharacterResponse(currentAccountId: AccountId): CharacterRespons
     }
 }
 
+fun Character.isOwnedBy(currentAccountId: AccountId): Boolean {
+    return this.accountId == currentAccountId
+}
+
 fun Sorcerer.toCharacterResponse(currentAccountId: AccountId) = CharacterResponse(
     id = requireNotNull(id) { "Character id must not be null." },
     name = name,
@@ -34,7 +38,7 @@ fun Sorcerer.toCharacterResponse(currentAccountId: AccountId) = CharacterRespons
     level = level,
     experience = experience,
     shouldLevelUp = getPoints() < level.points,
-    isOwner = accountId == currentAccountId
+    isOwner = isOwnedBy(currentAccountId)
 )
 
 fun Warrior.toCharacterResponse(currentAccountId: AccountId) = CharacterResponse(
@@ -50,7 +54,7 @@ fun Warrior.toCharacterResponse(currentAccountId: AccountId) = CharacterResponse
     level = level,
     experience = experience,
     shouldLevelUp = getPoints() < level.points,
-    isOwner = accountId == currentAccountId
+    isOwner = isOwnedBy(currentAccountId)
 )
 
 fun CharacterCreateRequest.toCharacter(accountId: AccountId): Character {

@@ -4,7 +4,7 @@ import com.motycka.edu.game.character.model.Character
 import com.motycka.edu.game.character.rest.getClass
 import com.motycka.edu.game.match.model.MatchResultWithCharacters
 
-fun MatchResultWithCharacters.toMatchResultTo() = MatchResponse(
+fun MatchResultWithCharacters.toMatchResponse() = MatchResponse(
     id = requireNotNull(match.id) { "Match id is required" },
     challenger = challenger.toMatchCharacterTo(
         isVictor = challenger.characterId == match.victorId,
@@ -25,8 +25,8 @@ fun MatchResultWithCharacters.toMatchResultTo() = MatchResponse(
     }
 )
 
-fun List<MatchResultWithCharacters>.toMatchResultTos() = map {
-    it.toMatchResultTo()
+fun List<MatchResultWithCharacters>.toMatchResponseTos() = map {
+    it.toMatchResponse()
 }
 
 fun Character.toMatchCharacterTo(isVictor: Boolean, experienceGained: Int) = MatchCharacterResponse(
