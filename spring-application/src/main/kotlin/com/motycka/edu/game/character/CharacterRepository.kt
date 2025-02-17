@@ -5,6 +5,7 @@ import com.motycka.edu.game.character.model.CharacterLevel
 import com.motycka.edu.game.character.model.Sorcerer
 import com.motycka.edu.game.character.model.Warrior
 import com.motycka.edu.game.character.rest.CharacterClass
+import com.motycka.edu.game.character.rest.CharacterId
 import com.motycka.edu.game.character.rest.CharactersFilter
 import com.motycka.edu.game.user.model.AccountId
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -96,6 +97,18 @@ class CharacterRepository(
                 else -> error("Unknown character class") // TODO
             },
             character.experience
+        ).firstOrNull()
+    }
+
+    fun updateExperience(characterId: CharacterId, gainedExperience: Int): Character? {
+        logger.debug { "Updating experience for character $characterId" }
+        return jdbcTemplate.query(
+            """
+                SELECT * FROM FINAL TABLE (UPDATE character SET experience = experience + ? WHERE id = ?);
+            """.trimIndent(),
+            ::rowMapper,
+            gainedExperience,
+            characterId
         ).firstOrNull()
     }
 

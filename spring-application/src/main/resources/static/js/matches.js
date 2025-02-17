@@ -74,7 +74,8 @@ class MatchesTab {
             const option = document.createElement('option');
             option.value = character.id;
             option.dataset.class = character.characterClass;
-            option.textContent = `${character.name} (${formatLevel(character.level)} ${CHARACTER_CLASSES[character.characterClass].name})`;
+            const icon = character.characterClass === 'WARRIOR' ? '⚔️' : '🔮';
+            option.textContent = `${icon} ${character.name} (${formatLevel(character.level)})`;
             challengerSelect.appendChild(option.cloneNode(true));
         });
 
@@ -83,7 +84,8 @@ class MatchesTab {
             const option = document.createElement('option');
             option.value = character.id;
             option.dataset.class = character.characterClass;
-            option.textContent = `${character.name} (${formatLevel(character.level)} ${CHARACTER_CLASSES[character.characterClass].name})`;
+            const icon = character.characterClass === 'WARRIOR' ? '⚔️' : '🔮';
+            option.textContent = `${icon} ${character.name} (${formatLevel(character.level)})`;
             opponentSelect.appendChild(option);
         });
     }
@@ -231,7 +233,7 @@ class MatchesTab {
                             </div>
                             <div class="stat-item" title="Experience Gained">
                                 <span class="stat-icon">🌟</span>
-                                <span class="stat-value">+${match.challenger.experience}</span>
+                                <span class="stat-value">+${match.challenger.experienceGained}</span>
                             </div>
                         </div>
                     </div>
@@ -265,7 +267,7 @@ class MatchesTab {
                             </div>
                             <div class="stat-item" title="Experience Gained">
                                 <span class="stat-icon">🌟</span>
-                                <span class="stat-value">+${match.opponent.experience}</span>
+                                <span class="stat-value">+${match.opponent.experienceGained}</span>
                             </div>
                         </div>
                     </div>
@@ -357,6 +359,9 @@ class MatchesTab {
         const modal = document.getElementById('matchResultModal');
 
         modal.querySelector('.modal-body').innerHTML = `
+            <div class="d-flex justify-content-end mb-3">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="match-summary mb-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="challenger" data-class="${match.challenger.characterClass}">
@@ -370,7 +375,14 @@ class MatchesTab {
                             ${!match.challenger.isVictor && !match.opponent.isVictor ? 'DRAW' : match.challenger.isVictor ? 'WINNER' : 'DEFEATED'}
                         </div>
                         <div class="experience-info">
-                            <i class="fas fa-star"></i> Experience: ${match.challenger.experience}
+                            <div class="d-flex align-items-center gap-2">
+                                <span title="Total Experience">
+                                    <i class="fas fa-star"></i> ${match.challenger.experienceTotal}
+                                </span>
+                                <span class="text-success" title="Experience Gained">
+                                    <i class="fas fa-plus"></i>${match.challenger.experienceGained}
+                                </span>
+                            </div>
                         </div>
                     </div>
                     
@@ -387,7 +399,14 @@ class MatchesTab {
                             ${!match.challenger.isVictor && !match.opponent.isVictor ? 'DRAW' : match.opponent.isVictor ? 'WINNER' : 'DEFEATED'}
                         </div>
                         <div class="experience-info">
-                            <i class="fas fa-star"></i> Experience: ${match.opponent.experience}
+                            <div class="d-flex align-items-center gap-2">
+                                <span title="Total Experience">
+                                    <i class="fas fa-star"></i> ${match.opponent.experienceTotal}
+                                </span>
+                                <span class="text-success" title="Experience Gained">
+                                    <i class="fas fa-plus"></i>${match.opponent.experienceGained}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>

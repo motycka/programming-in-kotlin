@@ -1,11 +1,9 @@
 package com.motycka.edu.game.match
 
 import com.motycka.edu.game.character.CharacterService
-import com.motycka.edu.game.character.rest.CharactersFilter
 import com.motycka.edu.game.character.model.Character
-import com.motycka.edu.game.character.model.Sorcerer
-import com.motycka.edu.game.character.model.Warrior
 import com.motycka.edu.game.character.rest.CharacterId
+import com.motycka.edu.game.character.rest.CharactersFilter
 import com.motycka.edu.game.leaderboard.LeaderboardService
 import com.motycka.edu.game.match.model.MatchResult
 import com.motycka.edu.game.match.model.MatchResultWithCharacters
@@ -35,9 +33,14 @@ class MatchService(
             )
         )
         return matchRepository.selectMatches().map { match ->
+            val challenger = characters.find { it.characterId == match.challengerId }!! // TODO
+            val opponent = characters.find { it.characterId == match.opponentId }!! // TODO
+
             MatchResultWithCharacters(
-                challenger = characters.find { it.characterId == match.challengerId }!!, // TODO
-                opponent = characters.find { it.characterId == match.opponentId }!!, // TODO
+                challenger = challenger,
+                challengerExperience = 100,
+                opponent = opponent,
+                opponentExperience = 100,
                 match = match,
                 rounds = matchRepository.selectRounds(match.id!!), // TODO
                 currentAccountId = accountService.getCurrentAccountId()
@@ -87,10 +90,15 @@ class MatchService(
             }
         }?.characterId
 
+        val challengerExperience = 100
+        val opponentExperience = 100
+
         val matchResult = matchRepository.insertMatch(
             MatchResult(
                 challengerId = challenger.characterId,
+                challengerExperience = challengerExperience,
                 opponentId = opponent.characterId,
+                opponentExperience = opponentExperience,
                 victorId = victorId,
             )
         )
@@ -108,7 +116,7 @@ class MatchService(
                 loss = !isVictor
             )
 
-//            characterService.updateCharacter(copy(experience = experience + 1))
+            characterService.updateExperience(characterId, challengerExperience)
         }
         with (opponent) {
             val isVictor = characterId == victorId
@@ -117,11 +125,15 @@ class MatchService(
                 win = isVictor,
                 loss = !isVictor
             )
+
+            characterService.updateExperience(characterId, opponentExperience)
         }
 
         return MatchResultWithCharacters(
             challenger = challenger,
+            challengerExperience = challengerExperience,
             opponent = opponent,
+            opponentExperience = opponentExperience,
             match = matchResult,
             rounds = rounds,
             currentAccountId = accountService.getCurrentAccountId()

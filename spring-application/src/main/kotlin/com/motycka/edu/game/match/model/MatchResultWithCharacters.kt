@@ -5,7 +5,9 @@ import com.motycka.edu.game.user.model.AccountId
 
 data class MatchResultWithCharacters(
     val challenger: Character,
+    val challengerExperience: Int,
     val opponent: Character,
+    val opponentExperience: Int,
     val match: MatchResult,
     val rounds: List<MatchRoundResult>,
     val currentAccountId: AccountId

@@ -6,8 +6,14 @@ import com.motycka.edu.game.match.model.MatchResultWithCharacters
 
 fun MatchResultWithCharacters.toMatchResultTo() = MatchResponse(
     id = requireNotNull(match.id) { "Match id is required" },
-    challenger = challenger.toMatchCharacterTo(isVictor = challenger.characterId == match.victorId,),
-    opponent = opponent.toMatchCharacterTo(isVictor = opponent.characterId == match.victorId),
+    challenger = challenger.toMatchCharacterTo(
+        isVictor = challenger.characterId == match.victorId,
+        experienceGained = challengerExperience
+    ),
+    opponent = opponent.toMatchCharacterTo(
+        isVictor = opponent.characterId == match.victorId,
+        experienceGained = opponentExperience
+    ),
     rounds = rounds.map { round ->
         MatchRoundResponse(
             round = round.round,
@@ -23,12 +29,13 @@ fun List<MatchResultWithCharacters>.toMatchResultTos() = map {
     it.toMatchResultTo()
 }
 
-fun Character.toMatchCharacterTo(isVictor: Boolean) = MatchCharacterResponse(
+fun Character.toMatchCharacterTo(isVictor: Boolean, experienceGained: Int) = MatchCharacterResponse(
     id = requireNotNull(id) { "Character id must not be null." },
     name = name,
     characterClass = getClass(),
     level = level,
-    experience = experience,
+    experienceTotal = experience,
+    experienceGained = experienceGained,
     isVictor = isVictor
 )
 

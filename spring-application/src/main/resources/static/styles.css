@@ -739,6 +739,22 @@ body {
     display: inline-block;
 }
 
+.match-summary .experience-info .text-success {
+    color: var(--success) !important;
+    font-weight: 500;
+}
+
+.match-summary .experience-info span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.match-summary .experience-info i {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
 .match-summary .badge {
     font-size: 1rem;
     padding: 0.5rem 1rem;
@@ -758,14 +774,59 @@ body {
     cursor: help;
     opacity: 0.9;
     transition: opacity 0.2s;
+    margin-right: 0.5rem;
 }
 
 .class-icon:hover {
     opacity: 1;
 }
 
-/* Remove the old class name styles */
+/* Remove the old class name styles since we're using icons now */
 .character-item[data-class="WARRIOR"] .character-name::before,
 .character-item[data-class="SORCERER"] .character-name::before {
     content: none;
+}
+
+.experience-info {
+    color: var(--nebula-glow);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(107, 63, 160, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.experience-info .text-success {
+    color: var(--success) !important;
+    font-weight: 500;
+}
+
+.experience-info span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.experience-info i {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+/* Match result modal close button */
+.modal-body .btn-close {
+    color: var(--nebula-glow);
+    text-shadow: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.modal-body .btn-close:hover {
+    opacity: 1;
+    color: #ffffff;
+}
+
+/* Adjust the close button color for the cosmic theme */
+.modal-body .btn-close::before {
+    color: var(--nebula-glow);
 }

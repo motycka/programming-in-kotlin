@@ -42,6 +42,10 @@ class CharacterService(
         return characterRepository.updateCharacter(character) ?: error(UPDATE_ERROR)
     }
 
+    fun updateExperience(characterId: CharacterId, gainedExperience: Int): Character? {
+        return characterRepository.updateExperience(characterId, gainedExperience)
+    }
+
     companion object {
         const val CREATE_ERROR = "Character could not be created."
         const val UPDATE_ERROR = "Character could not be updated."

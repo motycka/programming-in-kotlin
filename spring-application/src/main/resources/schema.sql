@@ -34,7 +34,9 @@ create table if not exists match
     id bigint auto_increment primary key,
     challenger_id bigint not null references character(id) on delete cascade,
     opponent_id bigint not null references character(id) on delete cascade,
-    victor_id bigint
+    victor_id bigint,
+    challenger_xp int not null,
+    opponent_xp int not null
 );
 
 create table if not exists round

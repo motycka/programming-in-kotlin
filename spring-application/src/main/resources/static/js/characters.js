@@ -330,6 +330,19 @@ class CharactersTab {
         
         propertiesContainer.appendChild(expPropertyItem);
         
+        // Update class display to use icon with tooltip
+        const classIcon = document.createElement('span');
+        classIcon.className = 'class-icon';
+        classIcon.setAttribute('title', CHARACTER_CLASSES[character.characterClass].name);
+        classIcon.innerHTML = character.characterClass === 'WARRIOR' ? '⚔️' : '🔮';
+        
+        // Add the icon before the character name
+        const nameElement = characterItem.querySelector('.character-name');
+        nameElement.insertBefore(classIcon, nameElement.firstChild);
+        
+        // Initialize tooltip
+        new bootstrap.Tooltip(classIcon);
+        
         return characterItem;
     }
 
@@ -469,48 +482,119 @@ class CharactersTab {
         }
     }
 
-    async handleLevelUp(event) {
-        event.preventDefault();
-        
-        if (!this.currentLevelUpCharacter) return;
-        
-        const form = event.target;
-        const submitButton = form.querySelector('button[type="submit"]');
-        
+    async handleLevelUp(character) {
         try {
-            submitButton.disabled = true;
+            // Show level up modal
+            const modal = document.getElementById('levelUpModal');
+            const form = modal.querySelector('#levelUpForm');
             
-            const properties = {};
-            const inputs = document.querySelectorAll('#levelUpProperties input');
-            inputs.forEach(input => {
-                properties[input.name] = parseInt(input.value);
+            // Store character data
+            this.levelingCharacter = character;
+            
+            // Update modal content
+            modal.querySelector('.character-name').textContent = character.name;
+            modal.querySelector('.character-class').textContent = CHARACTER_CLASSES[character.characterClass].name;
+            
+            // Clear previous properties
+            const propertiesContainer = modal.querySelector('#levelUpProperties');
+            propertiesContainer.innerHTML = '';
+            
+            // Add property inputs
+            const availableProperties = [...COMMON_DISPLAY_PROPERTIES];
+            if (CLASS_SPECIFIC_PROPERTIES[character.characterClass]) {
+                availableProperties.push(...CLASS_SPECIFIC_PROPERTIES[character.characterClass]);
+            }
+            
+            availableProperties.forEach(prop => {
+                if (prop !== 'experience' && prop !== 'level') {
+                    const div = document.createElement('div');
+                    div.className = 'mb-3';
+                    div.innerHTML = `
+                        <label class="form-label">${this.formatPropertyName(prop)}</label>
+                        <input type="number" class="form-control" name="${prop}" value="0" min="0">
+                    `;
+                    propertiesContainer.appendChild(div);
+                }
             });
             
-            const response = await fetchWithAuth(
-                `/api/characters/${this.currentLevelUpCharacter.id}/level-up`,
-                {
-                    method: 'POST',
-                    body: JSON.stringify(properties)
-                }
-            );
+            // Show available points
+            const pointsDisplay = modal.querySelector('#pointsDisplay');
+            pointsDisplay.innerHTML = `
+                <div class="alert alert-info">
+                    Available Points: <span id="availablePoints">${character.availablePoints}</span>
+                </div>
+            `;
             
-            if (response.ok) {
-                this.levelUpModal.hide();
-                showToast('Character leveled up successfully!');
-                await this.loadCharacters();
-            }
+            // Show the modal
+            const levelUpModal = new bootstrap.Modal(modal);
+            levelUpModal.show();
+            
+            // Handle form submission
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const updates = {};
+                let totalPoints = 0;
+                
+                formData.forEach((value, key) => {
+                    const points = parseInt(value);
+                    if (points > 0) {
+                        updates[key] = points;
+                        totalPoints += points;
+                    }
+                });
+                
+                if (totalPoints > character.availablePoints) {
+                    showToast('Cannot allocate more points than available', true);
+                    return;
+                }
+                
+                try {
+                    // Send PUT request to update character
+                    const updatedCharacter = await fetchWithAuth(`/api/characters/${character.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(updates)
+                    });
+                    
+                    levelUpModal.hide();
+                    showToast('Character leveled up successfully!');
+                    
+                    // Refresh characters list
+                    await this.loadCharacters();
+                } catch (error) {
+                    console.error('Error leveling up character:', error);
+                    showToast(error.message, true);
+                }
+            };
+            
+            // Update available points display when inputs change
+            const inputs = form.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    let used = 0;
+                    inputs.forEach(i => used += parseInt(i.value) || 0);
+                    const available = character.availablePoints - used;
+                    modal.querySelector('#availablePoints').textContent = available;
+                    
+                    // Disable submit if points exceeded
+                    form.querySelector('button[type="submit"]').disabled = available < 0;
+                });
+            });
+            
         } catch (error) {
+            console.error('Error showing level up modal:', error);
             showToast(error.message, true);
-        } finally {
-            submitButton.disabled = false;
         }
     }
 
     formatPropertyName(prop) {
-        // Convert camelCase to Title Case
+        // Convert camelCase to Title Case and remove "Power"
         return prop
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, str => str.toUpperCase());
+            .replace(/Power/g, '')  // Remove "Power" from the property name
+            .replace(/([A-Z])/g, ' $1')  // Add space before capital letters
+            .replace(/^./, str => str.toUpperCase())  // Capitalize first letter
+            .trim();  // Remove any extra spaces
     }
 
     resetForm() {

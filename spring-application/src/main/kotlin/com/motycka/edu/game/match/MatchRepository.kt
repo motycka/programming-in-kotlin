@@ -41,12 +41,14 @@ class MatchRepository(
         logger.info { "Inserting match $match" }
         return jdbcTemplate.query(
             """
-                SELECT * FROM FINAL TABLE (INSERT INTO match (challenger_id, opponent_id, victor_id) VALUES (?, ?, ?)) LIMIT 1;
+                SELECT * FROM FINAL TABLE (INSERT INTO match (challenger_id, opponent_id, victor_id, challenger_xp, opponent_xp) VALUES (?, ?, ?, ?, ?)) LIMIT 1;
             """.trimIndent(),
             ::matchMapper,
             match.challengerId,
             match.opponentId,
-            match.victorId
+            match.victorId,
+            match.challengerExperience,
+            match.opponentExperience
         ).firstOrNull() ?: error("Match could not be created.") // TODO
     }
 
@@ -71,10 +73,14 @@ class MatchRepository(
         val challengerId = resultSet.getLong("challenger_id")
         val opponentId = resultSet.getLong("opponent_id")
         val victorId = resultSet.getLong("victor_id")
+        val challengerExperience = resultSet.getInt("challenger_xp")
+        val opponentExperience = resultSet.getInt("opponent_xp")
         return MatchResult(
             id = matchId,
             challengerId = challengerId,
+            challengerExperience = challengerExperience,
             opponentId = opponentId,
+            opponentExperience = opponentExperience,
             victorId = victorId
         )
     }
