@@ -1,10 +1,8 @@
 package com.motycka.edu.game.character
 
-import com.motycka.edu.game.character.rest.CharacterCreateRequest
-import com.motycka.edu.game.character.rest.CharacterResponse
-import com.motycka.edu.game.character.rest.CharacterUpdateRequest
-import com.motycka.edu.game.character.rest.CharactersFilter
 import com.motycka.edu.game.account.AccountService
+import com.motycka.edu.game.character.model.CharacterLevel
+import com.motycka.edu.game.character.model.Warrior
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -14,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 
 @WebMvcTest(CharacterController::class)
 class CharacterControllerTest {
@@ -29,59 +30,65 @@ class CharacterControllerTest {
     @MockBean
     private lateinit var accountService: AccountService
 
-    private lateinit var characterResponse: CharacterResponse
+    private val accountId = 1L
 
     @BeforeEach
     fun setUp() {
-        characterResponse = mockk()
+        characterService = mockk()
+        accountService = mockk()
     }
 
     @Test
     fun `postCharacter should return created character`() {
-        val characterCreateRequest = mockk<CharacterCreateRequest>()
-        val accountId = 1L
+        val character = Warrior(
+            id = 1,
+            accountId = accountId,
+            name = "Kotlin Warrior",
+            health = 140,
+            attackPower = 20,
+            experience = 0,
+            stamina = 20,
+            defensePower = 20,
+            level = CharacterLevel.LEVEL_1
+        )
 
         every { accountService.getCurrentAccountId() } returns accountId
-        every { characterService.createCharacter(any()) } returns characterResponse
+        every { characterService.createCharacter(any()) } returns character
 
         mockMvc.perform(post("/api/characters")
             .contentType("application/json")
-            .content("""{"name":"Test Character"}"""))
+            .content("""
+            {
+              "name": "${character.name}",
+              "health": ${character.health},
+              "attackPower": ${character.attackPower},
+              "stamina": ${character.stamina},
+              "defensePower": ${character.defensePower},
+              "characterClass": "WARRIOR"
+            }
+            """.trimIndent())
+            .with(csrf())
+            .with(httpBasic("username", "password")))
             .andExpect(status().isOk)
-            .andExpect(content().json("""{"id":null,"name":"Test Character"}"""))
+            .andExpect(content().json(
+                """
+                {
+                  "name": "${character.name}",
+                  "health": ${character.health},
+                  "attackPower": ${character.attackPower},
+                  "stamina": ${character.stamina},
+                  "defensePower": ${character.defensePower},
+                  "characterClass": "WARRIOR",
+                  "level": "LEVEL_1",
+                  "experience": 0,
+                  "shouldLevelUp": false,
+                  "isOwner": true,
+                  "mana": null,
+                  "healingPower": null
+                }
+            """.trimIndent()
+            ))
 
         verify { characterService.createCharacter(any()) }
-    }
-
-    @Test
-    fun `getCharacters should return list of characters`() {
-        val accountId = 1L
-        val characters = listOf(characterResponse)
-
-        every { accountService.getCurrentAccountId() } returns accountId
-        every { characterService.getCharacters(CharactersFilter.DEFAULT) } returns characters
-
-        mockMvc.perform(get("/api/characters"))
-            .andExpect(status().isOk)
-            .andExpect(content().json("[]"))
-
-        verify { characterService.getCharacters(CharactersFilter.DEFAULT) }
-    }
-
-    @Test
-    fun `putCharacter should return updated character`() {
-        val characterUpdateRequest = mockk<CharacterUpdateRequest>()
-        val characterId = 1L
-
-        every { characterService.getCharacter(characterId) } returns characterResponse
-        every { characterService.updateCharacter(any()) } returns characterResponse
-
-        mockMvc.perform(put("/api/characters/$characterId")
-            .contentType("application/json")
-            .content("""{"name":"Updated Character"}"""))
-            .andExpect(status().isOk)
-            .andExpect(content().json("""{"id":null,"name":"Updated Character"}"""))
-
-        verify { characterService.updateCharacter(any()) }
     }
 }

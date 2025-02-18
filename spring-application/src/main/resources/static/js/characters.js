@@ -352,13 +352,22 @@ class CharactersTab {
         
         this.showPointsAssignmentDialog(character, nextLevel, async (properties) => {
             try {
-                const response = await fetchWithAuth(
-                    `/api/characters/${character.id}/level-up`,
-                    {
-                        method: 'POST',
-                        body: JSON.stringify(properties)
-                    }
-                );
+                const response = await fetchWithAuth(`/api/characters/${character.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        properties: {
+                            health: parseInt(properties.health),
+                            attackPower: parseInt(properties.attackPower),
+                            ...(character.characterClass === 'WARRIOR' ? {
+                                stamina: parseInt(properties.stamina),
+                                defensePower: parseInt(properties.defensePower)
+                            } : {
+                                mana: parseInt(properties.mana),
+                                healingPower: parseInt(properties.healingPower)
+                            })
+                        }
+                    })
+                });
                 
                 if (response.ok) {
                     this.levelUpModal.hide();
@@ -371,201 +380,70 @@ class CharactersTab {
         });
     }
 
-    showPointsAssignmentDialog(character, level, onSubmit) {
-        // Make sure the modal is initialized
-        if (!this.levelUpModal) {
-            this.levelUpModal = new bootstrap.Modal(document.getElementById('levelUpModal'));
-        }
-
-        const modal = document.getElementById('levelUpModal');
-        
-        // Set character info in the modal
-        const characterName = modal.querySelector('.character-info .character-name');
-        const characterClass = modal.querySelector('.character-info .character-class');
-        
-        if (characterName && characterClass) {
-            characterName.textContent = character.name || 'New Character';
-            characterClass.textContent = CHARACTER_CLASSES[character.characterClass].name;
-        }
-        
-        // Get properties based on character class
-        const propertiesContainer = modal.querySelector('#levelUpProperties');
-        if (!propertiesContainer) {
-            console.error('Properties container not found');
-            return;
-        }
-        propertiesContainer.innerHTML = '';
-        
-        // Create a flex row container for properties
-        const propertiesRow = document.createElement('div');
-        propertiesRow.className = 'd-flex gap-3';
-        propertiesContainer.appendChild(propertiesRow);
-        
-        // Update submit button text based on whether it's a new character or level up
-        const submitButton = modal.querySelector('button[type="submit"]');
-        submitButton.textContent = character.id ? 'Confirm Level Up' : 'Create Character';
-
-        // Create property inputs based on character class
-        const propertiesToShow = character.characterClass === 'WARRIOR' 
-            ? ['health', 'attackPower', 'stamina', 'defensePower']
-            : ['health', 'attackPower', 'mana', 'healingPower'];
-        
-        propertiesToShow.forEach(prop => {
-            const formGroup = document.createElement('div');
-            formGroup.className = 'flex-grow-1';
-            
-            const label = document.createElement('label');
-            label.className = 'form-label';
-            label.textContent = this.formatPropertyName(prop);
-            
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.className = 'form-control';
-            input.id = `${prop}_points`;
-            input.name = prop;
-            input.value = character[prop] || 0;
-            // For new characters, allow starting from 0
-            input.min = character.id ? (character[prop] || 0) : 0;
-            input.addEventListener('input', () => this.updateAssignedPoints(level));
-            
-            formGroup.appendChild(label);
-            formGroup.appendChild(input);
-            propertiesRow.appendChild(formGroup);
-        });
-        
-        // Initial points display
-        this.updateAssignedPoints(level);
-
-        // Update form submission
-        const form = modal.querySelector('form');
-        form.onsubmit = async (event) => {
-            event.preventDefault();
-            const properties = {};
-            const inputs = modal.querySelectorAll('#levelUpProperties input');
-            inputs.forEach(input => {
-                properties[input.name] = parseInt(input.value);
-            });
-            await onSubmit(properties);
-        };
-        
-        // Show the modal
-        this.levelUpModal.show();
-    }
-
-    updateAssignedPoints(level) {
-        const inputs = document.querySelectorAll('#levelUpProperties input');
-        const currentTotal = Array.from(inputs).reduce((sum, input) => sum + parseInt(input.value || 0), 0);
-        const pointsForLevel = this.getPointsForLevel(level);
-        
-        const pointsDisplay = document.querySelector('#pointsDisplay');
-        if (pointsDisplay) {
-            pointsDisplay.innerHTML = `
-                <div class="points-summary ${
-                    currentTotal === pointsForLevel ? 'points-valid' : 
-                    currentTotal > pointsForLevel ? 'points-exceeded' : 
-                    'points-remaining'
-                }">
-                    <div class="points-row">
-                        <span>Points: ${currentTotal}/${pointsForLevel}</span>
-                        <span>${currentTotal <= pointsForLevel ? 
-                            `${pointsForLevel - currentTotal} remaining` : 
-                            `${currentTotal - pointsForLevel} over limit`}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Update submit button state
-        const submitButton = document.querySelector('#levelUpForm button[type="submit"]');
-        if (submitButton) {
-            submitButton.disabled = currentTotal !== pointsForLevel;
-        }
-    }
-
-    async handleLevelUp(character) {
+    showPointsAssignmentDialog(character, nextLevel, callback) {
         try {
-            // Show level up modal
             const modal = document.getElementById('levelUpModal');
-            const form = modal.querySelector('#levelUpForm');
+            const form = modal.querySelector('form');
             
-            // Store character data
-            this.levelingCharacter = character;
-            
-            // Update modal content
+            // Update character info
             modal.querySelector('.character-name').textContent = character.name;
-            modal.querySelector('.character-class').textContent = CHARACTER_CLASSES[character.characterClass].name;
+            modal.querySelector('.character-class').textContent = 
+                `${CHARACTER_CLASSES[character.characterClass].name} ${nextLevel ? `(Level ${nextLevel})` : ''}`;
             
-            // Clear previous properties
+            // Clear previous form
             const propertiesContainer = modal.querySelector('#levelUpProperties');
             propertiesContainer.innerHTML = '';
             
             // Add property inputs
-            const availableProperties = [...COMMON_DISPLAY_PROPERTIES];
-            if (CLASS_SPECIFIC_PROPERTIES[character.characterClass]) {
-                availableProperties.push(...CLASS_SPECIFIC_PROPERTIES[character.characterClass]);
-            }
+            const commonProps = COMMON_DISPLAY_PROPERTIES;
+            const classProps = CLASS_SPECIFIC_PROPERTIES[character.characterClass];
             
-            availableProperties.forEach(prop => {
-                if (prop !== 'experience' && prop !== 'level') {
-                    const div = document.createElement('div');
-                    div.className = 'mb-3';
-                    div.innerHTML = `
-                        <label class="form-label">${this.formatPropertyName(prop)}</label>
-                        <input type="number" class="form-control" name="${prop}" value="0" min="0">
-                    `;
-                    propertiesContainer.appendChild(div);
-                }
+            [...commonProps, ...classProps].forEach(prop => {
+                const div = document.createElement('div');
+                div.className = 'mb-3';
+                
+                const label = document.createElement('label');
+                label.className = 'form-label d-flex justify-content-between';
+                label.innerHTML = `
+                    <span>${this.formatPropertyName(prop)}</span>
+                    <small class="text-muted">Current: ${character[prop] || 0}</small>
+                `;
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'form-control';
+                input.name = prop;
+                input.value = '0';
+                input.min = '0';
+                input.required = true;
+                
+                div.appendChild(label);
+                div.appendChild(input);
+                propertiesContainer.appendChild(div);
             });
             
-            // Show available points
-            const pointsDisplay = modal.querySelector('#pointsDisplay');
+            // Add points display
+            const pointsDisplay = document.createElement('div');
+            pointsDisplay.className = 'alert alert-info';
             pointsDisplay.innerHTML = `
-                <div class="alert alert-info">
-                    Available Points: <span id="availablePoints">${character.availablePoints}</span>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Available Points:</span>
+                    <span id="availablePoints">${character.availablePoints}</span>
                 </div>
             `;
-            
-            // Show the modal
-            const levelUpModal = new bootstrap.Modal(modal);
-            levelUpModal.show();
+            modal.querySelector('#pointsDisplay').innerHTML = '';
+            modal.querySelector('#pointsDisplay').appendChild(pointsDisplay);
             
             // Handle form submission
             form.onsubmit = async (e) => {
                 e.preventDefault();
-                
                 const formData = new FormData(form);
-                const updates = {};
-                let totalPoints = 0;
-                
+                const properties = {};
                 formData.forEach((value, key) => {
-                    const points = parseInt(value);
-                    if (points > 0) {
-                        updates[key] = points;
-                        totalPoints += points;
-                    }
+                    properties[key] = parseInt(value);
                 });
                 
-                if (totalPoints > character.availablePoints) {
-                    showToast('Cannot allocate more points than available', true);
-                    return;
-                }
-                
-                try {
-                    // Send PUT request to update character
-                    const updatedCharacter = await fetchWithAuth(`/api/characters/${character.id}`, {
-                        method: 'PUT',
-                        body: JSON.stringify(updates)
-                    });
-                    
-                    levelUpModal.hide();
-                    showToast('Character leveled up successfully!');
-                    
-                    // Refresh characters list
-                    await this.loadCharacters();
-                } catch (error) {
-                    console.error('Error leveling up character:', error);
-                    showToast(error.message, true);
-                }
+                await callback(properties);
             };
             
             // Update available points display when inputs change
@@ -586,12 +464,12 @@ class CharactersTab {
             const modalFooter = modal.querySelector('.modal-footer');
             modalFooter.innerHTML = `
                 <button type="button" class="btn btn-cosmic-outline" onclick="autoLevelUp()">
-                    <i class="fas fa-magic"></i> Auto Level
+                    <i class="fas fa-magic"></i> Auto Assign
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Confirm Level Up</button>
+                <button type="submit" class="btn btn-primary">Create Character</button>
             `;
-
+            
             // Add the auto level up function
             window.autoLevelUp = () => {
                 const inputs = form.querySelectorAll('input[type="number"]');
@@ -613,8 +491,12 @@ class CharactersTab {
                 });
             };
             
+            // Show the modal
+            const levelUpModal = new bootstrap.Modal(modal);
+            levelUpModal.show();
+            
         } catch (error) {
-            console.error('Error showing level up modal:', error);
+            console.error('Error showing points assignment dialog:', error);
             showToast(error.message, true);
         }
     }
@@ -686,11 +568,8 @@ class CharactersTab {
         const character = {
             name: characterName,
             characterClass: selectedClass,
-            // Initialize all properties with their default values
-            ...Object.entries(classData.properties).reduce((acc, [prop, config]) => ({
-                ...acc,
-                [prop]: config.default || 0
-            }), {})
+            availablePoints: 10, // Initial points for new character
+            level: 1
         };
         
         // Hide the character creation modal
@@ -699,15 +578,15 @@ class CharactersTab {
         // Update modal title for character creation
         const modal = document.getElementById('levelUpModal');
         const modalTitle = modal.querySelector('.modal-title');
-        modalTitle.textContent = 'Assign Character Points';
+        modalTitle.textContent = 'Assign Initial Character Points';
         
         // Show the points assignment dialog
-        this.showPointsAssignmentDialog(character, 1, async (properties) => {
+        this.showPointsAssignmentDialog(character, null, async (properties) => {
             try {
                 const formData = {
                     name: character.name,
                     characterClass: character.characterClass,
-                    ...properties
+                    properties: properties
                 };
                 
                 await this.createCharacter(formData);

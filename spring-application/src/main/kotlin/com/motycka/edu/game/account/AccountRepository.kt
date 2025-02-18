@@ -21,7 +21,7 @@ class AccountRepository(
     fun selectByUsername(username: String): Account? {
         logger.debug { "Selecting user $username" }
         return jdbcTemplate.query(
-            "SELECT * FROM account WHERE username = ? LIMIT 1",
+            "SELECT * FROM account WHERE username = ?;",
             ::rowMapper,
             username
         ).firstOrNull()

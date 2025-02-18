@@ -55,58 +55,31 @@ export async function fetchWithAuth(url, options = {}) {
     const auth = window.sessionStorage.getItem('auth');
     if (!auth) {
         window.location.href = '/login.html';
-        throw new Error('Not authenticated');
+        return;
     }
 
-    const defaultOptions = {
+    const response = await fetch(url, {
+        ...options,
         headers: {
-            'Authorization': 'Basic ' + auth,
+            ...options.headers,
             'Content-Type': 'application/json',
-        },
-    };
-
-    try {
-        const response = await fetch(url, {
-            ...defaultOptions,
-            ...options,
-            headers: { ...defaultOptions.headers, ...options.headers }
-        });
-
-        // Handle 401 Unauthorized specifically
-        if (response.status === 401) {
-            window.sessionStorage.removeItem('auth');
-            window.location.href = '/login.html';
-            throw new Error('Session expired');
+            'Authorization': `Basic ${auth}`
         }
+    });
 
-        // Try to parse the response as JSON if it's not already parsed
-        let data;
-        if (response instanceof Response) {
-            data = await response.json();
-        } else {
-            data = response; // Response is already parsed JSON
-        }
-
-        // If response is not ok, throw error with server message
-        if (!response.ok) {
-            // Handle ErrorResponse format
-            if (data.error) {
-                throw new Error(data.error);
-            }
-            // Fallback error message
-            throw new Error(`Error: ${response.status} - ${response.statusText}`);
-        }
-
-        return data;
-    } catch (error) {
-        // If error is already handled (has message), just rethrow
-        if (error.message) {
-            throw error;
-        }
-        // Handle unexpected errors
-        console.error('Fetch error:', error);
-        throw new Error('An unexpected error occurred');
+    if (response.status === 401) {
+        // Clear invalid auth token
+        window.sessionStorage.removeItem('auth');
+        // Redirect to login with error message
+        window.location.href = '/login.html?authError=true';
+        return;
     }
+
+    // Parse JSON response
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
 }
 
 // Initialize tabs when DOM is loaded

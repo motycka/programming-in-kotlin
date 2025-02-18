@@ -96,7 +96,8 @@ class LeaderboardTab {
                         ${filteredRankings.map((entry, index) => {
                             const characterClass = CHARACTER_CLASSES[entry.character.characterClass];
                             const className = characterClass ? characterClass.name : entry.character.characterClass;
-                            const winRate = ((entry.victories / (entry.victories + entry.defeats + entry.draws)) * 100).toFixed(1);
+                            const totalMatches = entry.victories + entry.defeats + entry.draws;
+                            const winRate = totalMatches > 0 ? ((entry.victories / totalMatches) * 100).toFixed(1) : 0;
                             
                             return `
                                 <tr>
@@ -154,6 +155,57 @@ class LeaderboardTab {
         // Initialize tooltips
         const tooltips = leaderboardContainer.querySelectorAll('[title]');
         tooltips.forEach(el => new bootstrap.Tooltip(el));
+    }
+
+    createLeaderboardEntry(character, position) {
+        const div = document.createElement('div');
+        div.className = 'leaderboard-entry card mb-3';
+        div.dataset.class = character.characterClass;
+  
+        const totalMatches = character.wins + character.losses + character.draws;
+        const winRate = totalMatches > 0 ? ((character.wins / totalMatches) * 100).toFixed(1) : 0;
+  
+        div.innerHTML = `
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="position-badge ${position <= 3 ? `top-${position}` : ''}">
+                        ${position}
+                    </span>
+                    
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="class-icon" title="${CHARACTER_CLASSES[character.characterClass].name}">
+                                ${character.characterClass === 'WARRIOR' ? '⚔️' : '🔮'}
+                            </span>
+                            <h6 class="character-name mb-0">
+                                ${character.name}
+                            </h6>
+                        </div>
+                        
+                        <div class="character-stats d-flex gap-3 mt-2">
+                            <span class="experience-info" title="Total Experience">
+                                <i class="fas fa-star"></i> ${character.experience}
+                            </span>
+                            <div class="stats-group">
+                                <span class="stat-win" title="Wins"><i class="fas fa-trophy"></i> ${character.wins}</span>
+                                <span class="stat-loss" title="Losses"><i class="fas fa-times"></i> ${character.losses}</span>
+                                <span class="stat-draw" title="Draws"><i class="fas fa-handshake"></i> ${character.draws}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="win-rate" title="Win Rate">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: ${winRate}%">
+                            ${winRate}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+  
+        return div;
     }
 }
 

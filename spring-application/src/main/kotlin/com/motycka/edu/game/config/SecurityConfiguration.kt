@@ -24,17 +24,13 @@ class SecurityConfiguration(private val userService: AccountService) {
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
+                auth.requestMatchers("/login.html").permitAll()
                 auth.anyRequest().authenticated()
             }
-            .formLogin { form ->
-                form.loginPage("/login.html").permitAll()
-            }
+            .httpBasic(Customizer.withDefaults())
             .logout { logout ->
                 logout.permitAll()
             }
-//            .httpBasic { httpBasicCustomizer ->
-//                httpBasicCustomizer.realmName("Fantasy.Space")
-//            }
 
         return http.build()
     }
@@ -47,6 +43,7 @@ class SecurityConfiguration(private val userService: AccountService) {
         User.builder()
             .username(user.username)
             .password(passwordEncoder().encode(user.password))
+//            .password(user.password)
             .roles("USER")
             .build()
     }
@@ -54,4 +51,12 @@ class SecurityConfiguration(private val userService: AccountService) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+}
+
+
+fun main() {
+    val password = "heslo"
+    val passwordEncoder = BCryptPasswordEncoder()
+    val encodedPassword = passwordEncoder.encode(password)
+    println(encodedPassword)
 }
