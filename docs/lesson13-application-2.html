@@ -25,10 +25,32 @@
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Controller</h2>
+				<h2>Fantasy.Space</h2>
+				<em>Project Introduction</em>
 			</section>
 			<section>
-				<h3>Controller</h3>
+				<h3>Fantasy.Space: Project</h3>
+				<div class="content content-center content-100">
+					<br />
+					<p>
+						<a href="https://github.com/motycka/fantasy-space-game">Use this GitHub project.</a>
+					</p>
+					<p>
+						The requirements are in the README.
+					</p>
+					<p>
+						Tet's get into it!
+					</p>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Fantasy.Space</h2>
+				<em>Character Controller</em>
+			</section>
+			<section>
+				<h3>Fantasy.Space: Character Controller</h3>
 				<div class="summary">
 					The REST controller layer is responsible for handling the HTTP requests,
 					passing them to the service layer, retrieving the results from the service layer,
@@ -63,10 +85,10 @@
 				</div>
 			</section>
 			<section>
-				<h3>REST Controller</h3>
+				<h3>Fantasy.Space: Character Controller</h3>
 				<div class="content">
 					<p>
-						Annotation <code class="inline">@RestController</code> is used to define a class as a REST controller and
+						As said, the <code class="inline">@RestController</code> is used to define a class as a REST controller and
 						<code class="inline">@RequestMapping</code> is used to define the root path to the resource.
 					</p>
 					<p>
@@ -77,23 +99,23 @@
 					</p>
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							package com.harbourspace.tracker.user
+							package com.motycka.edu.game.character
 
-							import com.harbourspace.tracker.user.model.NewUser
-							import com.harbourspace.tracker.user.model.User
-							import org.springframework.http.HttpStatus
-							import org.springframework.http.ResponseEntity
-							import org.springframework.web.bind.annotation.*
+							import com.motycka.edu.game.account.AccountService
+							import org.springframework.web.bind.annotation.RequestMapping
+							import org.springframework.web.bind.annotation.RestController
 
 							@RestController
-							@RequestMapping("/api/users")
-							class UserController(
-								private val userService: UserService
+							@RequestMapping("/api/characters")
+							class CharacterController(
+								private val characterService: CharacterService,
+								private val accountService: AccountService
 							) {
 
-								// controller methods ...
+								// controller methods
 
 							}
+
 						</code>
 					</pre>
 					<p>
@@ -102,7 +124,7 @@
 				</div>
 			</section>
 			<section>
-				<h3>REST Controller</h3>
+				<h3>Fantasy.Space: Character Controller</h3>
 				<div class="content">
 					<p>
 						Each method within the controller class is annotated with either
@@ -111,35 +133,41 @@
 						This defines the HTTP method that the class method handles, and the path to the resource.
 					</p>
 					<p>
-						This method defined <strong>GET</strong> method on resource <code class="inline">/api/users</code>
+						This is example implementation of <strong class="highlight">GET</strong> method on resource <code class="inline">/api/characters</code>
 					</p>
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
 							@GetMapping
-							fun getUsers(): List&lt;User&gt; {
-
-								// service calls ...
-
+							fun getCharacters(): List&lt;CharacterResponse&gt; {
+								val accountId = accountService.getCurrentAccountId()
+								return characterService.getCharacters(
+									filter = CharactersFilter.DEFAULT
+								).toCharacterResponses(accountId)
 							}
 						</code>
 					</pre>
 					<p>
-						This method defined <strong>PUT</strong> method on resource <code class="inline">/api/users/{id}</code>
+						This is example implementation of <strong class="highlight">POST</strong> method on resource <code class="inline">/api/characters</code>
 					</p>
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							@PutMapping("/{id}")
-							fun getUser(@PathVariable("id") id: Long): User {
-
-								// service calls ...
-
+							@PostMapping
+							fun postCharacter(
+								@RequestBody character: CharacterCreateRequest
+							): CharacterResponse {
+								val accountId = accountService.getCurrentAccountId()
+								return characterService.createCharacter(
+									character = character.toCharacter(
+										accountId = accountId
+									)
+								).toCharacterResponse(accountId)
 							}
 						</code>
 					</pre>
 				</div>
 			</section>
 			<section>
-				<h3>REST Controller</h3>
+				<h3>Fantasy.Space: Character Controller</h3>
 				<div class="content">
 					<p>
 						Methods may declare path parameters or query parameters, and may return the response body and the HTTP status.
@@ -147,35 +175,32 @@
 						and query parameters are defined using <code class="inline">@RequestParam</code> annotation.
 					</p>
 					<p>
-						Responses may be returned as is, or using <code class="inline">ResponseEntity</code> class.
+						Here is an example implementation of <strong class="highlight">GET</strong> method on resource <code class="inline">/api/characters/{characterId}</code>
 					</p>
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
 							@GetMapping("/{id}")
-							fun getUser(
-								@PathVariable("id") id: Long
-							): ResponseEntity&lt;User&gt; {
+							fun getCharacter(
+								@PathVariable("id") characterId: CharacterId
+							): CharacterResponse {
 
-								// service calls ...
-
-							}
-
-							@GetMapping()
-							fun getUsers(
-								@RequestParam("page") page: Int,
-								@RequestParam("size") size: Int
-							): ResponseEntity&lt;User&gt; {
-
-								// service calls ...
+								// implementation
 
 							}
+						</code>
+					</pre>
+					<p>
+						And hypothetical implementation of <strong class="highlight">GET</strong> method on resource <code class="inline">/api/character</code>
+						with query parameter <code class="inline">class</code>
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@GetMapping
+							fun getCharacter(
+								@RequestParam("class", required = false) characterClass: String?,
+							): List&lt;LeaderboardResponse&gt; {
 
-							@PostMapping()
-							fun postUser(
-								@RequestBody user: NewUser
-							): ResponseEntity&lt;User&gt; {
-
-								// service calls ...
+								// implementation
 
 							}
 						</code>
@@ -183,52 +208,43 @@
 				</div>
 			</section>
 			<section>
-				<h3>REST Controller (Final)</h3>
+				<h3>Fantasy.Space: Character Controller (Final)</h3>
 				<div class="content">
 					<pre>
-						<code>
-							package com.harbourspace.tracker.user
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							package com.motycka.edu.game.character
 
-							import com.harbourspace.tracker.user.model.NewUser
-							import com.harbourspace.tracker.user.model.User
-							import org.springframework.http.HttpStatus
-							import org.springframework.http.ResponseEntity
+							import com.motycka.edu.game.character.rest.*
+							import com.motycka.edu.game.account.AccountService
 							import org.springframework.web.bind.annotation.*
 
 							@RestController
-							@RequestMapping("/api/users")
-							class UserController(
-								private val userService: UserService
+							@RequestMapping("/api/characters")
+							class CharacterController(
+								private val characterService: CharacterService,
+								private val accountService: AccountService
 							) {
 
-								@GetMapping
-								fun getUsers(): ResponseEntity&lt;List&lt;User&gt;&gt; {
-									return ResponseEntity.ok(userService.getUsers())
-								}
-
-								@GetMapping("{id}")
-								fun getUserById(@PathVariable("id") id: Long): ResponseEntity&lt;User&gt; {
-									return ResponseEntity.ok(userService.getUserById(id));
-								}
-
 								@PostMapping
-								fun createUser(@RequestBody user: NewUser): ResponseEntity&lt;User&gt; {
-									return ResponseEntity(userService.createUser(user), HttpStatus.CREATED);
+								fun postCharacter(
+									@RequestBody character: CharacterCreateRequest
+								): CharacterResponse {
+									val accountId = accountService.getCurrentAccountId()
+									return characterService.createCharacter(
+										character = character.toCharacter(
+											accountId = accountId
+										)
+									).toCharacterResponse(accountId)
 								}
 
-								@PutMapping("{id}")
-								fun updateUser(
-									@PathVariable("id") id: Long,
-									@RequestBody user: User
-								): ResponseEntity&lt;User> {
-									return ResponseEntity.ok(userService.updateUser(user.copyWithId(id)));
+								@GetMapping
+								fun getCharacters(): List&lt;CharacterResponse&gt; {
+									val accountId = accountService.getCurrentAccountId()
+									return characterService.getCharacters(
+										filter = CharactersFilter.DEFAULT
+									).toCharacterResponses(accountId)
 								}
 
-								@DeleteMapping("{id}")
-								fun deleteUser(@PathVariable("id") id: Long): ResponseEntity&lt;Object&gt; {
-									userService.deleteUser(id)
-									return ResponseEntity.ok().build()
-								}
 							}
 						</code>
 					</pre>
@@ -237,12 +253,13 @@
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Service</h2>
+				<h2>Fantasy.Space</h2>
+				<em>Character Service</em>
 			</section>
 			<section>
-				<h3>Service</h3>
+				<h3>Fantasy.Space: Character Service</h3>
 				<div class="summary">
-					The service layer in an MVC application is the layer that contains the <strong>business logic</strong>.
+					The service layer in an MVC application is the layer that contains the <strong class="highlight">business logic</strong>.
 				</div>
 				<div class="content">
 					<p>
@@ -255,29 +272,36 @@
 					</p>
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-							package com.harbourspace.tracker.user
+							package com.motycka.edu.game.character
 
-							import com.harbourspace.tracker.authorization.AuthorizationService
-							import com.harbourspace.tracker.user.model.User
+							import com.motycka.edu.game.character.model.Character
+							import com.motycka.edu.game.character.rest.CharactersFilter
+							import com.motycka.edu.game.account.AccountService
 							import org.springframework.stereotype.Service
 
 							@Service
-							class UserService(
-								private val userRepository: UserRepository,
-								private val authorizationService: AuthorizationService
+							class CharacterService(
+								private val characterRepository: CharacterRepository,
+								private val accountService: AccountService,
 							) {
 
-								fun getUsers(): List&lt;User&gt; {
-									// implemented getUsers method
+								fun createCharacter(character: Character): Character {
+									return characterRepository.insertCharacters(
+										accountId = accountService.getCurrentAccountId(),
+										character = character
+									) ?: error("Character could not be created.")
 								}
 
-								// other service methods
+								fun getCharacters(filter: CharactersFilter): List&lt;Character&gt; {
+									val accountId = accountService.getCurrentAccountId()
+									return characterRepository.selectWithFilter(accountId, filter)
+								}
 
 							}
 						</code>
 					</pre>
 					<blockquote>
-						<strong>Business logic</strong> = the code that implements the business rules and requirements.
+						<strong class="highlight">Business logic</strong> = the code that implements the business rules and requirements.
 						In other words, the code that fulfills the customers needs and requirements should be placed in the service layer.
 					</blockquote>
 				</div>
@@ -286,7 +310,6 @@
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Testing</h2>
-				<div style="background-color: yellow">TODO</div>
 			</section>
 			<section>
 				<h3>Testing</h3>
@@ -322,7 +345,7 @@
 			<section>
 				<h3>Testing Controllers</h3>
 				<div class="content">
-				<div class="row">
+					<div class="row">
 						<p>
 							Testing controllers is relatively simple, because they are just classes that handle the HTTP
 							requests and return the HTTP responses. However, we need some tools to simulate the HTTP
@@ -331,64 +354,126 @@
 						<div class="column" style="width: 70%">
 							<pre>
 								<code data-trim data-noescape data-line-numbers class="hljs kotlin" style="font-size: 80%">
-										@WebMvcTest(HelloController.class)
-										public class HelloControllerTest {
+									package com.motycka.edu.game.character
 
-											@MockBean
-											private HelloService helloService;
+									import com.motycka.edu.game.account.AccountService
+									import com.motycka.edu.game.character.model.CharacterLevel
+									import com.motycka.edu.game.character.model.Warrior
+									import com.motycka.edu.game.config.TestSecurityConfiguration
+									import io.mockk.every
+									import io.mockk.mockk
+									import io.mockk.verify
+									import org.junit.jupiter.api.BeforeEach
+									import org.junit.jupiter.api.Test
+									import org.springframework.beans.factory.annotation.Autowired
+									import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+									import org.springframework.boot.test.mock.mockito.MockBean
+									import org.springframework.context.annotation.Import
+									import org.springframework.test.web.servlet.MockMvc
+									import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+									import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+									import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+									import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+									import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 
-											@Autowired
-											private MockMvc mockMvc;
+									@WebMvcTest(CharacterController::class)
+									@Import(TestSecurityConfiguration::class)
+									class CharacterControllerTest {
 
-											private final String path = "/api/hello";
-											private final String name = "Monika";
-											private final String locale = "es";
-											private final String expected = "Hola Monika!";
+										@Autowired
+										private lateinit var mockMvc: MockMvc
 
-											@BeforeEach
-											void setUp() {
-												Mockito.when(helloService.sayHello(name, locale)).thenReturn(expected);
-											}
+										@MockBean
+										private lateinit var characterService: CharacterService
 
-											@Test
-											@DisplayName("GET /api/hello?name={name}&locale={locale} - should responds with 200")
-											void testHelloController() throws Exception {
-												mockMvc.perform(get(path + "?name=" + name + "&locale=" + locale))
-														.andDo(print())
-														.andExpect(status().isOk())
-														.andExpect(content().string(containsString(expected)));
-											}
+										@MockBean
+										private lateinit var accountService: AccountService
 
-											@Test
-											@DisplayName("GET /api/hello - should responds with 400")
-											void testHelloControllerMissingParameters() throws Exception {
-												mockMvc.perform(get(path))
-														.andDo(print())
-														.andExpect(status().isBadRequest());
-											}
+										private val accountId = 1L
 
+										@BeforeEach
+										fun setUp() {
+											characterService = mockk()
+											accountService = mockk()
 										}
+
+										@Test
+										fun `postCharacter should return created character`() {
+											val character = Warrior(
+												id = 1,
+												accountId = accountId,
+												name = "Kotlin Warrior",
+												health = 140,
+												attackPower = 20,
+												experience = 0,
+												stamina = 20,
+												defensePower = 20,
+												level = CharacterLevel.LEVEL_1
+											)
+
+											every { accountService.getCurrentAccountId() } returns accountId
+											every { characterService.createCharacter(any()) } returns character
+
+											mockMvc.perform(post("/api/characters")
+												.contentType("application/json")
+												.content("""
+												{
+												  "name": "${character.name}",
+												  "health": ${character.health},
+												  "attackPower": ${character.attackPower},
+												  "stamina": ${character.stamina},
+												  "defensePower": ${character.defensePower},
+												  "characterClass": "WARRIOR"
+												}
+												""".trimIndent())
+												.with(csrf())
+												.with(httpBasic("username", "password")))
+												.andExpect(status().isOk)
+												.andExpect(content().json(
+													"""
+													{
+													  "id": ${character.characterId},
+													  "name": "${character.name}",
+													  "health": ${character.health},
+													  "attackPower": ${character.attackPower},
+													  "stamina": ${character.stamina},
+													  "defensePower": ${character.defensePower},
+													  "characterClass": "WARRIOR",
+													  "level": "LEVEL_1",
+													  "experience": 0,
+													  "shouldLevelUp": false,
+													  "isOwner": true,
+													  "mana": null,
+													  "healingPower": null
+													}
+												""".trimIndent()
+												))
+
+											verify { characterService.createCharacter(character = character) }
+										}
+									}
+
 								</code>
 							</pre>
 						</div>
 						<div class="column" style="font-size: 70%; width: 30%">
 							<ul>
 								<li>
-									Spring Boot provides the <code>MockMvc</code> class to simulate the HTTP requests and responses.
+									Spring Boot provides the <code class="inline">MockMvc</code> class to simulate the HTTP requests and responses.
 								</li>
 								<li>
-									<code>@WebMvcTest</code> annotation with the controller class to be tested will establish a Spring context.
+									<code class="inline">@WebMvcTest</code> annotation with the controller class to be tested will establish a Spring context.
 								</li>
 								<li>
-									<code>@Autowired</code> annotation is used to inject the <code>MockMvc</code> bean into the test class.
+									<code class="inline">@Autowired</code> annotation is used to inject the <code class="inline">MockMvc</code> bean into the test class.
 								</li>
 								<li>
 									Ideally, we want to test just the controller, but not the service and repository layers,
-									so we can use the <code>@MockBean</code> annotation to mock the service and repository beans.
+									so we can use the <code class="inline">@MockBean</code> annotation to mock the service and repository beans.
 								</li>
 								<li>
 									We can mock the service layer using any mocking library, such as Mockito.
-									In this case we use <code>Mockito.when</code> to mock the service method.
+									In this case we use <code class="inline">mockk.every</code> to mock the service method and <code class="inline">mockk.verify</code> to verify the calls.
 								</li>
 							</ul>
 						</div>
@@ -397,74 +482,129 @@
 			</section>
 			<section>
 				<h3>Testing Services</h3>
-				<p>
-					Testing the service layer is perhaps the easiest, because we only need to mock the repository layer.
-					There are multiple approaches you can take.
-				</p>
-				<div class="row" style="font-size: 80%">
-					<div class="column">
-						Either you can test the service layer using Spring Boot's dependency injection,
-						<pre>
-							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								@SpringBootTest
-								public class HelloServiceTest {
+				<div class="content">
+					<p>
+						Testing the service layer is perhaps the easiest, because we only need to mock the repository layer.
+						There are multiple approaches you can take.
+					</p>
+					<div class="row" style="font-size: 80%">
+						<div class="column">
+							Either you can test the service layer using Spring Boot's dependency injection,
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									package com.motycka.edu.game.character
 
-									@MockBean
-									private HelloRepository helloRepository;
+									import com.motycka.edu.game.account.AccountService
+									import com.motycka.edu.game.character.model.CharacterLevel
+									import com.motycka.edu.game.character.model.Warrior
+									import com.motycka.edu.game.character.rest.CharactersFilter
+									import org.junit.jupiter.api.Assertions.assertEquals
+									import org.junit.jupiter.api.BeforeEach
+									import org.junit.jupiter.api.Test
+									import org.springframework.beans.factory.annotation.Autowired
+									import org.springframework.boot.test.context.SpringBootTest
+									import org.springframework.transaction.annotation.Transactional
 
-									@Autowired
-									private HelloService helloService;
+									@SpringBootTest
+									@Transactional
+									class CharacterServiceIT {
 
-									@Test
-									@DisplayName("should return localized hello")
-									public void testHelloService() {
-										Mockito.when(helloRepository.selectHelloInLanguage("en"))
-											.thenReturn("Hello");
+										@Autowired
+										private lateinit var characterRepository: CharacterRepository
 
-										String result = helloService.sayHello("Monika", "en");
-										assertEquals("Hello Monika!", result);
+										@Autowired
+										private lateinit var accountService: AccountService
 
-										Mockito.verify(helloRepository)
-											.selectHelloInLanguage("en");
+										@Autowired
+										private lateinit var characterService: CharacterService
+
+										private val accountId = 1L
+
+										@Test
+										fun `createCharacter should return created character`() {
+											val character = Warrior(
+												id = 1,
+												accountId = accountId,
+												name = "Warrior",
+												health = 140,
+												attackPower = 20,
+												experience = 0,
+												stamina = 20,
+												defensePower = 20,
+												level = CharacterLevel.LEVEL_1
+											)
+
+											val result = characterService.createCharacter(character)
+
+											assertEquals(character, result)
+											val savedCharacter = characterRepository.selectWithFilter(
+												accountId = accountId,
+												filter = CharactersFilter.DEFAULT.copy(ids = setOf(character.characterId))
+											)
+											assertEquals(character, savedCharacter)
+										}
 									}
+								</code>
+							</pre>
+							The advantage of this is you are testing the service can be injected correctly.
+							The disadvantage is that the test may be slower and more resource consuming.
+						</div>
+						<div class="column">
+							<br />
+							or you can just inject the dependency yourself.
+							<pre>
+								<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+									package com.motycka.edu.game.character
 
-								}
-							</code>
-						</pre>
-						The advantage of this is you are testing the service can be injected correctly.
-						The disadvantage is that the test may be slower and more resource consuming.
-					</div>
-					<div class="column">
-						<br />
-						or you can just inject the dependency yourself.
-						<pre>
-							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								public class HelloService2Test {
+									import com.motycka.edu.game.account.AccountService
+									import com.motycka.edu.game.character.model.CharacterLevel
+									import com.motycka.edu.game.character.model.Warrior
+									import io.mockk.every
+									import io.mockk.mockk
+									import io.mockk.verify
+									import org.junit.jupiter.api.Assertions.assertEquals
+									import org.junit.jupiter.api.Test
 
-									private final HelloRepository helloRepository =
-										Mockito.mock(HelloRepository.class);
+									class CharacterServiceTest {
 
-									private final HelloService helloService =
-										new HelloService(helloRepository);
+										private val characterRepository: CharacterRepository = mockk()
+										private val accountService: AccountService  = mockk()
+										private val characterService: CharacterService = CharacterService(
+											characterRepository = characterRepository,
+											accountService = accountService
+										)
 
-									@Test
-									@DisplayName("should return localized hello")
-									public void testHelloService() {
-										Mockito.when(helloRepository.selectHelloInLanguage("en"))
-											.thenReturn("Hello");
+										private val accountId = 1L
 
-										String result = helloService.sayHello("Monika", "en");
-										assertEquals("Hello Monika!", result);
+										@Test
+										fun `createCharacter should return created character`() {
+											val character = Warrior(
+												id = 1,
+												accountId = accountId,
+												name = "Warrior",
+												health = 140,
+												attackPower = 20,
+												experience = 0,
+												stamina = 20,
+												defensePower = 20,
+												level = CharacterLevel.LEVEL_1
+											)
 
-										Mockito.verify(helloRepository)
-											.selectHelloInLanguage("en");
+											every { accountService.getCurrentAccountId() } returns accountId
+											every { characterRepository.insertCharacters(accountId = accountId, character = character) } returns character
+
+											val result = characterService.createCharacter(character)
+
+											assertEquals(character, result)
+											verify { characterRepository.insertCharacters(accountId = accountId, character = character) }
+										}
+
 									}
-
-								}
-							</code>
-						</pre>
-						This test is going to be faster, but you are not testing the DI,
-						which is not a big deal if you also have integration tests.
+								</code>
+							</pre>
+							This test is going to be faster, but you are not testing the DI,
+							which is not a big deal if you also have integration tests.
+						</div>
 					</div>
 				</div>
 			</section>
