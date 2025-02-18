@@ -35,7 +35,7 @@ class AccountService(
 
     fun createAccount(account: Account): Account {
         logger.debug { "Creating new user: $account" }
-        return userRepository.insert(account) ?: error(CREATE_ERROR)
+        return userRepository.insertAccount(account) ?: error(CREATE_ERROR)
     }
 
     companion object {

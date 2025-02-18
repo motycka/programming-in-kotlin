@@ -818,64 +818,28 @@
 						<div class="column" style="width: 70%">
 							<pre>
 								<code data-trim data-noescape data-line-numbers class="hljs kotlin" style="font-size: 80%">
-										@WebMvcTest(HelloController.class)
-										public class HelloControllerTest {
-
-											@MockBean
-											private HelloService helloService;
-
-											@Autowired
-											private MockMvc mockMvc;
-
-											private final String path = "/api/hello";
-											private final String name = "Monika";
-											private final String locale = "es";
-											private final String expected = "Hola Monika!";
-
-											@BeforeEach
-											void setUp() {
-												Mockito.when(helloService.sayHello(name, locale)).thenReturn(expected);
-											}
-
-											@Test
-											@DisplayName("GET /api/hello?name={name}&locale={locale} - should responds with 200")
-											void testHelloController() throws Exception {
-												mockMvc.perform(get(path + "?name=" + name + "&locale=" + locale))
-														.andDo(print())
-														.andExpect(status().isOk())
-														.andExpect(content().string(containsString(expected)));
-											}
-
-											@Test
-											@DisplayName("GET /api/hello - should responds with 400")
-											void testHelloControllerMissingParameters() throws Exception {
-												mockMvc.perform(get(path))
-														.andDo(print())
-														.andExpect(status().isBadRequest());
-											}
-
-										}
+										// TODO
 								</code>
 							</pre>
 						</div>
 						<div class="column" style="font-size: 70%; width: 30%">
 							<ul>
 								<li>
-									Spring Boot provides the <code>MockMvc</code> class to simulate the HTTP requests and responses.
+									Spring Boot provides the <code class="inline">MockMvc</code> class to simulate the HTTP requests and responses.
 								</li>
 								<li>
-									<code>@WebMvcTest</code> annotation with the controller class to be tested will establish a Spring context.
+									<code class="inline">@WebMvcTest</code> annotation with the controller class to be tested will establish a Spring context.
 								</li>
 								<li>
-									<code>@Autowired</code> annotation is used to inject the <code>MockMvc</code> bean into the test class.
+									<code class="inline">@Autowired</code> annotation is used to inject the <code class="inline">MockMvc</code> bean into the test class.
 								</li>
 								<li>
 									Ideally, we want to test just the controller, but not the service and repository layers,
-									so we can use the <code>@MockBean</code> annotation to mock the service and repository beans.
+									so we can use the <code class="inline">@MockBean</code> annotation to mock the service and repository beans.
 								</li>
 								<li>
 									We can mock the service layer using any mocking library, such as Mockito.
-									In this case we use <code>Mockito.when</code> to mock the service method.
+									In this case we use <code class="inline">mockk.every</code> to mock the service method and <code class="inline">mockk.verify</code> to verify the calls.
 								</li>
 							</ul>
 						</div>
@@ -893,29 +857,7 @@
 						Either you can test the service layer using Spring Boot's dependency injection,
 						<pre>
 							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								@SpringBootTest
-								public class HelloServiceTest {
-
-									@MockBean
-									private HelloRepository helloRepository;
-
-									@Autowired
-									private HelloService helloService;
-
-									@Test
-									@DisplayName("should return localized hello")
-									public void testHelloService() {
-										Mockito.when(helloRepository.selectHelloInLanguage("en"))
-											.thenReturn("Hello");
-
-										String result = helloService.sayHello("Monika", "en");
-										assertEquals("Hello Monika!", result);
-
-										Mockito.verify(helloRepository)
-											.selectHelloInLanguage("en");
-									}
-
-								}
+								// TODO
 							</code>
 						</pre>
 						The advantage of this is you are testing the service can be injected correctly.
@@ -926,25 +868,49 @@
 						or you can just inject the dependency yourself.
 						<pre>
 							<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-								public class HelloService2Test {
+								package com.motycka.edu.game.character
 
-									private final HelloRepository helloRepository =
-										Mockito.mock(HelloRepository.class);
+								import com.motycka.edu.game.account.AccountService
+								import com.motycka.edu.game.character.model.CharacterLevel
+								import com.motycka.edu.game.character.model.Warrior
+								import io.mockk.every
+								import io.mockk.mockk
+								import io.mockk.verify
+								import org.junit.jupiter.api.Assertions.assertEquals
+								import org.junit.jupiter.api.Test
 
-									private final HelloService helloService =
-										new HelloService(helloRepository);
+								class CharacterServiceTest {
+
+									private val characterRepository: CharacterRepository = mockk()
+									private val accountService: AccountService  = mockk()
+									private val characterService: CharacterService = CharacterService(
+										characterRepository = characterRepository,
+										accountService = accountService
+									)
+
+									private val accountId = 1L
 
 									@Test
-									@DisplayName("should return localized hello")
-									public void testHelloService() {
-										Mockito.when(helloRepository.selectHelloInLanguage("en"))
-											.thenReturn("Hello");
+									fun `createCharacter should return created character`() {
+										val character = Warrior(
+											id = 1,
+											accountId = accountId,
+											name = "Warrior",
+											health = 140,
+											attackPower = 20,
+											experience = 0,
+											stamina = 20,
+											defensePower = 20,
+											level = CharacterLevel.LEVEL_1
+										)
 
-										String result = helloService.sayHello("Monika", "en");
-										assertEquals("Hello Monika!", result);
+										every { accountService.getCurrentAccountId() } returns accountId
+										every { characterRepository.insertCharacters(accountId = accountId, character = character) } returns character
 
-										Mockito.verify(helloRepository)
-											.selectHelloInLanguage("en");
+										val result = characterService.createCharacter(character)
+
+										assertEquals(character, result)
+										verify { characterRepository.insertCharacters(accountId = accountId, character = character) }
 									}
 
 								}

@@ -380,7 +380,7 @@ class CharactersTab {
         });
     }
 
-    showPointsAssignmentDialog(character, nextLevel, callback) {
+    async showPointsAssignmentDialog(character, nextLevel, callback) {
         try {
             const modal = document.getElementById('levelUpModal');
             const form = modal.querySelector('form');
@@ -394,20 +394,21 @@ class CharactersTab {
             const propertiesContainer = modal.querySelector('#levelUpProperties');
             propertiesContainer.innerHTML = '';
             
+            // Create properties row
+            const propertiesRow = document.createElement('div');
+            propertiesRow.className = 'd-flex gap-3';
+            
             // Add property inputs
             const commonProps = COMMON_DISPLAY_PROPERTIES;
             const classProps = CLASS_SPECIFIC_PROPERTIES[character.characterClass];
             
             [...commonProps, ...classProps].forEach(prop => {
-                const div = document.createElement('div');
-                div.className = 'mb-3';
+                const formGroup = document.createElement('div');
+                formGroup.className = 'flex-grow-1';
                 
                 const label = document.createElement('label');
-                label.className = 'form-label d-flex justify-content-between';
-                label.innerHTML = `
-                    <span>${this.formatPropertyName(prop)}</span>
-                    <small class="text-muted">Current: ${character[prop] || 0}</small>
-                `;
+                label.className = 'form-label';
+                label.textContent = this.formatPropertyName(prop);
                 
                 const input = document.createElement('input');
                 input.type = 'number';
@@ -417,16 +418,21 @@ class CharactersTab {
                 input.min = '0';
                 input.required = true;
                 
-                div.appendChild(label);
-                div.appendChild(input);
-                propertiesContainer.appendChild(div);
+                // Add current value as placeholder
+                input.placeholder = `Current: ${character[prop] || 0}`;
+                
+                formGroup.appendChild(label);
+                formGroup.appendChild(input);
+                propertiesRow.appendChild(formGroup);
             });
+            
+            propertiesContainer.appendChild(propertiesRow);
             
             // Add points display
             const pointsDisplay = document.createElement('div');
-            pointsDisplay.className = 'alert alert-info';
+            pointsDisplay.className = 'points-summary mt-3';
             pointsDisplay.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="points-row">
                     <span>Available Points:</span>
                     <span id="availablePoints">${character.availablePoints}</span>
                 </div>
@@ -457,6 +463,13 @@ class CharactersTab {
                     
                     // Disable submit if points exceeded
                     form.querySelector('button[type="submit"]').disabled = available < 0;
+                    
+                    // Update points display class
+                    pointsDisplay.className = `points-summary mt-3 ${
+                        available === 0 ? 'points-valid' : 
+                        available < 0 ? 'points-exceeded' : 
+                        'points-remaining'
+                    }`;
                 });
             });
             

@@ -7,23 +7,18 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CharacterServiceTest {
 
-    private lateinit var characterRepository: CharacterRepository
-    private lateinit var accountService: AccountService
-    private lateinit var characterService: CharacterService
+    private val characterRepository: CharacterRepository = mockk()
+    private val accountService: AccountService  = mockk()
+    private val characterService: CharacterService = CharacterService(
+        characterRepository = characterRepository,
+        accountService = accountService
+    )
 
     private val accountId = 1L
-
-    @BeforeEach
-    fun setUp() {
-        characterRepository = mockk()
-        accountService = mockk()
-        characterService = CharacterService(characterRepository, accountService)
-    }
 
     @Test
     fun `createCharacter should return created character`() {
@@ -48,18 +43,4 @@ class CharacterServiceTest {
         verify { characterRepository.insertCharacters(accountId = accountId, character = character) }
     }
 
-//    @Test
-//    fun `getCharacters should return list of characters`() {
-//        val accountId = 1L
-//        val filter = CharactersFilter.DEFAULT
-//        val characters = listOf(mockk<Character>())
-//
-//        every { accountService.getCurrentAccountId() } returns accountId
-//        every { characterRepository.selectWithFilter(accountId, filter) } returns characters
-//
-//        val result = characterService.getCharacters(filter)
-//
-//        assertEquals(characters, result)
-//        verify { characterRepository.selectWithFilter(accountId, filter) }
-//    }
 }

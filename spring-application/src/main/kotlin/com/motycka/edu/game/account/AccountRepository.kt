@@ -27,8 +27,8 @@ class AccountRepository(
         ).firstOrNull()
     }
 
-    fun insert(user: Account): Account? {
-        logger.debug { "Inserting new user ${user.copy(password = "***")}" }
+    fun insertAccount(account: Account): Account? {
+        logger.debug { "Inserting new user ${account.copy(password = "***")}" }
         return jdbcTemplate.query(
             """
                 SELECT * FROM FINAL TABLE (
@@ -37,9 +37,9 @@ class AccountRepository(
                 );
             """.trimIndent(),
             ::rowMapper,
-            user.name,
-            user.username,
-            user.password
+            account.name,
+            account.username,
+            account.password
         ).firstOrNull()
     }
 
