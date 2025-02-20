@@ -284,10 +284,37 @@
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>JOOQ</h2>
+				<h2>Other Tools</h2>
 			</section>
 			<section>
 				<h3>JOOQ</h3>
+				<div class="content">
+					<p>
+						One of the popular alternatives to JPA and JDBC is <strong class="highlight">JOOQ</strong>.
+					</p>
+					<p>
+						<strong class="highlight">JOOQ</strong> is a type-safe SQL query builder for Java/Kotlin.
+					</p>
+					<p>
+						With <strong class="highlight">JOOQ</strong>, you can write SQL queries in a type-safe way, using a fluent API.
+					</p>
+					<p>
+						It also comes with the code generation tool that generates Java/Kotlin classes from the database schema.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							val context = DSL.using(dataSource, SQLDialect.H2)
+
+							val users = context.selectFrom(USERS)
+								.where(
+									USERS.NAME.eq("John"),
+									USERS.AGE.gt(18)
+								)
+								.fetch(Records.mapping(::User.java))
+
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -475,7 +502,14 @@
 			</section>
 			<section>
 				<h3>TestContainers</h3>
-				<div></div>
+				<div class="content">
+					<p>
+						<code class="highlight">TestContainers</code> is a Java library that allows you to run your tests in isolated Docker containers.
+					</p>
+					<p>
+						It will start a Docker container with the database before running the tests, and stop it after the tests are done, ensuring that the database is in a known state before each test.
+					</p>
+				</div>
 			</section>
 		</section>
 		<section>

@@ -4,16 +4,20 @@ import com.motycka.edu.HelloRepositoryJdbc
 import com.motycka.edu.Message
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
 import kotlin.test.assertEquals
 
 @JdbcTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @ContextConfiguration(classes = [HelloRepositoryJdbc::class])
 class HelloRepositoryJdbcTest {
 
     @Autowired
-    lateinit var helloRepository: HelloRepositoryJdbc
+    private lateinit var helloRepository: HelloRepositoryJdbc
 
     @Test
     fun `should select message`() {

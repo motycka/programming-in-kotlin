@@ -11,7 +11,9 @@ import org.jooq.Record
 import org.springframework.stereotype.Repository
 
 @Repository
-class HelloRepositoryJooq(private val dsl: DSLContext) {
+class HelloRepositoryJooq(
+    private val dsl: DSLContext
+) {
 
     fun selectMessage(locale: String, key: String): GreetingRecord? {
         return dsl.selectFrom(GREETING)
