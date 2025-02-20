@@ -1,4 +1,4 @@
-package com.motycka.edu.game.config
+package com.motycka.edu
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
-class TestSecurityConfiguration {
+class SecurityConfiguration {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -32,7 +32,7 @@ class TestSecurityConfiguration {
     @Bean
     fun userDetailsService() = UserDetailsService { username ->
         User.builder()
-            .username(username)
+            .username("username")
             .password(passwordEncoder().encode("password"))
             .roles("USER")
             .build()

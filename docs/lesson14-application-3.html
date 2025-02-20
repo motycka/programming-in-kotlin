@@ -29,33 +29,47 @@
 			<section>
 				<h3>Repository</h3>
 				<div class="summary">
-					The repository layer is responsible for managing the data access logic and performing CRUD operations on the database.
+					The repository layer is responsible for managing the data access logic and performing CRUD <sub>(Create, Read, Update, Delete) </sub> operations on the database.
 				</div>
 				<div class="content">
 					<p>
 						There is a variety of ways and frameworks you can use to implement the repository layer.
 					</p>
-					<p>
-						One of the common is <strong class="highlight">Spring Data JPA</strong>, which is a subproject of Spring Data.
-						<br />
-						It is designed to simplify the development of applications that need to access and manipulate data from a relational database through the <strong class="highlight">Java Persistence API</strong> (JPA).
-					</p>
-					<p>
-						Another, simple option is to use <strong class="highlight">JdbcTemplate</strong>, which is a simple JDBC-based template class provided by Spring.
-					</p>
-					<p>
-						<sub><strong>CRUD</strong> = Create, Read, Update, Delete.</sub>
-						<br />
-						<sub><strong>JPA</strong> = Java Persistence API</sub>
-						<br />
-						<sub><strong>JDBC</strong> = Java Database Connectivity</sub>
-					</p>
+					<ol>
+						<li>
+							<h4>Java Database Connectivity (JDBC)</h4>
+							<p>
+								Probably simples option is to use <strong class="highlight">JdbcTemplate</strong>,
+								which is a simple JDBC-based template class provided by Spring.
+							</p>
+						</li>
+						<li>
+							<h4>Java Persistence API (JPA)</h4>
+							<p>
+								Java Persistence API is a standard specification for object-relational mapping in Java.
+								It is designed to simplify the development of applications that need to access and manipulate data from a relational database.
+							</p>
+							<p>
+								Spring Data project offers <strong class="highlight">Spring Data JPA</strong> which is and implementation of JPA.
+							</p>
+							<p>
+								Another JPA implementation is <strong class="highlight">Hibernate</strong>.
+							</p>
+						</li>
+						<li>
+							<h4>Other</h4>
+							<p>
+								<strong class="highlight">JOOQ</strong> is popular a type-safe SQL query builder for Java/Kotlin.
+							</p>
+						</li>
+					</ol>
 				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>JDBC Templaate</h2>
+				<h2>JDBC</h2>
+				<em>Java Database Connectivity</em>
 			</section>
 			<section>
 				<h3>Using JdbcTemplate</h3>
@@ -65,27 +79,26 @@
 				</div>
 				<div class="content">
 					<p>
-						If you want to use <strong>JdbcTemplate</strong>, you should create a repository class and annotate it with
+						If you want to use <strong class="highlight">JdbcTemplate</strong>, you should create a repository class and annotate it with
 						<code class="inline">@Repository</code> annotation.
-						Then you need to inject the <strong>JdbcTemplate</strong> bean into the repository class.
+					</p>
+					<p>
+						Then you need to inject the <strong class="highlight">JdbcTemplate</strong> bean into the repository class.
 					</p>
 					<pre>
 						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
 							@Repository
-							public class UserRepository {
+							class UserRepository(
+								private val jdbcTemplate: JdbcTemplate
+							) {
 
-								protected final JdbcTemplate jdbcTemplate;
-
-								public UserRepository(JdbcTemplate jdbcTemplate) {
-									this.jdbcTemplate = jdbcTemplate;
-								}
-
-								List&lt;User&gt; selectAll() {
-									logger.debug("Selecting all users");
-									return jdbcTemplate.query("SELECT * FROM users", (resultSet, index) -> new User(
+								fun selectAll(): List&lt;User&gt; {
+									return jdbcTemplate.query("SELECT * FROM users") { resultSet, index ->
+										User(
 											resultSet.getLong("id"),
 											resultSet.getString("name")
-									));
+										)
+									}
 								}
 							}
 						</code>
@@ -94,185 +107,187 @@
 			</section>
 			<section>
 				<h4>Using JdbcTemplate</h4>
-				<em>
+				<div class="summary">
 					Writing queries
-				</em>
-				<hr />
-				<p>
-					Select with parameters:
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public User selectById(Long id) {
-							return jdbcTemplate.query("SELECT * FROM users WHERE id = ? LIMIT 1", this::rowMapper, id)
-									.stream()
-									.findFirst()
-									.orElse(null);
-						}
-					</code>
-				</pre>
-				<p>
-					Insert/update with parameters and returning results:
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						User insert(NewUser user) {
-							return jdbcTemplate.query(
+				</div>
+				<div class="content">
+					<p>
+						Select with parameters
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun selectById(id: Long): User? {
+								return jdbcTemplate.query(
+									"SELECT * FROM users WHERE id = ? LIMIT 1",
+									::rowMapper,
+									id
+								).firstOrNull()
+							}
+						</code>
+					</pre>
+					<p>
+						Insert/update with parameters and returning results
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							fun insert(user: NewUser): User? {
+								return jdbcTemplate.query(
 									"SELECT * FROM FINAL TABLE (INSERT INTO users (name) VALUES (?))",
-									this::rowMapper,
-									user.name()
-							).stream().findFirst().orElse(null);
-						}
-					</code>
-				</pre>
-				<p>
-					Row mapper function:
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						private User rowMapper(ResultSet rs, int i) throws SQLException {
-							return new User(
+									::rowMapper,
+									user.name
+								).firstOrNull()
+							}
+						</code>
+					</pre>
+					<p>
+						Row mapper function
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							private fun rowMapper(rs: ResultSet, i: Int): User {
+								return User(
 									rs.getLong("id"),
 									rs.getString("name")
-							);
-						}
-					</code>
-				</pre>
+								)
+							}
+						</code>
+					</pre>
+				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Spring Data JPA</h2>
+				<em>
+					Java Persistence API implementation
+				</em>
 			</section>
 			<section>
 				<h3>Using Spring Data JPA</h3>
-				<em>Repository definition</em>
-				<hr />
-				<p>
-					<strong>Spring Data JPA</strong> is using the <strong>Java Persistence API</strong> (JPA).
-					It provides a set of interfaces and classes that make it easy to work with databases in a Spring Boot application.
-				</p>
-				<hr />
-				<p>
-					For simple queries, you don't need to write any SQL, you just need to extend JpaRepository interface.
-				</p>
-				<p>
-					<strong>JpaRepository</strong> provides several methods for CRUD operations (like save(), findById(), findAll(), etc) that you can use right away without writing any implementation code.
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public interface UserRepository extends JpaRepository&lt;User, Long&gt; {
+				<div class="summary">
+					<strong class="highlight">Spring Data JPA</strong> is implementation of the <strong class="highlight">Java Persistence API (JPA)</strong> .
+				</div>
+				<div class="content">
+					<p>
+						It provides a set of interfaces and classes that make it easy to work with databases in a Spring Boot application.
+					</p>
+					<p>
+						For simple queries, you don't need to write any SQL, you just need to extend <code class="inline">JpaRepository</code> interface.
+					</p>
+					<p>
+						The interface provides several methods for <strong class="highlight">CRUD</strong> operations
+						(like <code class="inline">save()</code>, <code class="inline">findById()</code>, <code class="inline">findAll()</code>, etc)
+						that you can use right away without writing any implementation code.
+					</p>
+					<p>
+						Simples repository definition:
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							interface UserRepository : JpaRepository&lt;User, Long&gt;
+						</code>
+					</pre>
+					<ul>
+						<li>
+							Repository is defined as <strong class="highlight">UserRepository</strong> interface,
+							extending <strong class="highlight">JpaRepository</strong>.
+						</li>
 
-						}
-					</code>
-				</pre>
-				<ul>
-					<li>
-						Repository is defined as <strong>UserRepository</strong> interface, extending <strong>JpaRepository</strong>.
-					</li>
+						<li>
+							<code class="inline">User</code> is a class representing data object (entity) managed by the repository.
+						</li>
+						<li>
+							<code class="inline">Long</code> is the primary key type of the <code class="inline">User</code> type.
+						</li>
 
-					<li>
-						<strong>User</strong> is a class representing data object (entity) managed by the repository.
-					</li>
-					<li>
-						<strong>Long</strong> is the primary key type of the <strong>User</strong> type.
-					</li>
-
-				</ul>
+					</ul>
+				</div>
 			</section>
 			<section>
 				<h3>Using Spring Data JPA</h3>
-				<em>Database entities</em>
-				<hr />
-				<p>
-					The User entity may look like this
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						@Entity
-						@Table(name = "users")
-						public class User {
+				<div class="summary">
+					In order for JPA to work you need to provide class annotated with <code class="inline">@Entity</code> annotation.
+				</div>
+				<div class="content">
+					<p>
+						The <code class="inline">User</code> entity may look like this
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Entity
+							@Table(name = "users")
+							data class User(
+								@Id
+								@GeneratedValue(strategy = GenerationType.IDENTITY)
+								val id: Long? = null,
 
-							@Id
-							@GeneratedValue(strategy = GenerationType.IDENTITY)
-							private Long id;
+								@Column(name = "name")
+								val name: String
+							)
+						</code>
+					</pre>
+					<p>
+						In the example below, <strong class="highlight">Spring Data JPA</strong> will automatically generate a query using
+						the <strong class="highlight">findByName</strong> method name because it follows a Spring Data JPA naming convention.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							interface UserRepository : JpaRepository&lt;User, Long&gt; {
 
-							@Column(name = "name")
-							private String name;
+								fun findByName(name: String): List&lt;User&gt;
 
-							public Long getId() {
-								return id;
 							}
+						</code>
+					</pre>
+					<p>
+						If you need to add more advanced queries, you can define them using the <code class="inline">@Query</code> annotation.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							interface UserRepository : JpaRepository&lt;User, Long&gt; {
 
-							public void setId(Long id) {
-								this.id = id;
-							}
+								@Query("SELECT u FROM User u WHERE u.name = :name")
+								fun findUsersByName(@Param("name") name: String): List&lt;User&gt;
 
-							public String getName() {
-								return name;
 							}
-
-							public void setName(String name) {
-								this.name = name;
-							}
-						}
-					</code>
-				</pre>
+						</code>
+					</pre>
+				</div>
 			</section>
 			<section>
 				<h3>Using Spring Data JPA</h3>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public interface UserRepository extends JpaRepository&lt;User, Long&gt; {
+				<div class="summary">
+					Injecting the repository into the service
+				</div>
+				<div class="content">
+					<p>
+						Using the repository from service is as simple as injecting the dependency and calling the interface methods.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import org.springframework.stereotype.Service
 
-							List&lt;User&gt; findByName(String name);
+							@Service
+							class UserService(
+								private val userRepository: UserRepository
+							) {
 
-						}
-					</code>
-				</pre>
-				<p>
-					In the code above, Spring Data JPA will automatically generate a query using
-					the <strong>findByName</strong> method name because it follows a Spring Data JPA naming convention.
-				</p>
-				<hr />
-				<p>
-					If you need to add more advanced queries, you can define them using the <code class="inline">@Query</code> annotation.
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						public interface UserRepository extends JpaRepository&lt;User, Long&gt; {
+								fun getUsers(): List&lt;User&gt; {
+									return userRepository.findAll()
+								}
 
-							@Query("SELECT u FROM User u WHERE u.name = :name")
-							List&lt;User&gt; findUsersByName(@Param("name") String name);
-
-						}
-
-					</code>
-				</pre>
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>JOOQ</h2>
 			</section>
 			<section>
-				<h3>Using Spring Data JPA</h3>
-				<p>
-					Using the repository from service is as simple as injecting the dependency and calling the interface methods.
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						@Service
-						public class UserService {
-
-							private final UserRepository userRepository;
-
-							public UserJpaService(UserRepository userRepository) {
-								this.userRepository = userRepository;
-							}
-
-							public List&lt;User&gt; getUsers() {
-								return userRepository.findAll();
-							}
-
-						}
-					</code>
-				</pre>
+				<h3>JOOQ</h3>
 			</section>
 		</section>
 		<section>
@@ -281,27 +296,76 @@
 			</section>
 			<section>
 				<h3>Transactions</h3>
-				<p>
-					One thing to keep in mind when doing more than one database operation in a single method is that
+				<div class="summary">
+					Whenever we are performing more than one database operation in a single method is that
 					you should use transactions.
-				</p>
-				<hr />
-				<p>
-					Transactions are used to ensure that all operations are executed as a single unit of work.
-					So in case of an error, all operations are rolled back, preventing data inconsistency.
-				</p>
-				<p>
-					To setup a transaction, use <code class="inline">@Transactional</code> annotation on the method
-					that performs the operations.
-				</p>
-				<hr />
-				<blockquote>
-					There is one caveat to using annotations in Spring though! They do not work on methods called
-					from within the same class. This is because Spring uses proxies to implement the annotations.
-					<br />
-					<br />
-					So annotations such as <code class="inline">@Transactional</code> will only work when the annotated methods is called from another class.
-				</blockquote>
+				</div>
+				<div class="content">
+					<p>
+						Transactions are used to ensure that all operations are executed as a single unit of work.
+						So in case of an error, all operations are rolled back as a whole, preventing data inconsistency.
+					</p>
+					<p>
+						To setup a transaction, use <code class="inline">@Transactional</code> annotation on the method
+						that performs the operations.
+					</p>
+					<blockquote>
+						<p>
+							There is one caveat to using annotations in Spring though! They do not work on methods called
+							from within the same class. This is because Spring uses proxies to implement the annotations.
+						</p>
+						<p>
+							So annotations such as <code class="inline">@Transactional</code> will only work when the annotated methods is called from another class.
+						</p>
+					</blockquote>
+				</div>
+			</section>
+			<section>
+				<h3>Transactions</h3>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Service
+							class UserService(
+								private val userRepository: UserRepository,
+								private val userGroupRepository: UserGroupRepository
+							) {
+
+								fun addToGroup(users: List&lt;User&lt;, group: String) {
+									users.forEach { user -> updateUser(user, group) }
+								}
+
+								@Transactional
+								private fun updateUser(name: User, group: String): User {
+									val updatedUser = userRepository.save(user)
+									val userGroup = userGroupRepository.save(UserGroup(group = group, userId = updatedUser.id))
+									return updatedUser
+								}
+
+							}
+						</code>
+					</pre>
+					<p>
+						If we called the <code class="inline">addToGroup</code>, the call would not be transactional, because the method annotated with <code class="inline">@Transactional</code> is called from within the same class.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Service
+							class GroupManagementService(
+								val userService: UserService,
+								// other services
+							) {
+
+								fun addUsersToGroup(users: List&lt;User&lt;, group: String) {
+									userService.addToGroup(users, group)
+								}
+							}
+						</code>
+					</pre>
+					<p>
+						To solve this, we can move the <code class="inline">@Transactional</code> annotation to the <code class="inline">addToGroup</code> method.
+					</p>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -310,88 +374,108 @@
 			</section>
 			<section>
 				<h3>Testing Repositories</h3>
-				<hr />
-				<p>
-					Test the repository layer is generally a little more complicated, because it usually involves
-					data sources and databases, and we need to make sure that the database is in a known state before running the tests.
-				</p>
-				<hr />
-				<p>
-					To build the correct testing context with Spring, use the <code class="inline">@JdbcTest</code>
-					or <code class="inline">@DataJpaTest</code> annotations.
-				</p>
-				<p>
-					We might also need to impor the  repository class using <code class="inline">@Import</code> annotation,
-					and then inject it using <code class="inline">@Autowired</code> annotation.
-				</p>
-				<p>
-					You can use <code class="inline">@DirtiesContext</code> annotation to reset the database state before each test.
-				</p>
-				<hr />
-				<blockquote>
-					We have a in-memory H2 database for our project, which is not a database that would be used in production.
-					In real world, database in tests migth be provided by Docker using TestContainers library.
-				</blockquote>
+				<div class="content">
+					<p>
+						Test the repository layer is generally a little more complicated, because it usually involves
+						data sources and databases, and we need to make sure that the database is in a known state before running the tests.
+					</p>
+					<p>
+						To build the correct testing context with Spring, use the <code class="inline">@JdbcTest</code>
+						or <code class="inline">@DataJpaTest</code> annotations.
+					</p>
+					<p>
+						We might also need to import the  repository class using <code class="inline">@Import</code> annotation,
+						and then inject it using <code class="inline">@Autowired</code> annotation.
+					</p>
+					<p>
+						You can use <code class="inline">@DirtiesContext</code> annotation to reset the database state before each test.
+					</p>
+					<blockquote>
+						We have a in-memory H2 database for our project, which is not a database that would be used in production.
+						In real world, database in tests might be provided by <strong class="inline">Docker</strong> using <strong class="inline">TestContainers</strong> library.
+					</blockquote>
+				</div>
 			</section>
 			<section>
 				<h3>Testing Repositories</h3>
-				<p>JdbcTemplate</p>
-				<hr />
-				<p>
-					The rest is a regular unit test ...
-				</p>
-				<pre>
-					<code data-trim data-noescape data-line-numbers class="hljs kotlin">
-						@JdbcTest
-						@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-						@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-						@Import(UserJdbcRepository.class)
-						public class UserJdbcRepositoryTest {
+				<div class="summary">JdbcTemplate</div>
+				<div class="content">
+					<p>
+						The rest is a regular unit test ...
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import org.junit.jupiter.api.Assertions
+							import org.junit.jupiter.api.DisplayName
+							import org.junit.jupiter.api.Test
+							import org.springframework.beans.factory.annotation.Autowired
+							import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+							import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
+							import org.springframework.context.annotation.Import
+							import org.springframework.test.annotation.DirtiesContext
 
-							@Autowired
-							private JdbcTemplate jdbcTemplate;
+							@JdbcTest
+							@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+							@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+							@Import(UserJdbcRepository::class)
+							class UserJdbcRepositoryTest {
 
-							@Autowired
-							private UserJdbcRepository userRepository;
+								@Autowired
+								private lateinit var jdbcTemplate: JdbcTemplate
 
-							@Test
-							@DisplayName("should select all users")
-							public void testSelectAll() {
-								Assertions.assertEquals(UserFixtures.users, userRepository.selectAll());
-							}
-						}
-					</code>
-				</pre>
-			</section>
-			<section>
-				<h3>Testing Repositories</h3>
-				<p>Spring Data JPA</p>
-				<hr />
-				<pre>
-					<code>
-						@DataJpaTest
-						@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-						public class UserJpaRepositoryTest {
+								@Autowired
+								private lateinit var userRepository: UserJdbcRepository
 
-							@Autowired
-							private UserJpaRepository userRepository;
-
-							@Test
-							@DisplayName("should select all users")
-							public void testSelectAll() {
-								var users = userRepository.findAll();
-
-								for (int i = 0; i < UserFixtures.users.size(); i++) {
-									var expected = UserFixtures.users.get(i);
-									var actual = users.get(i);
-									Assertions.assertEquals(expected.id(), actual.getId());
-									Assertions.assertEquals(expected.name(), actual.getName());
+								@Test
+								@DisplayName("should select all users")
+								fun testSelectAll() {
+									Assertions.assertEquals(UserFixtures.users, userRepository.selectAll())
 								}
 							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>Testing Repositories</h3>
+				<div class="summary">Spring Data JPA</div>
+				<div class="content">
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							import org.junit.jupiter.api.Assertions
+							import org.junit.jupiter.api.DisplayName
+							import org.junit.jupiter.api.Test
+							import org.springframework.beans.factory.annotation.Autowired
+							import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+							import org.springframework.test.annotation.DirtiesContext
 
-						}
-					</code>
-				</pre>
+							@DataJpaTest
+							@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+							class UserJpaRepositoryTest {
+
+								@Autowired
+								private lateinit var userRepository: UserJpaRepository
+
+								@Test
+								@DisplayName("should select all users")
+								fun testSelectAll() {
+									val users = userRepository.findAll()
+
+									for (i in UserFixtures.users.indices) {
+										val expected = UserFixtures.users[i]
+										val actual = users[i]
+										Assertions.assertEquals(expected.id, actual.id)
+										Assertions.assertEquals(expected.name, actual.name)
+									}
+								}
+							}
+						</code>
+					</pre>
+				</div>
+			</section>
+			<section>
+				<h3>TestContainers</h3>
+				<div></div>
 			</section>
 		</section>
 		<section>
