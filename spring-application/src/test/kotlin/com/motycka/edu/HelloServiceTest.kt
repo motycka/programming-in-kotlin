@@ -16,7 +16,7 @@ class HelloServiceTest {
 
         every {
             helloRepository.selectMessage("cs", "hello")
-        } returns Message(
+        } returns Greeting(
             locale = "cs",
             messageKey = "hello",
             messageValue = "Ahoj"

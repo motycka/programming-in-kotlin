@@ -12,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:2.1.10")
+
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("org.springframework.boot:spring-boot-starter-web")

@@ -1,7 +1,5 @@
 package com.motycka.edu
 
-import com.motycka.edu.HelloRepositoryJdbc
-import com.motycka.edu.Message
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -23,7 +21,7 @@ class HelloRepositoryJdbcTest {
     fun `should select message`() {
         val result = helloRepository.selectMessage("en", "hello")
         assertEquals(
-            Message(
+            Greeting(
                 locale = "en",
                 messageKey = "hello",
                 messageValue = "Hello"
@@ -34,13 +32,13 @@ class HelloRepositoryJdbcTest {
 
     @Test
     fun `should insert message`() {
-        val message = Message(
+        val greeting = Greeting(
             locale = "it",
             messageKey = "hello",
             messageValue = "Ciao"
         )
-        helloRepository.insertMessage(message)
-        val result = helloRepository.selectMessage(message.locale, message.messageKey)
+        helloRepository.insertMessage(greeting)
+        val result = helloRepository.selectMessage(greeting.locale, greeting.messageKey)
 //        assertEquals(message.messageValue, result)
     }
 }
