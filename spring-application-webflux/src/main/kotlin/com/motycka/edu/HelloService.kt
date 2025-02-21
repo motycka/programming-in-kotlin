@@ -3,6 +3,7 @@ package com.motycka.edu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
@@ -10,7 +11,8 @@ import reactor.core.publisher.Mono
 
 @Service
 class HelloService(
-    private val helloRepository: HelloRepositoryJooq
+    private val helloRepository: HelloRepositoryJooq,
+    private val eventPublisher: ApplicationEventPublisher
 ) {
     fun getHello(): List<Hello> {
         return helloRepository.selectAll().map { record ->
@@ -25,6 +27,7 @@ class HelloService(
         val hello = helloRepository.selectHello(locale)
             ?.hello
             ?: error("Hello not found for locale $locale")
+        eventPublisher.publishEvent(HelloEvent(hello))
         return hello
     }
 
@@ -47,6 +50,8 @@ class HelloService(
             ?: error("Hello not found for locale $locale")
 
         delay(3000)
+
+        eventPublisher.publishEvent(HelloEvent(hello))
 
         emit("$hello $name")
     }

@@ -20,17 +20,13 @@ class HelloControllerV1(
 
 
     @GetMapping
-    fun getHello(): Flux<Hello> {
-         return Flux.fromIterable(helloService.getHello())
-    }
+    fun getHello(): Flux<Hello> = Flux.fromIterable(helloService.getHello())
 
     @GetMapping("/{locale}")
     fun getHello(
         @PathVariable(value = "locale") locale: String,
         @RequestParam(value = "name") name: String
-    ): Mono<String> {
-        return Mono.just(helloService.sayHello(name, locale))
-    }
+    ): Mono<String> = Mono.just(helloService.sayHello(name, locale))
 
 }
 
@@ -42,16 +38,12 @@ class HelloControllerV2(
 ) {
 
     @GetMapping
-    suspend fun getHello(): Flow<List<Hello>> {
-        return helloService.getHelloAsync()
-    }
+    suspend fun getHello(): Flow<List<Hello>> = helloService.getHelloAsync()
 
     @GetMapping("/{locale}")
     suspend fun getHello(
         @PathVariable(value = "locale") locale: String,
         @RequestParam(value = "name") name: String
-    ): Flow<String> {
-        return helloService.sayHelloAsync(name, locale)
-    }
+    ): Flow<String> = helloService.sayHelloAsync(name, locale)
 
 }

@@ -229,15 +229,15 @@
 			</section>
 			<section>
 				<h3>How to decide?</h3>
-				<div class="content">
-					<p>You will get it wrong!</p>
-					<p>And you will re-do it.</p>
-					<p>And you will still get it wrong again.</p>
-					<p>And then you will re-do it again.</p>
-					<p>And it will never be perfect.</p>
-					<p>And that's OK.</p>
+				<div class="content content-center content-100">
+					<p class="fragment fade-in">You will get it wrong!</p>
+					<p class="fragment fade-in">And you will re-do it.</p>
+					<p class="fragment fade-in">And you will still get it wrong again.</p>
+					<p class="fragment fade-in">And then you will re-do it again.</p>
+					<p class="fragment fade-in">And it will never be perfect.</p>
+					<p class="fragment fade-in">And that's OK.</p>
 					<br />
-					<p>Embrace failure, learn from it, and go on.</p>
+					<p class="fragment fade-in" data-transition="fade-in">Embrace failure, learn from it, and go on.</p>
 				</div>
 			</section>
 		</section>
@@ -248,69 +248,163 @@
 			<section>
 				<h3>Service Architecture</h3>
 				<div class="summary">
-					TODO
+					When designing your application, it is important to consider the architecture of your services.
 				</div>
-				<div class="content">
-
-					Separation of concerns
-
-					Internal and external data models
-
-					Controller -> Service
-					Service -> Repository
-					Service -> Service
-					Repository -> Repository
-
-
-					Modules
-
-					Using interfaces
-
+				<div class="content" style="font-size: 70%">
+					<h4>Separation of concerns</h4>
+					<p>
+						It is a good practice to split your code by domain, where each service is responsible for a specific domain or business logic.
+						If you domains need to interact with each other, be careful to not create cross dependencies that would break the domain separation.
+					</p>
+					<p>
+						Well designed dependencies might look like this:
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">Controller -> Service</strong> within the same domain
+						</li>
+						<li>
+							<strong class="highlight">Service -> Repository</strong> within the same domain
+						</li>
+						<li>
+							<strong class="highlight">Service -> Service</strong> within the same domain
+						</li>
+						<li>
+							<strong class="highlight">Service -> Service</strong> across a domain - you may want a dedicated cross domain service
+						</li>
+						<li>
+							<strong class="highlight">Repository -> Repository</strong> within the same domain
+						</li>
+					</ul>
+					<p>
+						A rule of thumb here is, when you can take your domain and spilt it into separate services with minimal effort, they you probably have a good design.
+					</p>
+					<p>
+						<strong>
+							A good approach to this is to use interfaces where services are defined and implemented in separate modules.
+						</strong>
+					</p>
+					<h4>Internal and external data models</h4>
+					<p>
+						It is good idea to have separate classes representing the internal and external data models.
+						For example, you might have a <code class="inline">User</code> class that is used internally by your service and a <code class="inline">NewUserRequest</code> and <code class="inline">UserResponse</code> class that is used to represent the user in the API.
+						The internal object may have some properties logic and content that you don't want to expose externally.
+						Also, you do not want changes made to the internal object to affect the external object contract.
+					</p>
 				</div>
 			</section>
-<!--			<section>-->
-<!--				<h3>Asynchronous Services</h3>-->
-<!--				<div class="summary">-->
-<!--					TODO-->
-<!--				</div>-->
-<!--				<div class="content">-->
-
-<!--				</div>-->
-<!--			</section>-->
 			<section>
 				<h3>Event Bases Architecture</h3>
 				<div class="summary">
-					Event based architecture is a software architecture pattern where the different components of the application communicate with each other by sending and receiving events.
+					Event based architecture is a software architecture pattern where the different components
+					of the application communicate with each other by sending and receiving events.
 				</div>
 				<div class="content">
 					<p>
-						Event based architecture is a popular choice for building distributed systems because it allows for loose coupling between the different components of the system.
+						Event based architecture is a popular choice for building distributed systems because
+						it allows for loose coupling between the different components of the system.
+					</p>
+					<blockquote>
+						It is not only limited to service-to-service communication, but can also be used to communicate within a single service.
+					</blockquote>
+					<p>
+						It can often be described as a <strong class="highlight">fire and forget</strong> model, where the sender of the event does not need to wait for a response from the receiver.
 					</p>
 					<p>
-						What does it look like?
+						There are multiple ways to implement this architecture:
 					</p>
+					<ul>
+						<li>
+							Using <strong class="highlight">Publish/Subscribe</strong> model<br />
+							<em>Where events are published to a topic and multiple subscribers can receive the event.</em>
+						</li>
+						<li>
+							Using <strong class="highlight">Message Queues</strong><br />
+							<em>Where events are sent to a queue and processed by a single consumer.</em>
+						</li>
+						<li>
+							Using <strong class="highlight">Event Sourcing</strong><br />
+							<em>Where the state of the system is determined by a sequence of events.</em>
+						</li>
+					</ul>
 					<p>
-						When to use:
-						Applications that need to be highly scalable.
-						Applications that need to be highly available.
-						Applications that need to be fault-tolerant.
+						Message brokers like <strong class="highlight">Kafka</strong>, <strong class="highlight">RabbitMQ</strong>, and <strong class="highlight">Amazon SQS</strong> are commonly used to implement event based architectures.
 					</p>
+				</div>
+			</section>
+			<section>
+				<h3>Event Bases Architecture</h3>
+				<div class="content">
 					<p>
-						Fire and forget
+						<strong class="highlight">When to use</strong>
 					</p>
-					<p>
-						Pros:
-						Loose coupling between components.
-						Highly scalable and available.
-						Fault-tolerant.
-					</p>
-					<p>
-						Cons:
-						Complexity of managing events.
-						Potential for event loss.
-						Potential for event duplication.
-					</p>
+					<ul>
+						<li>Applications that need to be highly scalable.</li>
+						<li>Applications that need to be highly available.</li>
+						<li>Applications that need to be fault-tolerant.</li>
+					</ul>
 
+					<p>
+						<strong class="highlight">Pros</strong>
+					</p>
+					<ul>
+						<li>Loose coupling between components.</li>
+						<li>Highly scalable and available.</li>
+						<li>Fault-tolerant.</li>
+					</ul>
+					<p>
+						<strong class="highlight">Cons</strong>
+					</p>
+					<ul>
+						<li>Complexity of managing events.</li>
+						<li>Potential for event loss.</li>
+						<li>Potential for event duplication.</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Spring Application Events</h3>
+				<div class="content">
+					<p>
+						Spring Framework provides a mechanism for implementing event-based architectures using the <code class="inline">ApplicationEvent</code> class and the <code class="inline">ApplicationEventPublisher</code> interface.
+					</p>
+					<p>
+						You can create custom events by extending the <code class="inline">ApplicationEvent</code> class and publish them using the <code class="inline">ApplicationEventPublisher</code> interface.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Component
+							class MyEventPublisher(
+								private val applicationEventPublisher: ApplicationEventPublisher
+							) {
+
+								fun publishEvent() {
+									applicationEventPublisher.publishEvent(MyCustomEvent(this, "Hello, World!"))
+								}
+
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							class MyCustomEvent(source: Any, val message: String) : ApplicationEvent(source)
+						</code>
+					</pre>
+					<p>
+						You can listen for custom events by implementing the <code class="inline">ApplicationListener</code> interface and annotating the listener with <code>@Component</code>.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Component
+							class MyEventListener : ApplicationListener&lt;MyCustomEvent&gt; {
+
+								override fun onApplicationEvent(event: MyCustomEvent) {
+									println("Received event: ${event.message}")
+								}
+
+							}
+						</code>
+					</pre>
 				</div>
 			</section>
 		</section>
@@ -359,8 +453,6 @@
 								<li>Users event-driven, non-blocking I/O to process requests without tying up threads.</li>
 								<li>Based on Reactor and Netty.</li>
 							</ul>
-
-
 						</div>
 					</div>
 					<div class="row">
@@ -428,77 +520,111 @@
 					Using Reactor Flux and Mono types
 				</div>
 				<div class="content">
+					<p>
+						Controllers implemented using Spring <strong class="highlight">WebFlux</strong> can return
+						<code>Flux&lt;T&gt;</code> and <code>Mono&lt;T&gt;</code>
+						types to represent asynchronous, reactive streams.
+					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@RestController
+							@RequestMapping("/api/v1/hello")
+							class HelloControllerV1(
+								private val helloService: HelloService
+							) {
 
 
+								@GetMapping
+								fun getHello(): Flux&lt;Hello&gt; = Flux.fromIterable(helloService.getHello())
 
+								@GetMapping("/{locale}")
+								fun getHello(
+									@PathVariable(value = "locale") locale: String,
+									@RequestParam(value = "name") name: String
+								): Mono&lt;String&gt; = Mono.just(helloService.sayHello(name, locale))
 
-					<!--					Converting Reactor Types to Coroutines-->
-					<!--					Reactor's Mono and Flux can be awaited in coroutines using Spring’s extensions.-->
-					<!--					Mono<T>.awaitSingle(): Waits for the completion of a Mono and suspends until the result is available.-->
-					<!--						Flux<T>.collectList().awaitSingle(): Collects all items from a Flux and waits for their completion.-->
-					<!--							kotlin-->
-					<!--							Copy-->
-					<!--							Edit-->
-					<!--							val result = mono.awaitSingle() // Suspends until mono completes-->
+							}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Service
+							class HelloService(
+								private val helloRepository: HelloRepository
+							) {
 
+								fun getHello(): List&lt;Hello&gt; = helloRepository.getHello()
 
+								fun sayHello(name: String, locale: String): String = helloRepository.sayHello(name, locale)
 
-					<!--							Suspending Functions in Spring WebFlux-->
-					<!--							In a WebFlux controller, you can write suspending functions in Kotlin, which will work seamlessly with the reactive flow.-->
-					<!--							kotlin-->
-					<!--							Copy-->
-					<!--							Edit-->
-					<!--							@RestController-->
-					<!--							class MyController {-->
-					<!--							@GetMapping("/data")-->
-					<!--							suspend fun getData(): String {-->
-					<!--							// Non-blocking call in a coroutine-->
-					<!--							return myReactiveService.getData().awaitSingle()-->
-					<!--							}-->
-					<!--							}-->
-
-
-
-
-					<!--							Flow (Kotlin) vs. Flux (Reactor)-->
-					<!--							Kotlin’s Flow is a coroutine-based, cold, reactive stream that is functionally similar to Reactor’s Flux.-->
-					<!--							You can convert between Flow and Flux:-->
-					<!--							Flow.toFlux(): Converts a Kotlin Flow to a Flux.-->
-					<!--							Flux.toFlow(): Converts a Flux to a Kotlin Flow.-->
-					<!--							Example:-->
-
-					<!--							kotlin-->
-					<!--							Copy-->
-					<!--							Edit-->
-					<!--							val flux = myFlow.toFlux()-->
-					<!--							val flow = myFlux.asFlow()-->
-
-
+							}
+						</code>
+					</pre>
 				</div>
 			</section>
 
 			<section>
-				<h3>Spring WebFlux</h3>
+				<h3>Spring WebFlux with Kotlin Coroutines</h3>
 				<div class="summary">
-					Using Coroutines
+					Using Kotlin coroutines with Flow types
 				</div>
 				<div class="content">
 					<p>
-						Reactor's Mono and Flux can be awaited in coroutines using Spring’s extensions.
+						There is an extension for Spring WebFlux that allows you to use Kotlin coroutines to write asynchronous, non-blocking code.
 					</p>
-					<p>
-<!--						<code>Mono<T>.awaitSingle()</code>: Waits for the completion of a Mono and suspends until the result is available.-->
-					</p>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@RestController
+								@RequestMapping("/api/v2/hello")
+								class HelloControllerV2(
+									private val helloService: HelloService
+								) {
+
+									@GetMapping
+									suspend fun getHello(): Flow&lt;List&lt;Hello&gt;&gt; = helloService.getHelloAsync()
+
+									@GetMapping("/{locale}")
+									suspend fun getHello(
+										@PathVariable(value = "locale") locale: String,
+										@RequestParam(value = "name") name: String
+									): Flow&lt;String&gt; = helloService.sayHelloAsync(name, locale)
+
+								}
+						</code>
+					</pre>
+					<pre>
+						<code data-trim data-noescape data-line-numbers class="hljs kotlin">
+							@Service
+							class HelloService(
+								private val helloRepository: HelloRepository
+							) {
+
+								suspend fun getHelloAsync(): Flow&lt;List&lt;Hello&gt;&gt; = flow {
+									emit(helloRepository.getHello())
+								}
+
+								suspend fun sayHelloAsync(name: String, locale: String): Flow&lt;String&gt; = flow {
+									emit(helloRepository.sayHello(name, locale))
+								}
+
+							}
+						</code>
+					</pre>
 				</div>
 			</section>
 		</section>
 		<section>
-			<section data-background-gradient="var(--kotlin-gradient)">
-				<h2>Project Work</h2>
-			</section>
 			<section>
-				<p>Are we done here?</p>
-				<p>I hope not!</p>
+				<section data-background-gradient="var(--kotlin-gradient)">
+					<h2>Project Work</h2>
+					<em>↓</em>
+				</section>
+				<section>
+					<div style="font-size: 200%">
+						<em>Are we done here?</em><br />
+						<em>I hope not!</em>
+					</div>
+				</section>
 			</section>
 		</section>
 	</div>
