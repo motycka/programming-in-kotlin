@@ -1,5 +1,6 @@
 package com.motycka.edu
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.motycka.edu.HelloController
 import com.motycka.edu.HelloService
 import com.motycka.edu.SecurityConfiguration
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(HelloController::class)
@@ -22,6 +24,9 @@ class HelloControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
     @MockkBean
     private lateinit var helloService: HelloService
@@ -34,7 +39,7 @@ class HelloControllerTest {
 
     @Test
     fun `get hello in locale cs`() {
-        mockMvc.perform(get("/api/greetings?name=Kotlin&locale=cs")
+        mockMvc.perform(get("/api/hello?name=Kotlin&locale=cs")
             .contentType("application/json")
             .with(httpBasic("username", "password")))
             .andExpect(status().isOk)
@@ -42,6 +47,15 @@ class HelloControllerTest {
         verify {
             helloService.sayHello("Kotlin", "cs")
         }
+    }
+
+    @Test
+    fun `should get hello in it`() {
+        mockMvc.perform(post("/api/hello")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(HelloRequest(locale = "it", hello = "Ciao")))
+            .with(httpBasic("username", "password")))
+            .andExpect(status().isNotFound)
     }
 
 }

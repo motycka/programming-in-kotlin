@@ -9,33 +9,26 @@ class HelloRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate
 ) {
 
-    fun selectMessage(locale: String, key: String): Greeting? {
+    fun selectHello(locale: String): Hello? {
         return jdbcTemplate.query(
-            "SELECT * FROM greeting WHERE locale = ? AND message_key = ? LIMIT 1",
+            "SELECT * FROM hello WHERE locale = ? LIMIT 1",
             ::rowMapper,
-            locale,
-            key
+            locale
         ).firstOrNull()
     }
 
-    fun insertMessage(greeting: Greeting) {
+    fun insertHello(greeting: Hello) {
         jdbcTemplate.update(
-            "INSERT INTO greeting (locale, message_key, message_value) VALUES (?, ?, ?)",
+            "INSERT INTO hello (locale, hello) VALUES (?, ?)",
             greeting.locale,
-            greeting.messageKey,
-            greeting.messageValue
+            greeting.hello,
         )
     }
 
-    private fun rowMapper(rs: ResultSet, i: Int): Greeting {
-        return Greeting(
+    private fun rowMapper(rs: ResultSet, i: Int): Hello {
+        return Hello(
             locale = rs.getString("locale"),
-            messageKey = rs.getString("message_key"),
-            messageValue = rs.getString("message_value")
+            hello = rs.getString("hello")
         )
-    }
-
-    companion object {
-        const val HELLO_MESSAGE_KEY = "hello"
     }
 }

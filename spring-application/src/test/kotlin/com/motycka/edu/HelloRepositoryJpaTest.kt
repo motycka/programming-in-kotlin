@@ -1,7 +1,5 @@
 package com.motycka.edu
 
-import com.motycka.edu.HelloRepositoryJpa
-import com.motycka.edu.MessageEntity
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -17,13 +15,12 @@ class HelloRepositoryJpaTest {
 
     @Test
     fun `should select message`() {
-        val result = helloRepository.findByLocaleAndMessageKey("en", "hello")
+        val result = helloRepository.findByLocale("en")
         assertEquals(
-            MessageEntity(
+            HelloEntity(
                 id = 1,
                 locale = "en",
-                messageKey = "hello",
-                messageValue = "Hello"
+                hello = "Hello"
             ),
             result
         )
@@ -31,13 +28,12 @@ class HelloRepositoryJpaTest {
 
     @Test
     fun `should insert message`() {
-        val message = MessageEntity(
+        val message = HelloEntity(
             locale = "it",
-            messageKey = "hello",
-            messageValue = "Ciao"
+            hello = "Ciao"
         )
         helloRepository.save(message)
-        val result = helloRepository.findByLocaleAndMessageKey("it", "hello")
+        val result = helloRepository.findByLocale("it")
         assertEquals(message, result)
     }
 }

@@ -15,11 +15,10 @@ class HelloServiceTest {
     fun `should get hello in locale cs`() {
 
         every {
-            helloRepository.selectMessage("cs", "hello")
-        } returns Greeting(
+            helloRepository.selectHello("cs")
+        } returns Hello(
             locale = "cs",
-            messageKey = "hello",
-            messageValue = "Ahoj"
+            hello = "Ahoj"
         )
 
         val result = helloService.sayHello("Kotlin", "cs")

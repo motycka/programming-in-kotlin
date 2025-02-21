@@ -8,7 +8,7 @@
 
 	<link rel="stylesheet" href="dist/reset.css">
 	<link rel="stylesheet" href="dist/reveal.css">
-	<link rel="stylesheet" href="dist/theme/motyka.css">
+	<link rel="stylesheet" href="dist/theme/kotlin.css">
 
 	<!-- Theme used for syntax highlighted code -->
 	<link rel="stylesheet" href="plugin/highlight/vs.css">
@@ -19,12 +19,9 @@
 		<section data-background-gradient="var(--kotlin-gradient)">
 			<i>Week 3 | Lesson 14</i>
 			<h1>Spring Boot Application</h1>
-			<em>Microservice architecture (Spring Cloud)</em><br />
-			<em>Asynchronous architecture</em><br />
-			<em>Event based architecture</em>
-			<em>Reactive streams</em>
-			<em>Consuming APIs</em>
-			<em>Caching</em>
+			<em>Common Architecture Patterns</em><br />
+			<em>Service Design Patterns</em><br />
+			<em>Reactive streams</em><br />
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
@@ -32,34 +29,216 @@
 			</section>
 			<section>
 				<h3>Common Architecture Patterns</h3>
-				<p>
+				<div class="summary">
 					There are several common architecture patterns that are used in the development of software applications.
-					These patterns are used to define the structure of the application and the way in which the different components of the application interact with each other.
-					Some of the most common architecture patterns include:
-				</p>
-				<ul>
-					<li>Monolithic Architecture</li>
-					<li>Microservice Architecture</li>
-					<li>Serverless Architecture</li>
-				</ul>
+
+				</div>
+				<div class="content">
+					<p>
+						These are high-level application architecture patterns used to define the structure of the application and the way in which the different components of the application interact with each other.
+					</p>
+					<p>
+						<strong>Some</strong> of the most common architecture patterns include:
+					</p>
+					<ul>
+						<li>Monolithic Architecture</li>
+						<li>Microservice Architecture</li>
+						<li>Serverless Architecture</li>
+						<li>Event-Driven Architecture</li>
+						<li>API Gateway Architecture</li>
+					</ul>
+				</div>
 			</section>
 			<section>
 				<h3>Monolithic Architecture</h3>
-				<p>
-					TODO
-				</p>
+				<div class="summary">
+					Monolithic architecture is a software architecture pattern where all the components of the application run as a single unit.
+				</div>
+				<div class="content">
+					<p>
+						Monolithic architecture tends to be tightly coupled, which can make it difficult to scale and maintain the application over time.
+					</p>
+					<ul>
+						<li>
+							<strong class="highlight">When to use</strong>
+							<ul>
+								<li>Small projects or MVPs.</li>
+								<li>Early-stage startups.</li>
+								<li>Teams with limited resources.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Pros</strong>
+							<ul>
+								<li>Easier debugging with one codebase.</li>
+								<li>
+									Simpler to develop and deploy. **
+									<sub>In terms of needing simper infrastructure.</sub>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Cons</strong>
+							<ul>
+								<li>Difficult to scale certain parts independently.</li>
+								<li>Harder to manage as the codebase grows.</li>
+								<li>Limited error resilience.</li>
+								<li>Difficult to develop and deploy. **
+									<sub>Monoliths can have many dependencies to for developers, that may mean a lot of setup.</sub>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</section>
 			<section>
 				<h3>Microservice Architecture</h3>
-				<p>
-					TODO
-				</p>
+				<div class="summary">
+					An architecture that decomposes the system into smaller, (relatively) independent services.
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							<strong class="highlight">When to use</strong>
+							<ul>
+								<li>Large, complex systems.</li>
+								<li>Teams that are distributed or domain-focused.</li>
+								<li>Scalability is a top priority.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Pros</strong>
+							<ul>
+								<li>Independent scaling and deployment.</li>
+								<li>Fault isolation (failures in one service don't affect others).</li>
+								<li>Easier to adopt different tech stacks per service.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Cons</strong>
+							<ul>
+								<li>Complex to manage (e.g., inter-service communication).</li>
+								<li>Potential for high latency between services.</li>
+								<li>Requires solid observability (monitoring, logging).</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Pitfalls</strong>
+							<ul>
+								<li><strong>Be aware of distributed monoliths!</strong></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</section>
 			<section>
 				<h3>Serverless Architecture</h3>
-				<p>
-					TODO
-				</p>
+				<div class="summary">
+					Uses cloud-managed services where you write and deploy functions instead of managing infrastructure.
+				</div>
+				<div class="content">
+					<ul>
+					<li>
+						<strong class="highlight">When to use</strong>
+						<ul>
+							<li>Event-driven systems (e.g., IoT data, notifications).</li>
+							<li>Applications with unpredictable or spiky traffic.</li>
+						</ul>
+					</li>
+					<li>
+						<strong class="highlight">Pros</strong>
+						<ul>
+							<li>Automatic scaling.</li>
+							<li>Reduced operational complexity.</li>
+							<li>Pay-per-use model.</li>
+						</ul>
+					</li>
+					<li>
+						<strong class="highlight">Cons</strong>
+						<ul>
+							<li>Cold-start latency.</li>
+							<li>Vendor lock-in risks.</li>
+							<li>Debugging and monitoring can be more complex.</li>
+						</ul>
+					</li>
+				</ul>
+				</div>
+			</section>
+			<section>
+				<h3>Event-Driven Architecture</h3>
+				<div class="summary">
+					Systems that react to and propagate events across services (e.g., Kafka, RabbitMQ).
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							<strong class="highlight">When to use</strong>
+							<ul>
+								<li>Systems with high-frequency event generation.</li>
+								<li>IoT and real-time analytics.</li>
+								<li>Applications with loosely coupled services.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Pros</strong>
+							<ul>
+								<li>Real-time processing and responsiveness.</li>
+								<li>Highly scalable and decoupled.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Cons</strong>
+							<ul>
+								<li>Requires careful event design to avoid excessive coupling.</li>
+								<li>Complex debugging and replaying of events.</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>API Gateway Architecture</h3>
+				<div class="summary">
+					Centralizes all API traffic, often for microservices and serverless backends.
+				</div>
+				<div class="content">
+					<ul>
+						<li>
+							<strong class="highlight">When to use</strong>
+							<ul>
+								<li>Systems with multiple backend services.</li>
+								<li>Teams needing centralized authentication, logging, or throttling.</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Pros</strong>
+							<ul>
+								<li>Centralized management for APIs.</li>
+								<li>Reduced cross-cutting concerns (e.g., rate limiting, CORS).</li>
+							</ul>
+						</li>
+						<li>
+							<strong class="highlight">Cons</strong>
+							<ul>
+								<li>Can become a single point of failure.</li>
+								<li>Latency and complexity if overloaded.</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h3>How to decide?</h3>
+				<div class="content">
+					<p>You will get it wrong!</p>
+					<p>And you will re-do it.</p>
+					<p>And you will still get it wrong again.</p>
+					<p>And then you will re-do it again.</p>
+					<p>And it will never be perfect.</p>
+					<p>And that's OK.</p>
+					<br />
+					<p>Embrace failure, learn from it, and go on.</p>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -67,15 +246,259 @@
 				<h2>Service Design Patterns</h2>
 			</section>
 			<section>
-				<h3>Asynchronous Services</h3>
+				<h3>Service Architecture</h3>
+				<div class="summary">
+					TODO
+				</div>
+				<div class="content">
+
+					Separation of concerns
+
+					Internal and external data models
+
+					Controller -> Service
+					Service -> Repository
+					Service -> Service
+					Repository -> Repository
+
+
+					Modules
+
+					Using interfaces
+
+				</div>
 			</section>
+<!--			<section>-->
+<!--				<h3>Asynchronous Services</h3>-->
+<!--				<div class="summary">-->
+<!--					TODO-->
+<!--				</div>-->
+<!--				<div class="content">-->
+
+<!--				</div>-->
+<!--			</section>-->
 			<section>
 				<h3>Event Bases Architecture</h3>
+				<div class="summary">
+					Event based architecture is a software architecture pattern where the different components of the application communicate with each other by sending and receiving events.
+				</div>
+				<div class="content">
+					<p>
+						Event based architecture is a popular choice for building distributed systems because it allows for loose coupling between the different components of the system.
+					</p>
+					<p>
+						What does it look like?
+					</p>
+					<p>
+						When to use:
+						Applications that need to be highly scalable.
+						Applications that need to be highly available.
+						Applications that need to be fault-tolerant.
+					</p>
+					<p>
+						Fire and forget
+					</p>
+					<p>
+						Pros:
+						Loose coupling between components.
+						Highly scalable and available.
+						Fault-tolerant.
+					</p>
+					<p>
+						Cons:
+						Complexity of managing events.
+						Potential for event loss.
+						Potential for event duplication.
+					</p>
+
+				</div>
+			</section>
+		</section>
+		<section>
+			<section data-background-gradient="var(--kotlin-gradient)">
+				<h2>Reactive Streams</h2>
+				<em>WebFlux</em>
+			</section>
+			<section>
+				<h3>Spring WebFlux</h3>
+				<div class="summary">
+					Spring WebFlux and Spring MVC are both part of the Spring Framework and are used to build web applications,
+					but they have different architectures and are suited for different types of workloads.
+				</div>
+				<div class="content" style="font-size: 70%">
+					<div class="row">
+						<div class="column">
+							<h4>Spring MVC</h4>
+						</div>
+						<div class="column">
+							<h4>Spring WebFlux</h4>
+						</div>
+					</div>
+					<div class="row">
+						<div class="column">
+							<p><strong class="highlight">Programming Model</strong></p>
+						</div>
+						<div class="column"></div>
+					</div>
+					<div class="row">
+						<div class="column">
+							<ul>
+								<li>
+									Follows the traditional blocking (synchronous) model where each request is processed by a dedicated thread.
+								</li>
+								<li>
+									Uses the Servlet API, threads wait for I/O (e.g., database calls, external API responses).
+								</li>
+							</ul>
+						</div>
+						<div class="column">
+							<ul>
+								<li>
+									Follows the non-blocking (reactive) programming model to process requests asynchronously,
+								</li>
+								<li>Users event-driven, non-blocking I/O to process requests without tying up threads.</li>
+								<li>Based on Reactor and Netty.</li>
+							</ul>
+
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="column">
+							<p><strong class="highlight">Return Types</strong></p>
+						</div>
+						<div class="column"></div>
+					</div>
+
+					<div class="row">
+						<div class="column">
+							<ul>
+								<li>
+									Returns a  <code class="inline">ModelAndView</code>, or data types like <code class="inline">String</code>, <code class="inline">Long</code>, ... or <code class="inline">ResponseEntity</code>.
+								</li>
+								<li>
+									Suitable for thread-per-request handling, but it can lead to thread exhaustion under high loads.
+								</li>
+							</ul>
+						</div>
+						<div class="column">
+							<ul>
+								<li>
+									Often returns <code class="inline">Mono&lt;T&gt;</code> (for zero or one item) or <code class="inline">Flux&lt;T&gt;</code> (for multiple items) to represent asynchronous, reactive streams.
+								</li>
+								<li>
+									Allows handling more concurrent requests with fewer threads by avoiding thread blocking.
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row">
+						<div class="column">
+							<p><strong class="highlight">Application Scenarios</strong></p>
+						</div>
+						<div class="column"></div>
+					</div>
+					<div class="row">
+						<div class="column">
+							<ul>
+								<li>
+									Traditional web applications (e.g., form-based apps, content-heavy sites).
+								</li>
+								<li>
+									Easy to use for developers familiar with blocking I/O and imperative programming.
+								</li>
+							</ul>
+						</div>
+						<div class="column">
+							<ul>
+								<li>
+									Ideal for microservices, event-driven systems, or streaming data scenarios (e.g., WebSockets, real-time applications).
+								</li>
+								<li>
+									Great for APIs or services that require high throughput and low latency.
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h3>Spring WebFlux</h3>
+				<div class="summary">
+					Using Reactor Flux and Mono types
+				</div>
+				<div class="content">
+
+
+
+
+					<!--					Converting Reactor Types to Coroutines-->
+					<!--					Reactor's Mono and Flux can be awaited in coroutines using Spring’s extensions.-->
+					<!--					Mono<T>.awaitSingle(): Waits for the completion of a Mono and suspends until the result is available.-->
+					<!--						Flux<T>.collectList().awaitSingle(): Collects all items from a Flux and waits for their completion.-->
+					<!--							kotlin-->
+					<!--							Copy-->
+					<!--							Edit-->
+					<!--							val result = mono.awaitSingle() // Suspends until mono completes-->
+
+
+
+					<!--							Suspending Functions in Spring WebFlux-->
+					<!--							In a WebFlux controller, you can write suspending functions in Kotlin, which will work seamlessly with the reactive flow.-->
+					<!--							kotlin-->
+					<!--							Copy-->
+					<!--							Edit-->
+					<!--							@RestController-->
+					<!--							class MyController {-->
+					<!--							@GetMapping("/data")-->
+					<!--							suspend fun getData(): String {-->
+					<!--							// Non-blocking call in a coroutine-->
+					<!--							return myReactiveService.getData().awaitSingle()-->
+					<!--							}-->
+					<!--							}-->
+
+
+
+
+					<!--							Flow (Kotlin) vs. Flux (Reactor)-->
+					<!--							Kotlin’s Flow is a coroutine-based, cold, reactive stream that is functionally similar to Reactor’s Flux.-->
+					<!--							You can convert between Flow and Flux:-->
+					<!--							Flow.toFlux(): Converts a Kotlin Flow to a Flux.-->
+					<!--							Flux.toFlow(): Converts a Flux to a Kotlin Flow.-->
+					<!--							Example:-->
+
+					<!--							kotlin-->
+					<!--							Copy-->
+					<!--							Edit-->
+					<!--							val flux = myFlow.toFlux()-->
+					<!--							val flow = myFlux.asFlow()-->
+
+
+				</div>
+			</section>
+
+			<section>
+				<h3>Spring WebFlux</h3>
+				<div class="summary">
+					Using Coroutines
+				</div>
+				<div class="content">
+					<p>
+						Reactor's Mono and Flux can be awaited in coroutines using Spring’s extensions.
+					</p>
+					<p>
+<!--						<code>Mono<T>.awaitSingle()</code>: Waits for the completion of a Mono and suspends until the result is available.-->
+					</p>
+				</div>
 			</section>
 		</section>
 		<section>
 			<section data-background-gradient="var(--kotlin-gradient)">
 				<h2>Project Work</h2>
+			</section>
+			<section>
+				<p>Are we done here?</p>
+				<p>I hope not!</p>
 			</section>
 		</section>
 	</div>

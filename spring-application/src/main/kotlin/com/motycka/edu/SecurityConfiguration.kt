@@ -22,22 +22,22 @@ class SecurityConfiguration {
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
-                auth.anyRequest().authenticated()
+                auth.anyRequest().permitAll()
             }
             .httpBasic(Customizer.withDefaults())
 
         return http.build()
     }
 
-    @Bean
-    fun userDetailsService() = UserDetailsService { username ->
-        User.builder()
-            .username("username")
-            .password(passwordEncoder().encode("password"))
-            .roles("USER")
-            .build()
-    }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+//    @Bean
+//    fun userDetailsService() = UserDetailsService { username ->
+//        User.builder()
+//            .username("username")
+//            .password(passwordEncoder().encode("password"))
+//            .roles("USER")
+//            .build()
+//    }
+//
+//    @Bean
+//    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }

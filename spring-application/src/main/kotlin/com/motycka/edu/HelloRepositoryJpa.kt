@@ -9,20 +9,19 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface HelloRepositoryJpa : JpaRepository<MessageEntity, Long> {
-    fun findByLocaleAndMessageKey(locale: String, messageKey: String): MessageEntity?
+interface HelloRepositoryJpa : JpaRepository<HelloEntity, Long> {
+    fun findByLocale(locale: String): HelloEntity?
 }
 
 @Entity
-@Table(name = "greeting")
-data class MessageEntity(
+@Table(name = "hello")
+data class HelloEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val locale: String,
-    val messageKey: String,
-    val messageValue: String
+    val hello: String
 ) {
     // No-argument constructor for Hibernate
-    constructor() : this(null, "", "", "")
+    constructor() : this(null, "", "")
 }
